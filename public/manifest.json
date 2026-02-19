@@ -18,6 +18,9 @@
     "type": "module"
   },
   "options_page": "settings.html",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://*"
+  },
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

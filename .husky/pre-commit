@@ -1,1 +1,2 @@
-npx vitest run --config vitest.config.ts
+#!/usr/bin/env sh
+bun vitest run --config vitest.config.ts

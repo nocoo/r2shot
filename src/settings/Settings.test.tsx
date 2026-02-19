@@ -23,6 +23,7 @@ vi.stubGlobal("chrome", {
   },
   runtime: {
     sendMessage: vi.fn(),
+    getManifest: () => ({ version: "0.1.0" }),
   },
 });
 
@@ -154,6 +155,13 @@ describe("Settings", () => {
       const logo = screen.getByAltText("R2Shot logo");
       expect(logo).toBeInTheDocument();
       expect(logo).toHaveAttribute("src", "/icons/logo64.png");
+    });
+  });
+
+  it("should display version number in footer", async () => {
+    render(<Settings />);
+    await waitFor(() => {
+      expect(screen.getByText(/R2Shot v0\.1\.0/)).toBeInTheDocument();
     });
   });
 });

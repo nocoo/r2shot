@@ -4,6 +4,7 @@ import { Button } from "../shared/button";
 import { Input } from "../shared/input";
 import { Label } from "../shared/label";
 import { cn } from "../shared/cn";
+import { getVersion } from "../shared/version";
 import {
   Save,
   PlugZap,
@@ -193,6 +194,11 @@ export function Settings() {
             Connection failed: {connectionError}
           </div>
         )}
+
+        {/* Footer with version */}
+        <div className="pt-4 border-t border-border text-center text-xs text-muted-foreground">
+          R2Shot v{getVersion()}
+        </div>
       </div>
     </div>
   );

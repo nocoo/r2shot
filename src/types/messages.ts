@@ -6,6 +6,14 @@ export interface CaptureAndUploadRequest {
 
 export interface VerifyConnectionRequest {
   type: "VERIFY_CONNECTION";
+  config?: {
+    endpoint: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+    bucketName: string;
+    customDomain: string;
+    jpgQuality: number;
+  };
 }
 
 export type ExtensionRequest = CaptureAndUploadRequest | VerifyConnectionRequest;

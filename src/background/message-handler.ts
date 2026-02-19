@@ -2,7 +2,7 @@ import { loadConfig } from "../core/storage";
 import { captureVisibleTab, dataUrlToBlob } from "../core/screenshot";
 import { uploadToR2 } from "../core/uploader";
 import { verifyR2Connection } from "../core/connection";
-import { validateR2Config } from "../core/r2-config";
+import { validateR2Config, type R2Config } from "../core/r2-config";
 import type {
   ExtensionRequest,
   CaptureResponse,
@@ -16,7 +16,7 @@ export async function handleMessage(
     case "CAPTURE_AND_UPLOAD":
       return handleCaptureAndUpload();
     case "VERIFY_CONNECTION":
-      return handleVerifyConnection();
+      return handleVerifyConnection(request.config);
     default:
       return { success: false, error: "Unknown message type" };
   }
@@ -44,9 +44,19 @@ async function handleCaptureAndUpload(): Promise<CaptureResponse> {
   }
 }
 
-async function handleVerifyConnection(): Promise<ConnectionResponse> {
+async function handleVerifyConnection(
+  configOverride?: R2Config,
+): Promise<ConnectionResponse> {
   try {
-    const config = await loadConfig();
+    const config = configOverride ?? (await loadConfig());
+    const validation = validateR2Config(config);
+    if (!validation.valid) {
+      return {
+        success: false,
+        error: "Invalid configuration. Please check settings.",
+      };
+    }
+
     const result = await verifyR2Connection(config);
     if (result.ok) {
       return { success: true };

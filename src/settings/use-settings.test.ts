@@ -127,7 +127,7 @@ describe("useSettings", () => {
     expect(Object.keys(result.current.errors).length).toBeGreaterThan(0);
   });
 
-  it("should test connection via chrome.runtime.sendMessage", async () => {
+  it("should test connection with current UI config via chrome.runtime.sendMessage", async () => {
     const mockSendMessage = vi.mocked(chrome.runtime.sendMessage);
     mockSendMessage.mockResolvedValue({ success: true });
 
@@ -137,11 +137,25 @@ describe("useSettings", () => {
       expect(result.current.loading).toBe(false);
     });
 
+    // Update a field so we can verify the current config is sent
+    act(() => {
+      result.current.updateField(
+        "endpoint",
+        "https://ui-state.r2.cloudflarestorage.com",
+      );
+    });
+
     await act(async () => {
       await result.current.testConnection();
     });
 
     expect(result.current.connectionStatus).toBe("success");
+    expect(mockSendMessage).toHaveBeenCalledWith({
+      type: "VERIFY_CONNECTION",
+      config: expect.objectContaining({
+        endpoint: "https://ui-state.r2.cloudflarestorage.com",
+      }),
+    });
   });
 
   it("should handle failed connection test", async () => {
@@ -163,5 +177,9 @@ describe("useSettings", () => {
 
     expect(result.current.connectionStatus).toBe("error");
     expect(result.current.connectionError).toBe("Access Denied");
+    expect(mockSendMessage).toHaveBeenCalledWith({
+      type: "VERIFY_CONNECTION",
+      config: result.current.config,
+    });
   });
 });

@@ -90,6 +90,7 @@ export function useSettings(): SettingsState {
     try {
       const response: ConnectionResponse = await chrome.runtime.sendMessage({
         type: "VERIFY_CONNECTION",
+        config,
       });
 
       if (response.success) {
@@ -104,7 +105,7 @@ export function useSettings(): SettingsState {
         err instanceof Error ? err.message : "Connection test failed",
       );
     }
-  }, []);
+  }, [config]);
 
   return {
     config,

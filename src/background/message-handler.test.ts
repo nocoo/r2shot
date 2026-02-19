@@ -1,9 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { handleMessage } from "./message-handler";
-import type {
-  CaptureAndUploadRequest,
-  VerifyConnectionRequest,
-} from "../types/messages";
+import type { CaptureAndUploadRequest } from "../types/messages";
 
 // Mock all core modules
 vi.mock("../core/storage", () => ({
@@ -142,8 +139,6 @@ describe("handleMessage", () => {
   });
 
   describe("VERIFY_CONNECTION", () => {
-    const request: VerifyConnectionRequest = { type: "VERIFY_CONNECTION" };
-
     it("should return success when connection is valid", async () => {
       vi.mocked(loadConfig).mockResolvedValue({
         endpoint: "https://acc.r2.cloudflarestorage.com",
@@ -153,9 +148,13 @@ describe("handleMessage", () => {
         customDomain: "cdn.example.com",
         jpgQuality: 90,
       });
+      vi.mocked(validateR2Config).mockReturnValue({
+        valid: true,
+        errors: {},
+      });
       vi.mocked(verifyR2Connection).mockResolvedValue({ ok: true });
 
-      const result = await handleMessage(request);
+      const result = await handleMessage({ type: "VERIFY_CONNECTION" });
 
       expect(result).toEqual({ success: true });
     });
@@ -169,14 +168,71 @@ describe("handleMessage", () => {
         customDomain: "cdn.example.com",
         jpgQuality: 90,
       });
+      vi.mocked(validateR2Config).mockReturnValue({
+        valid: true,
+        errors: {},
+      });
       vi.mocked(verifyR2Connection).mockResolvedValue({
         ok: false,
         error: "Access Denied",
       });
 
-      const result = await handleMessage(request);
+      const result = await handleMessage({ type: "VERIFY_CONNECTION" });
 
       expect(result).toEqual({ success: false, error: "Access Denied" });
+    });
+
+    it("should use config override instead of stored config when provided", async () => {
+      const overrideConfig = {
+        endpoint: "https://override.r2.cloudflarestorage.com",
+        accessKeyId: "override-key",
+        secretAccessKey: "override-secret",
+        bucketName: "override-bucket",
+        customDomain: "cdn.override.com",
+        jpgQuality: 80,
+      };
+
+      vi.mocked(validateR2Config).mockReturnValue({
+        valid: true,
+        errors: {},
+      });
+      vi.mocked(verifyR2Connection).mockResolvedValue({ ok: true });
+
+      const result = await handleMessage({
+        type: "VERIFY_CONNECTION",
+        config: overrideConfig,
+      });
+
+      expect(result).toEqual({ success: true });
+      expect(loadConfig).not.toHaveBeenCalled();
+      expect(verifyR2Connection).toHaveBeenCalledWith(overrideConfig);
+    });
+
+    it("should return error when config override is invalid", async () => {
+      const invalidConfig = {
+        endpoint: "",
+        accessKeyId: "",
+        secretAccessKey: "",
+        bucketName: "",
+        customDomain: "",
+        jpgQuality: 90,
+      };
+
+      vi.mocked(validateR2Config).mockReturnValue({
+        valid: false,
+        errors: { endpoint: "required" },
+      });
+
+      const result = await handleMessage({
+        type: "VERIFY_CONNECTION",
+        config: invalidConfig,
+      });
+
+      expect(result).toEqual({
+        success: false,
+        error: "Invalid configuration. Please check settings.",
+      });
+      expect(loadConfig).not.toHaveBeenCalled();
     });
   });
 

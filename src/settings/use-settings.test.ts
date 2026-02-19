@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { renderHook, act, waitFor } from "@testing-library/react";
 import { useSettings } from "./use-settings";
 import type { R2Config } from "../core/r2-config";
 
@@ -39,7 +39,7 @@ describe("useSettings", () => {
     expect(result.current.loading).toBe(true);
 
     // Wait for load
-    await vi.waitFor(() => {
+    await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
@@ -60,7 +60,7 @@ describe("useSettings", () => {
 
     const { result } = renderHook(() => useSettings());
 
-    await vi.waitFor(() => {
+    await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
@@ -70,7 +70,7 @@ describe("useSettings", () => {
   it("should update a config field", async () => {
     const { result } = renderHook(() => useSettings());
 
-    await vi.waitFor(() => {
+    await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
@@ -84,7 +84,7 @@ describe("useSettings", () => {
   it("should save config and show success", async () => {
     const { result } = renderHook(() => useSettings());
 
-    await vi.waitFor(() => {
+    await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
@@ -106,7 +106,7 @@ describe("useSettings", () => {
   it("should show validation errors on save with invalid config", async () => {
     const { result } = renderHook(() => useSettings());
 
-    await vi.waitFor(() => {
+    await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
@@ -125,7 +125,7 @@ describe("useSettings", () => {
 
     const { result } = renderHook(() => useSettings());
 
-    await vi.waitFor(() => {
+    await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
@@ -145,7 +145,7 @@ describe("useSettings", () => {
 
     const { result } = renderHook(() => useSettings());
 
-    await vi.waitFor(() => {
+    await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 

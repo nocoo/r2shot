@@ -1,0 +1,94 @@
+{
+  "extName": {
+    "message": "R2Shot"
+  },
+  "extDescription": {
+    "message": "ワンクリックでスクリーンショットを撮影、Cloudflare R2にアップロード、CDN URLをクリップボードにコピー"
+  },
+  "settingsTitle": {
+    "message": "R2Shot 設定"
+  },
+  "loading": {
+    "message": "読み込み中..."
+  },
+  "theme": {
+    "message": "テーマ"
+  },
+  "themeLight": {
+    "message": "ライト"
+  },
+  "themeDark": {
+    "message": "ダーク"
+  },
+  "themeSystem": {
+    "message": "システム"
+  },
+  "r2Config": {
+    "message": "R2 設定"
+  },
+  "endpointUrl": {
+    "message": "エンドポイント URL"
+  },
+  "accessKeyId": {
+    "message": "Access Key ID"
+  },
+  "secretAccessKey": {
+    "message": "Secret Access Key"
+  },
+  "bucketName": {
+    "message": "バケット名"
+  },
+  "customDomain": {
+    "message": "カスタムドメイン"
+  },
+  "jpgQuality": {
+    "message": "JPG 品質"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "testConnection": {
+    "message": "接続テスト"
+  },
+  "settingsSaved": {
+    "message": "設定を保存しました！"
+  },
+  "connectionSuccess": {
+    "message": "接続成功！"
+  },
+  "connectionFailed": {
+    "message": "接続失敗：$ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "capture": {
+    "message": "キャプチャ"
+  },
+  "captureDescription": {
+    "message": "現在のタブのスクリーンショットを撮影し、R2にアップロード"
+  },
+  "capturing": {
+    "message": "キャプチャ中..."
+  },
+  "copyUrl": {
+    "message": "URLをコピー"
+  },
+  "copied": {
+    "message": "コピー済み！"
+  },
+  "copiedToClipboard": {
+    "message": "クリップボードにコピーしました！"
+  },
+  "new": {
+    "message": "新規"
+  },
+  "tryAgain": {
+    "message": "再試行"
+  },
+  "settings": {
+    "message": "設定"
+  }
+}

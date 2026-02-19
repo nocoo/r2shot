@@ -1,0 +1,94 @@
+{
+  "extName": {
+    "message": "R2Shot"
+  },
+  "extDescription": {
+    "message": "一键截图，上传至 Cloudflare R2，CDN 链接复制到剪贴板"
+  },
+  "settingsTitle": {
+    "message": "R2Shot 设置"
+  },
+  "loading": {
+    "message": "加载中..."
+  },
+  "theme": {
+    "message": "主题"
+  },
+  "themeLight": {
+    "message": "浅色"
+  },
+  "themeDark": {
+    "message": "深色"
+  },
+  "themeSystem": {
+    "message": "跟随系统"
+  },
+  "r2Config": {
+    "message": "R2 配置"
+  },
+  "endpointUrl": {
+    "message": "端点 URL"
+  },
+  "accessKeyId": {
+    "message": "Access Key ID"
+  },
+  "secretAccessKey": {
+    "message": "Secret Access Key"
+  },
+  "bucketName": {
+    "message": "存储桶名称"
+  },
+  "customDomain": {
+    "message": "自定义域名"
+  },
+  "jpgQuality": {
+    "message": "JPG 质量"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "testConnection": {
+    "message": "测试连接"
+  },
+  "settingsSaved": {
+    "message": "设置已保存！"
+  },
+  "connectionSuccess": {
+    "message": "连接成功！"
+  },
+  "connectionFailed": {
+    "message": "连接失败：$ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "capture": {
+    "message": "截图"
+  },
+  "captureDescription": {
+    "message": "截取当前标签页并上传至 R2"
+  },
+  "capturing": {
+    "message": "截图中..."
+  },
+  "copyUrl": {
+    "message": "复制链接"
+  },
+  "copied": {
+    "message": "已复制！"
+  },
+  "copiedToClipboard": {
+    "message": "已复制到剪贴板！"
+  },
+  "new": {
+    "message": "新截图"
+  },
+  "tryAgain": {
+    "message": "重试"
+  },
+  "settings": {
+    "message": "设置"
+  }
+}

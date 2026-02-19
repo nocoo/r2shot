@@ -1,0 +1,94 @@
+{
+  "extName": {
+    "message": "R2Shot"
+  },
+  "extDescription": {
+    "message": "Screenshot mit einem Klick aufnehmen, zu Cloudflare R2 hochladen, CDN-URL in die Zwischenablage kopieren"
+  },
+  "settingsTitle": {
+    "message": "R2Shot Einstellungen"
+  },
+  "loading": {
+    "message": "Laden..."
+  },
+  "theme": {
+    "message": "Design"
+  },
+  "themeLight": {
+    "message": "Hell"
+  },
+  "themeDark": {
+    "message": "Dunkel"
+  },
+  "themeSystem": {
+    "message": "System"
+  },
+  "r2Config": {
+    "message": "R2-Konfiguration"
+  },
+  "endpointUrl": {
+    "message": "Endpunkt-URL"
+  },
+  "accessKeyId": {
+    "message": "Access Key ID"
+  },
+  "secretAccessKey": {
+    "message": "Secret Access Key"
+  },
+  "bucketName": {
+    "message": "Bucket-Name"
+  },
+  "customDomain": {
+    "message": "Benutzerdefinierte Domain"
+  },
+  "jpgQuality": {
+    "message": "JPG-Qualität"
+  },
+  "save": {
+    "message": "Speichern"
+  },
+  "testConnection": {
+    "message": "Verbindung testen"
+  },
+  "settingsSaved": {
+    "message": "Einstellungen gespeichert!"
+  },
+  "connectionSuccess": {
+    "message": "Verbindung erfolgreich!"
+  },
+  "connectionFailed": {
+    "message": "Verbindung fehlgeschlagen: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "capture": {
+    "message": "Aufnehmen"
+  },
+  "captureDescription": {
+    "message": "Screenshot des aktuellen Tabs aufnehmen und zu R2 hochladen"
+  },
+  "capturing": {
+    "message": "Aufnahme..."
+  },
+  "copyUrl": {
+    "message": "URL kopieren"
+  },
+  "copied": {
+    "message": "Kopiert!"
+  },
+  "copiedToClipboard": {
+    "message": "In die Zwischenablage kopiert!"
+  },
+  "new": {
+    "message": "Neu"
+  },
+  "tryAgain": {
+    "message": "Erneut versuchen"
+  },
+  "settings": {
+    "message": "Einstellungen"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "extName": {
+    "message": "R2Shot"
+  },
+  "extDescription": {
+    "message": "원클릭 스크린샷 캡처, Cloudflare R2에 업로드, CDN URL을 클립보드에 복사"
+  },
+  "settingsTitle": {
+    "message": "R2Shot 설정"
+  },
+  "loading": {
+    "message": "로딩 중..."
+  },
+  "theme": {
+    "message": "테마"
+  },
+  "themeLight": {
+    "message": "라이트"
+  },
+  "themeDark": {
+    "message": "다크"
+  },
+  "themeSystem": {
+    "message": "시스템"
+  },
+  "r2Config": {
+    "message": "R2 설정"
+  },
+  "endpointUrl": {
+    "message": "엔드포인트 URL"
+  },
+  "accessKeyId": {
+    "message": "Access Key ID"
+  },
+  "secretAccessKey": {
+    "message": "Secret Access Key"
+  },
+  "bucketName": {
+    "message": "버킷 이름"
+  },
+  "customDomain": {
+    "message": "사용자 지정 도메인"
+  },
+  "jpgQuality": {
+    "message": "JPG 품질"
+  },
+  "save": {
+    "message": "저장"
+  },
+  "testConnection": {
+    "message": "연결 테스트"
+  },
+  "settingsSaved": {
+    "message": "설정이 저장되었습니다!"
+  },
+  "connectionSuccess": {
+    "message": "연결 성공!"
+  },
+  "connectionFailed": {
+    "message": "연결 실패: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "capture": {
+    "message": "캡처"
+  },
+  "captureDescription": {
+    "message": "현재 탭의 스크린샷을 찍어 R2에 업로드"
+  },
+  "capturing": {
+    "message": "캡처 중..."
+  },
+  "copyUrl": {
+    "message": "URL 복사"
+  },
+  "copied": {
+    "message": "복사됨!"
+  },
+  "copiedToClipboard": {
+    "message": "클립보드에 복사되었습니다!"
+  },
+  "new": {
+    "message": "새로 찍기"
+  },
+  "tryAgain": {
+    "message": "다시 시도"
+  },
+  "settings": {
+    "message": "설정"
+  }
+}

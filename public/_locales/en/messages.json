@@ -1,0 +1,94 @@
+{
+  "extName": {
+    "message": "R2Shot"
+  },
+  "extDescription": {
+    "message": "One-click screenshot capture, upload to Cloudflare R2, CDN URL to clipboard"
+  },
+  "settingsTitle": {
+    "message": "R2Shot Settings"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "theme": {
+    "message": "Theme"
+  },
+  "themeLight": {
+    "message": "Light"
+  },
+  "themeDark": {
+    "message": "Dark"
+  },
+  "themeSystem": {
+    "message": "System"
+  },
+  "r2Config": {
+    "message": "R2 Configuration"
+  },
+  "endpointUrl": {
+    "message": "Endpoint URL"
+  },
+  "accessKeyId": {
+    "message": "Access Key ID"
+  },
+  "secretAccessKey": {
+    "message": "Secret Access Key"
+  },
+  "bucketName": {
+    "message": "Bucket Name"
+  },
+  "customDomain": {
+    "message": "Custom Domain"
+  },
+  "jpgQuality": {
+    "message": "JPG Quality"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "testConnection": {
+    "message": "Test Connection"
+  },
+  "settingsSaved": {
+    "message": "Settings saved!"
+  },
+  "connectionSuccess": {
+    "message": "Connection successful!"
+  },
+  "connectionFailed": {
+    "message": "Connection failed: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "capture": {
+    "message": "Capture"
+  },
+  "captureDescription": {
+    "message": "Take a screenshot of the current tab and upload to R2"
+  },
+  "capturing": {
+    "message": "Capturing..."
+  },
+  "copyUrl": {
+    "message": "Copy URL"
+  },
+  "copied": {
+    "message": "Copied!"
+  },
+  "copiedToClipboard": {
+    "message": "Copied to clipboard!"
+  },
+  "new": {
+    "message": "New"
+  },
+  "tryAgain": {
+    "message": "Try Again"
+  },
+  "settings": {
+    "message": "Settings"
+  }
+}

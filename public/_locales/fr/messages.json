@@ -1,0 +1,94 @@
+{
+  "extName": {
+    "message": "R2Shot"
+  },
+  "extDescription": {
+    "message": "Capture d'écran en un clic, upload vers Cloudflare R2, URL CDN copiée dans le presse-papiers"
+  },
+  "settingsTitle": {
+    "message": "Paramètres R2Shot"
+  },
+  "loading": {
+    "message": "Chargement..."
+  },
+  "theme": {
+    "message": "Thème"
+  },
+  "themeLight": {
+    "message": "Clair"
+  },
+  "themeDark": {
+    "message": "Sombre"
+  },
+  "themeSystem": {
+    "message": "Système"
+  },
+  "r2Config": {
+    "message": "Configuration R2"
+  },
+  "endpointUrl": {
+    "message": "URL du point de terminaison"
+  },
+  "accessKeyId": {
+    "message": "Access Key ID"
+  },
+  "secretAccessKey": {
+    "message": "Secret Access Key"
+  },
+  "bucketName": {
+    "message": "Nom du bucket"
+  },
+  "customDomain": {
+    "message": "Domaine personnalisé"
+  },
+  "jpgQuality": {
+    "message": "Qualité JPG"
+  },
+  "save": {
+    "message": "Enregistrer"
+  },
+  "testConnection": {
+    "message": "Tester la connexion"
+  },
+  "settingsSaved": {
+    "message": "Paramètres enregistrés !"
+  },
+  "connectionSuccess": {
+    "message": "Connexion réussie !"
+  },
+  "connectionFailed": {
+    "message": "Échec de la connexion : $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "capture": {
+    "message": "Capturer"
+  },
+  "captureDescription": {
+    "message": "Capture l'onglet actuel et upload vers R2"
+  },
+  "capturing": {
+    "message": "Capture en cours..."
+  },
+  "copyUrl": {
+    "message": "Copier l'URL"
+  },
+  "copied": {
+    "message": "Copié !"
+  },
+  "copiedToClipboard": {
+    "message": "Copié dans le presse-papiers !"
+  },
+  "new": {
+    "message": "Nouveau"
+  },
+  "tryAgain": {
+    "message": "Réessayer"
+  },
+  "settings": {
+    "message": "Paramètres"
+  }
+}

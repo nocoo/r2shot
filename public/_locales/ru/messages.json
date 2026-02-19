@@ -1,0 +1,94 @@
+{
+  "extName": {
+    "message": "R2Shot"
+  },
+  "extDescription": {
+    "message": "Снимок экрана в один клик, загрузка в Cloudflare R2, CDN-ссылка в буфер обмена"
+  },
+  "settingsTitle": {
+    "message": "Настройки R2Shot"
+  },
+  "loading": {
+    "message": "Загрузка..."
+  },
+  "theme": {
+    "message": "Тема"
+  },
+  "themeLight": {
+    "message": "Светлая"
+  },
+  "themeDark": {
+    "message": "Тёмная"
+  },
+  "themeSystem": {
+    "message": "Системная"
+  },
+  "r2Config": {
+    "message": "Конфигурация R2"
+  },
+  "endpointUrl": {
+    "message": "URL эндпоинта"
+  },
+  "accessKeyId": {
+    "message": "Access Key ID"
+  },
+  "secretAccessKey": {
+    "message": "Secret Access Key"
+  },
+  "bucketName": {
+    "message": "Имя бакета"
+  },
+  "customDomain": {
+    "message": "Пользовательский домен"
+  },
+  "jpgQuality": {
+    "message": "Качество JPG"
+  },
+  "save": {
+    "message": "Сохранить"
+  },
+  "testConnection": {
+    "message": "Проверить соединение"
+  },
+  "settingsSaved": {
+    "message": "Настройки сохранены!"
+  },
+  "connectionSuccess": {
+    "message": "Соединение успешно!"
+  },
+  "connectionFailed": {
+    "message": "Ошибка соединения: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "capture": {
+    "message": "Снимок"
+  },
+  "captureDescription": {
+    "message": "Сделать снимок текущей вкладки и загрузить в R2"
+  },
+  "capturing": {
+    "message": "Захват..."
+  },
+  "copyUrl": {
+    "message": "Копировать URL"
+  },
+  "copied": {
+    "message": "Скопировано!"
+  },
+  "copiedToClipboard": {
+    "message": "Скопировано в буфер обмена!"
+  },
+  "new": {
+    "message": "Новый"
+  },
+  "tryAgain": {
+    "message": "Повторить"
+  },
+  "settings": {
+    "message": "Настройки"
+  }
+}

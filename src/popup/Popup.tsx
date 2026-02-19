@@ -59,10 +59,15 @@ export function Popup() {
 
       {/* Idle state */}
       {status === "idle" && (
-        <Button className="w-full" onClick={capture}>
-          <Camera className="h-4 w-4" />
-          Capture
-        </Button>
+        <div className="space-y-3">
+          <p className="text-sm text-muted-foreground text-center">
+            Take a screenshot of the current tab and upload to R2
+          </p>
+          <Button className="w-full" onClick={capture}>
+            <Camera className="h-4 w-4" />
+            Capture
+          </Button>
+        </div>
       )}
 
       {/* Capturing state */}

@@ -35,6 +35,13 @@ describe("Popup", () => {
     expect(screen.getByText("R2Shot")).toBeInTheDocument();
   });
 
+  it("should render description text above capture button", () => {
+    render(<Popup />);
+    expect(
+      screen.getByText(/take a screenshot of the current tab and upload to r2/i),
+    ).toBeInTheDocument();
+  });
+
   it("should render capture button in idle state", () => {
     render(<Popup />);
     const btn = screen.getByRole("button", { name: /capture/i });

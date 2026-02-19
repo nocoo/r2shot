@@ -21,6 +21,7 @@ export default defineConfig({
         "src/background/index.ts",
         "src/popup/main.tsx",
         "src/settings/main.tsx",
+        "src/types/**",
       ],
       thresholds: {
         branches: 90,

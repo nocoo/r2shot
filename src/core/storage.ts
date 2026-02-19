@@ -11,7 +11,7 @@ export async function loadConfig(): Promise<R2Config> {
 export async function saveConfig(config: R2Config): Promise<void> {
   const normalized: R2Config = {
     ...config,
-    cdnUrl: config.cdnUrl.replace(/\/+$/, ""),
+    customDomain: config.customDomain.replace(/\/+$/, ""),
   };
   await chrome.storage.local.set({ [STORAGE_KEY]: normalized });
 }

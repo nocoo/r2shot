@@ -46,7 +46,7 @@ describe("Settings", () => {
       expect(screen.getByLabelText(/access key id/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/secret access key/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/bucket name/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/cdn url/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/custom domain/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/jpg quality/i)).toBeInTheDocument();
     });
   });
@@ -122,8 +122,8 @@ describe("Settings", () => {
     fireEvent.change(screen.getByLabelText(/bucket name/i), {
       target: { value: "test-bucket" },
     });
-    fireEvent.change(screen.getByLabelText(/cdn url/i), {
-      target: { value: "https://cdn.test.com" },
+    fireEvent.change(screen.getByLabelText(/custom domain/i), {
+      target: { value: "cdn.test.com" },
     });
 
     fireEvent.click(screen.getByRole("button", { name: /save/i }));

@@ -3,6 +3,7 @@ import {
   type R2Config,
   validateR2Config,
   type R2ConfigValidationResult,
+  parseR2Endpoint,
 } from "./r2-config";
 
 describe("R2Config validation", () => {
@@ -11,7 +12,7 @@ describe("R2Config validation", () => {
     accessKeyId: "key-id-example",
     secretAccessKey: "secret-key-example",
     bucketName: "my-bucket",
-    cdnUrl: "https://cdn.example.com",
+    customDomain: "cdn.example.com",
     jpgQuality: 90,
   };
 
@@ -77,34 +78,24 @@ describe("R2Config validation", () => {
       expect(result.errors.bucketName).toBe("Bucket name is required");
     });
 
-    it("should reject empty cdnUrl", () => {
-      const result = validateR2Config({ ...validConfig, cdnUrl: "" });
+    it("should reject empty customDomain", () => {
+      const result = validateR2Config({ ...validConfig, customDomain: "" });
       expect(result.valid).toBe(false);
-      expect(result.errors.cdnUrl).toBe("CDN URL is required");
+      expect(result.errors.customDomain).toBe("Custom domain is required");
     });
 
-    it("should reject cdnUrl without https protocol", () => {
+    it("should accept customDomain without protocol", () => {
       const result = validateR2Config({
         ...validConfig,
-        cdnUrl: "http://cdn.example.com",
+        customDomain: "cdn.example.com",
       });
-      expect(result.valid).toBe(false);
-      expect(result.errors.cdnUrl).toBe("CDN URL must start with https://");
+      expect(result.valid).toBe(true);
     });
 
-    it("should reject invalid cdnUrl format", () => {
+    it("should accept customDomain with subdomain", () => {
       const result = validateR2Config({
         ...validConfig,
-        cdnUrl: "not-a-url",
-      });
-      expect(result.valid).toBe(false);
-      expect(result.errors.cdnUrl).toBeDefined();
-    });
-
-    it("should strip trailing slash from cdnUrl", () => {
-      const result = validateR2Config({
-        ...validConfig,
-        cdnUrl: "https://cdn.example.com/",
+        customDomain: "screenshots.mysite.com",
       });
       expect(result.valid).toBe(true);
     });
@@ -147,7 +138,7 @@ describe("R2Config validation", () => {
         accessKeyId: "",
         secretAccessKey: "",
         bucketName: "",
-        cdnUrl: "",
+        customDomain: "",
         jpgQuality: 0,
       });
       expect(result.valid).toBe(false);
@@ -167,6 +158,86 @@ describe("R2Config validation", () => {
         errors: { endpoint: "required" },
       };
       expect(result.valid).toBe(false);
+    });
+  });
+
+  describe("parseR2Endpoint", () => {
+    it("should return empty endpoint for empty input", () => {
+      expect(parseR2Endpoint("")).toEqual({ endpoint: "" });
+      expect(parseR2Endpoint("   ")).toEqual({ endpoint: "" });
+    });
+
+    it("should return input as-is when not a valid URL", () => {
+      expect(parseR2Endpoint("not-a-url")).toEqual({ endpoint: "not-a-url" });
+    });
+
+    it("should extract endpoint without bucket from bare URL", () => {
+      const result = parseR2Endpoint(
+        "https://abc123.r2.cloudflarestorage.com",
+      );
+      expect(result).toEqual({
+        endpoint: "https://abc123.r2.cloudflarestorage.com",
+      });
+    });
+
+    it("should extract endpoint without bucket from URL with trailing slash", () => {
+      const result = parseR2Endpoint(
+        "https://abc123.r2.cloudflarestorage.com/",
+      );
+      expect(result).toEqual({
+        endpoint: "https://abc123.r2.cloudflarestorage.com",
+      });
+    });
+
+    it("should extract endpoint and bucket name from full S3 API URL", () => {
+      const result = parseR2Endpoint(
+        "https://d51a8fde361e4be31db17d8c56737c1f.r2.cloudflarestorage.com/r2shot",
+      );
+      expect(result).toEqual({
+        endpoint:
+          "https://d51a8fde361e4be31db17d8c56737c1f.r2.cloudflarestorage.com",
+        bucketName: "r2shot",
+      });
+    });
+
+    it("should extract only first path segment as bucket name", () => {
+      const result = parseR2Endpoint(
+        "https://abc.r2.cloudflarestorage.com/my-bucket/extra/path",
+      );
+      expect(result).toEqual({
+        endpoint: "https://abc.r2.cloudflarestorage.com",
+        bucketName: "my-bucket",
+      });
+    });
+
+    it("should handle URL with trailing slash after bucket name", () => {
+      const result = parseR2Endpoint(
+        "https://abc.r2.cloudflarestorage.com/my-bucket/",
+      );
+      expect(result).toEqual({
+        endpoint: "https://abc.r2.cloudflarestorage.com",
+        bucketName: "my-bucket",
+      });
+    });
+
+    it("should trim whitespace from input", () => {
+      const result = parseR2Endpoint(
+        "  https://abc.r2.cloudflarestorage.com/bucket  ",
+      );
+      expect(result).toEqual({
+        endpoint: "https://abc.r2.cloudflarestorage.com",
+        bucketName: "bucket",
+      });
+    });
+
+    it("should work with non-R2 S3-compatible endpoints", () => {
+      const result = parseR2Endpoint(
+        "https://s3.us-east-1.amazonaws.com/my-bucket",
+      );
+      expect(result).toEqual({
+        endpoint: "https://s3.us-east-1.amazonaws.com",
+        bucketName: "my-bucket",
+      });
     });
   });
 });

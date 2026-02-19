@@ -35,9 +35,9 @@ async function handleCaptureAndUpload(): Promise<CaptureResponse> {
 
     const dataUrl = await captureVisibleTab(config.jpgQuality);
     const blob = dataUrlToBlob(dataUrl);
-    const cdnUrl = await uploadToR2(config, blob);
+    const publicUrl = await uploadToR2(config, blob);
 
-    return { success: true, url: cdnUrl };
+    return { success: true, url: publicUrl };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return { success: false, error: message };

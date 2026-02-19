@@ -93,12 +93,12 @@ export function Settings() {
           />
 
           <Field
-            id="cdnUrl"
-            label="CDN URL"
-            value={config.cdnUrl}
-            error={errors.cdnUrl}
-            onChange={(v) => updateField("cdnUrl", v)}
-            placeholder="https://cdn.example.com"
+            id="customDomain"
+            label="Custom Domain"
+            value={config.customDomain}
+            error={errors.customDomain}
+            onChange={(v) => updateField("customDomain", v)}
+            placeholder="cdn.example.com"
           />
 
           <div>

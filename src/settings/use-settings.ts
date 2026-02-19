@@ -3,6 +3,7 @@ import {
   type R2Config,
   DEFAULT_R2_CONFIG,
   validateR2Config,
+  parseR2Endpoint,
 } from "../core/r2-config";
 import { loadConfig, saveConfig } from "../core/storage";
 import type { ConnectionResponse } from "../types/messages";
@@ -42,12 +43,27 @@ export function useSettings(): SettingsState {
 
   const updateField = useCallback(
     <K extends keyof R2Config>(key: K, value: R2Config[K]) => {
-      setConfig((prev) => ({ ...prev, [key]: value }));
-      setErrors((prev) => {
-        const next = { ...prev };
-        delete next[key];
-        return next;
-      });
+      if (key === "endpoint" && typeof value === "string") {
+        const parsed = parseR2Endpoint(value);
+        setConfig((prev) => ({
+          ...prev,
+          endpoint: parsed.endpoint,
+          ...(parsed.bucketName ? { bucketName: parsed.bucketName } : {}),
+        }));
+        setErrors((prev) => {
+          const next = { ...prev };
+          delete next.endpoint;
+          if (parsed.bucketName) delete next.bucketName;
+          return next;
+        });
+      } else {
+        setConfig((prev) => ({ ...prev, [key]: value }));
+        setErrors((prev) => {
+          const next = { ...prev };
+          delete next[key];
+          return next;
+        });
+      }
       setSaveStatus("idle");
     },
     [],

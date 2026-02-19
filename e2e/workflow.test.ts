@@ -62,7 +62,7 @@ describe("E2E: complete capture-and-upload workflow", () => {
     accessKeyId: "e2e-key-id",
     secretAccessKey: "e2e-secret-key",
     bucketName: "e2e-bucket",
-    cdnUrl: "https://cdn.e2e-test.com",
+    customDomain: "cdn.e2e-test.com",
     jpgQuality: 90,
   };
 
@@ -178,7 +178,7 @@ describe("E2E: connection verification workflow", () => {
     accessKeyId: "e2e-key-id",
     secretAccessKey: "e2e-secret-key",
     bucketName: "e2e-bucket",
-    cdnUrl: "https://cdn.e2e-test.com",
+    customDomain: "cdn.e2e-test.com",
     jpgQuality: 90,
   };
 

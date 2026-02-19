@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { generateObjectKey, buildCdnUrl, uploadToR2 } from "./uploader";
+import { generateObjectKey, buildPublicUrl, uploadToR2 } from "./uploader";
 import type { R2Config } from "./r2-config";
 
 // Mock @aws-sdk/client-s3
@@ -48,26 +48,26 @@ describe("uploader", () => {
     });
   });
 
-  describe("buildCdnUrl", () => {
-    it("should combine cdnUrl and object key", () => {
-      const url = buildCdnUrl(
-        "https://cdn.example.com",
+  describe("buildPublicUrl", () => {
+    it("should combine domain and object key with https", () => {
+      const url = buildPublicUrl(
+        "cdn.example.com",
         "2026-02-19/abc-123.jpg",
       );
       expect(url).toBe("https://cdn.example.com/2026-02-19/abc-123.jpg");
     });
 
-    it("should not double-slash if cdnUrl has trailing slash", () => {
-      const url = buildCdnUrl(
-        "https://cdn.example.com/",
+    it("should not double-slash if domain has trailing slash", () => {
+      const url = buildPublicUrl(
+        "cdn.example.com/",
         "2026-02-19/abc.jpg",
       );
       expect(url).toBe("https://cdn.example.com/2026-02-19/abc.jpg");
     });
 
-    it("should handle cdnUrl with path prefix", () => {
-      const url = buildCdnUrl(
-        "https://cdn.example.com/screenshots",
+    it("should handle domain with path prefix", () => {
+      const url = buildPublicUrl(
+        "cdn.example.com/screenshots",
         "2026-02-19/abc.jpg",
       );
       expect(url).toBe(
@@ -82,7 +82,7 @@ describe("uploader", () => {
       accessKeyId: "test-key-id",
       secretAccessKey: "test-secret",
       bucketName: "test-bucket",
-      cdnUrl: "https://cdn.test.com",
+      customDomain: "cdn.test.com",
       jpgQuality: 90,
     };
 
@@ -128,11 +128,11 @@ describe("uploader", () => {
       expect(_mockSend).toHaveBeenCalled();
     });
 
-    it("should return the CDN URL of the uploaded file", async () => {
+    it("should return the public URL of the uploaded file", async () => {
       const blob = new Blob(["fake-image"], { type: "image/jpeg" });
-      const cdnUrl = await uploadToR2(config, blob);
+      const publicUrl = await uploadToR2(config, blob);
 
-      expect(cdnUrl).toMatch(
+      expect(publicUrl).toMatch(
         /^https:\/\/cdn\.test\.com\/\d{4}-\d{2}-\d{2}\/[a-f0-9-]+\.jpg$/,
       );
     });

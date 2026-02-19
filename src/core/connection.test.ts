@@ -21,7 +21,7 @@ describe("verifyR2Connection", () => {
     accessKeyId: "test-key",
     secretAccessKey: "test-secret",
     bucketName: "test-bucket",
-    cdnUrl: "https://cdn.test.com",
+    customDomain: "cdn.test.com",
     jpgQuality: 90,
   };
 

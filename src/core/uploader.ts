@@ -10,9 +10,9 @@ export function generateObjectKey(date: Date = new Date()): string {
   return `${folder}/${guid}.jpg`;
 }
 
-export function buildCdnUrl(cdnBase: string, objectKey: string): string {
-  const base = cdnBase.replace(/\/+$/, "");
-  return `${base}/${objectKey}`;
+export function buildPublicUrl(domain: string, objectKey: string): string {
+  const cleaned = domain.replace(/\/+$/, "");
+  return `https://${cleaned}/${objectKey}`;
 }
 
 export async function uploadToR2(
@@ -40,5 +40,5 @@ export async function uploadToR2(
 
   await client.send(command);
 
-  return buildCdnUrl(config.cdnUrl, objectKey);
+  return buildPublicUrl(config.customDomain, objectKey);
 }

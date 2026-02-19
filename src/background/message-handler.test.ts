@@ -47,7 +47,7 @@ describe("handleMessage", () => {
         accessKeyId: "key",
         secretAccessKey: "secret",
         bucketName: "bucket",
-        cdnUrl: "https://cdn.example.com",
+        customDomain: "cdn.example.com",
         jpgQuality: 90,
       };
       const fakeDataUrl = "data:image/jpeg;base64,/9j/";
@@ -78,7 +78,7 @@ describe("handleMessage", () => {
         accessKeyId: "",
         secretAccessKey: "",
         bucketName: "",
-        cdnUrl: "",
+        customDomain: "",
         jpgQuality: 90,
       });
       vi.mocked(validateR2Config).mockReturnValue({
@@ -100,7 +100,7 @@ describe("handleMessage", () => {
         accessKeyId: "key",
         secretAccessKey: "secret",
         bucketName: "bucket",
-        cdnUrl: "https://cdn.example.com",
+        customDomain: "cdn.example.com",
         jpgQuality: 90,
       });
       vi.mocked(validateR2Config).mockReturnValue({
@@ -122,7 +122,7 @@ describe("handleMessage", () => {
         accessKeyId: "key",
         secretAccessKey: "secret",
         bucketName: "bucket",
-        cdnUrl: "https://cdn.example.com",
+        customDomain: "cdn.example.com",
         jpgQuality: 90,
       });
       vi.mocked(validateR2Config).mockReturnValue({
@@ -150,7 +150,7 @@ describe("handleMessage", () => {
         accessKeyId: "key",
         secretAccessKey: "secret",
         bucketName: "bucket",
-        cdnUrl: "https://cdn.example.com",
+        customDomain: "cdn.example.com",
         jpgQuality: 90,
       });
       vi.mocked(verifyR2Connection).mockResolvedValue({ ok: true });
@@ -166,7 +166,7 @@ describe("handleMessage", () => {
         accessKeyId: "key",
         secretAccessKey: "secret",
         bucketName: "bucket",
-        cdnUrl: "https://cdn.example.com",
+        customDomain: "cdn.example.com",
         jpgQuality: 90,
       });
       vi.mocked(verifyR2Connection).mockResolvedValue({

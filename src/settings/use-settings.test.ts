@@ -53,7 +53,7 @@ describe("useSettings", () => {
       accessKeyId: "my-key",
       secretAccessKey: "my-secret",
       bucketName: "my-bucket",
-      cdnUrl: "https://cdn.example.com",
+      customDomain: "cdn.example.com",
       jpgQuality: 85,
     };
     mockStorage["r2config"] = stored;
@@ -101,7 +101,7 @@ describe("useSettings", () => {
       result.current.updateField("accessKeyId", "test-key");
       result.current.updateField("secretAccessKey", "test-secret");
       result.current.updateField("bucketName", "test-bucket");
-      result.current.updateField("cdnUrl", "https://cdn.test.com");
+      result.current.updateField("customDomain", "cdn.test.com");
     });
 
     await act(async () => {

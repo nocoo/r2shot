@@ -45,7 +45,7 @@ describe("storage", () => {
         accessKeyId: "my-key",
         secretAccessKey: "my-secret",
         bucketName: "my-bucket",
-        cdnUrl: "https://cdn.example.com",
+        customDomain: "cdn.example.com",
         jpgQuality: 85,
       };
       mockStorage["r2config"] = stored;
@@ -60,7 +60,7 @@ describe("storage", () => {
       const config = await loadConfig();
       expect(config.endpoint).toBe("https://partial.r2.cloudflarestorage.com");
       expect(config.jpgQuality).toBe(90);
-      expect(config.cdnUrl).toBe("");
+      expect(config.customDomain).toBe("");
     });
   });
 
@@ -71,7 +71,7 @@ describe("storage", () => {
         accessKeyId: "test-key",
         secretAccessKey: "test-secret",
         bucketName: "test-bucket",
-        cdnUrl: "https://cdn.test.com",
+        customDomain: "cdn.test.com",
         jpgQuality: 75,
       };
 
@@ -82,20 +82,20 @@ describe("storage", () => {
       });
     });
 
-    it("should strip trailing slash from cdnUrl before saving", async () => {
+    it("should strip trailing slash from customDomain before saving", async () => {
       const config: R2Config = {
         endpoint: "https://test-id.r2.cloudflarestorage.com",
         accessKeyId: "test-key",
         secretAccessKey: "test-secret",
         bucketName: "test-bucket",
-        cdnUrl: "https://cdn.test.com/",
+        customDomain: "cdn.test.com/",
         jpgQuality: 75,
       };
 
       await saveConfig(config);
 
       expect(chromeStorageMock.local.set).toHaveBeenCalledWith({
-        r2config: { ...config, cdnUrl: "https://cdn.test.com" },
+        r2config: { ...config, customDomain: "cdn.test.com" },
       });
     });
   });

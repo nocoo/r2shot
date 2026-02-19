@@ -1,0 +1,23 @@
+R2Shot — Screenshot mit einem Klick zu Cloudflare R2
+
+Erfassen Sie jeden Browser-Tab mit einem einzigen Klick, laden Sie automatisch in Ihren Cloudflare R2 Bucket hoch und erhalten Sie eine CDN-URL in Ihrer Zwischenablage. Perfekt für Entwickler, Designer und alle, die schnelles, zuverlässiges Screenshot-Hosting benötigen.
+
+Funktionen
+
+- Ein-Klick-Aufnahme — Screenshot des sichtbaren Bereichs eines beliebigen Tabs über die Symbolleiste
+- Cloudflare R2 Upload — automatischer Upload über S3-kompatible API, Datumordner/GUID-Benennung
+- CDN-URL — generiert öffentliche URL mit benutzerdefinierter Domain, Ein-Klick-Kopie
+- Intelligente Endpunkt-Erkennung — S3 API URL einfügen, Endpunkt und Bucket-Name werden automatisch extrahiert
+- Verbindungstest — R2-Anmeldedaten vor dem Speichern überprüfen
+- Designs — hell, dunkel oder System
+- Konfigurierbare Qualität — JPG-Kompression von 1 bis 100
+- Mehrsprachig — 10 Sprachen unterstützt
+
+Datenschutz
+
+R2Shot arbeitet vollständig auf Ihrem Gerät. Es werden keine Daten gesammelt, verfolgt oder weitergegeben.
+
+Open Source
+
+R2Shot ist Open Source unter der MIT-Lizenz.
+Quellcode: https://github.com/nocoo/r2shot

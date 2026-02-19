@@ -1,0 +1,23 @@
+R2Shot — Captura de pantalla con un clic a Cloudflare R2
+
+Capture cualquier pestaña del navegador con un solo clic, suba automáticamente a su bucket de Cloudflare R2 y obtenga una URL CDN copiada en su portapapeles. Perfecto para desarrolladores, diseñadores y cualquiera que necesite alojamiento de capturas de pantalla rápido y confiable.
+
+Características
+
+- Captura con un clic — captura el área visible de cualquier pestaña desde la barra de herramientas
+- Subida a Cloudflare R2 — subida automática vía API compatible con S3, nombrado por carpeta de fecha/GUID
+- URL CDN — genera URL pública con su dominio personalizado, copia con un clic
+- Análisis inteligente del endpoint — pegue una URL API S3 completa para extraer automáticamente el endpoint y nombre del bucket
+- Prueba de conexión — verifique sus credenciales R2 antes de guardar
+- Temas — claro, oscuro o sistema
+- Calidad configurable — compresión JPG de 1 a 100
+- Multilingüe — 10 idiomas soportados
+
+Privacidad
+
+R2Shot funciona completamente en su dispositivo. No se recopilan, rastrean ni comparten datos.
+
+Código abierto
+
+R2Shot es código abierto bajo licencia MIT.
+Código fuente: https://github.com/nocoo/r2shot

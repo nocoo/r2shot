@@ -59,11 +59,12 @@ export function Settings() {
 
         <div className="space-y-4">
           <Field
-            id="accountId"
-            label="Account ID"
-            value={config.accountId}
-            error={errors.accountId}
-            onChange={(v) => updateField("accountId", v)}
+            id="endpoint"
+            label="Endpoint URL"
+            value={config.endpoint}
+            error={errors.endpoint}
+            onChange={(v) => updateField("endpoint", v)}
+            placeholder="https://<account-id>.r2.cloudflarestorage.com"
           />
 
           <Field

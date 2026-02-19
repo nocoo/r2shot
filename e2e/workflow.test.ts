@@ -58,7 +58,7 @@ import type { R2Config } from "../src/core/r2-config";
 
 describe("E2E: complete capture-and-upload workflow", () => {
   const validConfig: R2Config = {
-    accountId: "e2e-account",
+    endpoint: "https://e2e-account.r2.cloudflarestorage.com",
     accessKeyId: "e2e-key-id",
     secretAccessKey: "e2e-secret-key",
     bucketName: "e2e-bucket",
@@ -174,7 +174,7 @@ describe("E2E: complete capture-and-upload workflow", () => {
 
 describe("E2E: connection verification workflow", () => {
   const validConfig: R2Config = {
-    accountId: "e2e-account",
+    endpoint: "https://e2e-account.r2.cloudflarestorage.com",
     accessKeyId: "e2e-key-id",
     secretAccessKey: "e2e-secret-key",
     bucketName: "e2e-bucket",

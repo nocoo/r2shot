@@ -11,7 +11,7 @@ export async function verifyR2Connection(
 ): Promise<ConnectionResult> {
   const client = new S3Client({
     region: "auto",
-    endpoint: `https://${config.accountId}.r2.cloudflarestorage.com`,
+    endpoint: config.endpoint,
     credentials: {
       accessKeyId: config.accessKeyId,
       secretAccessKey: config.secretAccessKey,

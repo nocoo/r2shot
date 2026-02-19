@@ -7,7 +7,7 @@ import {
 
 describe("R2Config validation", () => {
   const validConfig: R2Config = {
-    accountId: "abc123def456",
+    endpoint: "https://abc123.r2.cloudflarestorage.com",
     accessKeyId: "key-id-example",
     secretAccessKey: "secret-key-example",
     bucketName: "my-bucket",
@@ -22,16 +22,36 @@ describe("R2Config validation", () => {
       expect(result.errors).toEqual({});
     });
 
-    it("should reject empty accountId", () => {
-      const result = validateR2Config({ ...validConfig, accountId: "" });
+    it("should reject empty endpoint", () => {
+      const result = validateR2Config({ ...validConfig, endpoint: "" });
       expect(result.valid).toBe(false);
-      expect(result.errors.accountId).toBe("Account ID is required");
+      expect(result.errors.endpoint).toBe("Endpoint URL is required");
     });
 
-    it("should reject whitespace-only accountId", () => {
-      const result = validateR2Config({ ...validConfig, accountId: "   " });
+    it("should reject whitespace-only endpoint", () => {
+      const result = validateR2Config({ ...validConfig, endpoint: "   " });
       expect(result.valid).toBe(false);
-      expect(result.errors.accountId).toBe("Account ID is required");
+      expect(result.errors.endpoint).toBe("Endpoint URL is required");
+    });
+
+    it("should reject endpoint without https", () => {
+      const result = validateR2Config({
+        ...validConfig,
+        endpoint: "http://abc.r2.cloudflarestorage.com",
+      });
+      expect(result.valid).toBe(false);
+      expect(result.errors.endpoint).toBe(
+        "Endpoint URL must start with https://",
+      );
+    });
+
+    it("should reject invalid endpoint format", () => {
+      const result = validateR2Config({
+        ...validConfig,
+        endpoint: "not-a-url",
+      });
+      expect(result.valid).toBe(false);
+      expect(result.errors.endpoint).toBeDefined();
     });
 
     it("should reject empty accessKeyId", () => {
@@ -123,7 +143,7 @@ describe("R2Config validation", () => {
 
     it("should collect multiple errors at once", () => {
       const result = validateR2Config({
-        accountId: "",
+        endpoint: "",
         accessKeyId: "",
         secretAccessKey: "",
         bucketName: "",
@@ -144,7 +164,7 @@ describe("R2Config validation", () => {
     it("should have correct shape when invalid", () => {
       const result: R2ConfigValidationResult = {
         valid: false,
-        errors: { accountId: "required" },
+        errors: { endpoint: "required" },
       };
       expect(result.valid).toBe(false);
     });

@@ -17,7 +17,7 @@ vi.mock("@aws-sdk/client-s3", () => {
 
 describe("verifyR2Connection", () => {
   const config: R2Config = {
-    accountId: "test-account",
+    endpoint: "https://test-account.r2.cloudflarestorage.com",
     accessKeyId: "test-key",
     secretAccessKey: "test-secret",
     bucketName: "test-bucket",

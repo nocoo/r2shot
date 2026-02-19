@@ -78,7 +78,7 @@ describe("uploader", () => {
 
   describe("uploadToR2", () => {
     const config: R2Config = {
-      accountId: "test-account",
+      endpoint: "https://test-account.r2.cloudflarestorage.com",
       accessKeyId: "test-key-id",
       secretAccessKey: "test-secret",
       bucketName: "test-bucket",
@@ -95,7 +95,7 @@ describe("uploader", () => {
       expect(S3Client).toHaveBeenCalledWith(
         expect.objectContaining({
           region: "auto",
-          endpoint: `https://test-account.r2.cloudflarestorage.com`,
+          endpoint: "https://test-account.r2.cloudflarestorage.com",
           credentials: {
             accessKeyId: "test-key-id",
             secretAccessKey: "test-secret",

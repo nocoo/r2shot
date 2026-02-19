@@ -21,7 +21,7 @@ export async function uploadToR2(
 ): Promise<string> {
   const client = new S3Client({
     region: "auto",
-    endpoint: `https://${config.accountId}.r2.cloudflarestorage.com`,
+    endpoint: config.endpoint,
     credentials: {
       accessKeyId: config.accessKeyId,
       secretAccessKey: config.secretAccessKey,

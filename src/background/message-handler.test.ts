@@ -43,7 +43,7 @@ describe("handleMessage", () => {
 
     it("should capture, upload, and return CDN URL on success", async () => {
       const fakeConfig = {
-        accountId: "acc",
+        endpoint: "https://acc.r2.cloudflarestorage.com",
         accessKeyId: "key",
         secretAccessKey: "secret",
         bucketName: "bucket",
@@ -74,7 +74,7 @@ describe("handleMessage", () => {
 
     it("should return error if config is invalid", async () => {
       vi.mocked(loadConfig).mockResolvedValue({
-        accountId: "",
+        endpoint: "",
         accessKeyId: "",
         secretAccessKey: "",
         bucketName: "",
@@ -83,7 +83,7 @@ describe("handleMessage", () => {
       });
       vi.mocked(validateR2Config).mockReturnValue({
         valid: false,
-        errors: { accountId: "required" },
+        errors: { endpoint: "required" },
       });
 
       const result = await handleMessage(request);
@@ -96,7 +96,7 @@ describe("handleMessage", () => {
 
     it("should return error if capture fails", async () => {
       vi.mocked(loadConfig).mockResolvedValue({
-        accountId: "acc",
+        endpoint: "https://acc.r2.cloudflarestorage.com",
         accessKeyId: "key",
         secretAccessKey: "secret",
         bucketName: "bucket",
@@ -118,7 +118,7 @@ describe("handleMessage", () => {
 
     it("should return error if upload fails", async () => {
       vi.mocked(loadConfig).mockResolvedValue({
-        accountId: "acc",
+        endpoint: "https://acc.r2.cloudflarestorage.com",
         accessKeyId: "key",
         secretAccessKey: "secret",
         bucketName: "bucket",
@@ -146,7 +146,7 @@ describe("handleMessage", () => {
 
     it("should return success when connection is valid", async () => {
       vi.mocked(loadConfig).mockResolvedValue({
-        accountId: "acc",
+        endpoint: "https://acc.r2.cloudflarestorage.com",
         accessKeyId: "key",
         secretAccessKey: "secret",
         bucketName: "bucket",
@@ -162,7 +162,7 @@ describe("handleMessage", () => {
 
     it("should return error when connection fails", async () => {
       vi.mocked(loadConfig).mockResolvedValue({
-        accountId: "acc",
+        endpoint: "https://acc.r2.cloudflarestorage.com",
         accessKeyId: "key",
         secretAccessKey: "secret",
         bucketName: "bucket",

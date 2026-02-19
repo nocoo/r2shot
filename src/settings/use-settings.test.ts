@@ -44,12 +44,12 @@ describe("useSettings", () => {
     });
 
     expect(result.current.config.jpgQuality).toBe(90);
-    expect(result.current.config.accountId).toBe("");
+    expect(result.current.config.endpoint).toBe("");
   });
 
   it("should load stored config on mount", async () => {
     const stored: R2Config = {
-      accountId: "my-account",
+      endpoint: "https://my-account.r2.cloudflarestorage.com",
       accessKeyId: "my-key",
       secretAccessKey: "my-secret",
       bucketName: "my-bucket",
@@ -75,10 +75,15 @@ describe("useSettings", () => {
     });
 
     act(() => {
-      result.current.updateField("accountId", "new-account");
+      result.current.updateField(
+        "endpoint",
+        "https://new.r2.cloudflarestorage.com",
+      );
     });
 
-    expect(result.current.config.accountId).toBe("new-account");
+    expect(result.current.config.endpoint).toBe(
+      "https://new.r2.cloudflarestorage.com",
+    );
   });
 
   it("should save config and show success", async () => {
@@ -89,7 +94,10 @@ describe("useSettings", () => {
     });
 
     act(() => {
-      result.current.updateField("accountId", "test-id");
+      result.current.updateField(
+        "endpoint",
+        "https://test.r2.cloudflarestorage.com",
+      );
       result.current.updateField("accessKeyId", "test-key");
       result.current.updateField("secretAccessKey", "test-secret");
       result.current.updateField("bucketName", "test-bucket");

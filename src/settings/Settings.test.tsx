@@ -42,7 +42,7 @@ describe("Settings", () => {
   it("should render all config input fields", async () => {
     render(<Settings />);
     await waitFor(() => {
-      expect(screen.getByLabelText(/account id/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/endpoint url/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/access key id/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/secret access key/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/bucket name/i)).toBeInTheDocument();
@@ -73,13 +73,15 @@ describe("Settings", () => {
     render(<Settings />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/account id/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/endpoint url/i)).toBeInTheDocument();
     });
 
-    const input = screen.getByLabelText(/account id/i) as HTMLInputElement;
-    fireEvent.change(input, { target: { value: "my-account" } });
+    const input = screen.getByLabelText(/endpoint url/i) as HTMLInputElement;
+    fireEvent.change(input, {
+      target: { value: "https://abc.r2.cloudflarestorage.com" },
+    });
 
-    expect(input.value).toBe("my-account");
+    expect(input.value).toBe("https://abc.r2.cloudflarestorage.com");
   });
 
   it("should show validation errors when saving empty config", async () => {
@@ -94,7 +96,9 @@ describe("Settings", () => {
     fireEvent.click(screen.getByRole("button", { name: /save/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/account id is required/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/endpoint url is required/i),
+      ).toBeInTheDocument();
     });
   });
 
@@ -102,12 +106,12 @@ describe("Settings", () => {
     render(<Settings />);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/account id/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/endpoint url/i)).toBeInTheDocument();
     });
 
     // Fill in all required fields
-    fireEvent.change(screen.getByLabelText(/account id/i), {
-      target: { value: "test-id" },
+    fireEvent.change(screen.getByLabelText(/endpoint url/i), {
+      target: { value: "https://abc.r2.cloudflarestorage.com" },
     });
     fireEvent.change(screen.getByLabelText(/access key id/i), {
       target: { value: "test-key" },

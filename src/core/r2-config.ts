@@ -1,5 +1,5 @@
 export interface R2Config {
-  accountId: string;
+  endpoint: string;
   accessKeyId: string;
   secretAccessKey: string;
   bucketName: string;
@@ -13,7 +13,7 @@ export interface R2ConfigValidationResult {
 }
 
 export const DEFAULT_R2_CONFIG: R2Config = {
-  accountId: "",
+  endpoint: "",
   accessKeyId: "",
   secretAccessKey: "",
   bucketName: "",
@@ -24,8 +24,17 @@ export const DEFAULT_R2_CONFIG: R2Config = {
 export function validateR2Config(config: R2Config): R2ConfigValidationResult {
   const errors: Partial<Record<keyof R2Config, string>> = {};
 
-  if (!config.accountId.trim()) {
-    errors.accountId = "Account ID is required";
+  if (!config.endpoint.trim()) {
+    errors.endpoint = "Endpoint URL is required";
+  } else {
+    try {
+      const url = new URL(config.endpoint.trim());
+      if (url.protocol !== "https:") {
+        errors.endpoint = "Endpoint URL must start with https://";
+      }
+    } catch {
+      errors.endpoint = "Endpoint URL must be a valid URL";
+    }
   }
 
   if (!config.accessKeyId.trim()) {

@@ -41,7 +41,7 @@ describe("storage", () => {
 
     it("should return stored config when available", async () => {
       const stored: R2Config = {
-        accountId: "my-account",
+        endpoint: "https://my-account.r2.cloudflarestorage.com",
         accessKeyId: "my-key",
         secretAccessKey: "my-secret",
         bucketName: "my-bucket",
@@ -55,10 +55,10 @@ describe("storage", () => {
     });
 
     it("should merge partial stored config with defaults", async () => {
-      mockStorage["r2config"] = { accountId: "partial" };
+      mockStorage["r2config"] = { endpoint: "https://partial.r2.cloudflarestorage.com" };
 
       const config = await loadConfig();
-      expect(config.accountId).toBe("partial");
+      expect(config.endpoint).toBe("https://partial.r2.cloudflarestorage.com");
       expect(config.jpgQuality).toBe(90);
       expect(config.cdnUrl).toBe("");
     });
@@ -67,7 +67,7 @@ describe("storage", () => {
   describe("saveConfig", () => {
     it("should persist config to chrome.storage.local", async () => {
       const config: R2Config = {
-        accountId: "test-id",
+        endpoint: "https://test-id.r2.cloudflarestorage.com",
         accessKeyId: "test-key",
         secretAccessKey: "test-secret",
         bucketName: "test-bucket",
@@ -84,7 +84,7 @@ describe("storage", () => {
 
     it("should strip trailing slash from cdnUrl before saving", async () => {
       const config: R2Config = {
-        accountId: "test-id",
+        endpoint: "https://test-id.r2.cloudflarestorage.com",
         accessKeyId: "test-key",
         secretAccessKey: "test-secret",
         bucketName: "test-bucket",

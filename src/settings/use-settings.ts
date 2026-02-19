@@ -35,10 +35,16 @@ export function useSettings(): SettingsState {
   const [connectionError, setConnectionError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadConfig().then((loaded) => {
-      setConfig(loaded);
-      setLoading(false);
-    });
+    loadConfig()
+      .then((loaded) => {
+        setConfig(loaded);
+      })
+      .catch(() => {
+        // Fall back to defaults on load failure
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const updateField = useCallback(
@@ -78,9 +84,13 @@ export function useSettings(): SettingsState {
     }
 
     setSaveStatus("saving");
-    await saveConfig(config);
-    setErrors({});
-    setSaveStatus("saved");
+    try {
+      await saveConfig(config);
+      setErrors({});
+      setSaveStatus("saved");
+    } catch {
+      setSaveStatus("error");
+    }
   }, [config]);
 
   const testConnection = useCallback(async () => {

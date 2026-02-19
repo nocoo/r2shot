@@ -182,4 +182,50 @@ describe("useSettings", () => {
       config: result.current.config,
     });
   });
+
+  it("should stop loading and use defaults when loadConfig rejects", async () => {
+    const mockGet = vi.mocked(chrome.storage.local.get);
+    mockGet.mockRejectedValueOnce(new Error("Storage unavailable"));
+
+    const { result } = renderHook(() => useSettings());
+
+    expect(result.current.loading).toBe(true);
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    // Falls back to defaults
+    expect(result.current.config.endpoint).toBe("");
+    expect(result.current.config.jpgQuality).toBe(90);
+  });
+
+  it("should set saveStatus to error when saveConfig rejects", async () => {
+    const mockSet = vi.mocked(chrome.storage.local.set);
+    mockSet.mockRejectedValueOnce(new Error("Quota exceeded"));
+
+    const { result } = renderHook(() => useSettings());
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    // Fill in valid config
+    act(() => {
+      result.current.updateField(
+        "endpoint",
+        "https://test.r2.cloudflarestorage.com",
+      );
+      result.current.updateField("accessKeyId", "test-key");
+      result.current.updateField("secretAccessKey", "test-secret");
+      result.current.updateField("bucketName", "test-bucket");
+      result.current.updateField("customDomain", "cdn.test.com");
+    });
+
+    await act(async () => {
+      await result.current.save();
+    });
+
+    expect(result.current.saveStatus).toBe("error");
+  });
 });

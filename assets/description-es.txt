@@ -1,23 +1,20 @@
-R2Shot — Captura de pantalla con un clic a Cloudflare R2
+R2Shot — Captura de pantalla a Cloudflare R2 en un clic ⚡
 
-Capture cualquier pestaña del navegador con un solo clic, suba automáticamente a su bucket de Cloudflare R2 y obtenga una URL CDN copiada en su portapapeles. Perfecto para desarrolladores, diseñadores y cualquiera que necesite alojamiento de capturas de pantalla rápido y confiable.
+Captura cualquier pestana del navegador con un solo clic, sube automaticamente a tu bucket de Cloudflare R2 y obtiene la URL CDN copiada en tu portapapeles. Perfecto para desarrolladores, disenadores y cualquiera que necesite alojamiento de capturas rapido y confiable.
 
-Características
+✨ CARACTERISTICAS
 
-- Captura con un clic — captura el área visible de cualquier pestaña desde la barra de herramientas
-- Subida a Cloudflare R2 — subida automática vía API compatible con S3, nombrado por carpeta de fecha/GUID
-- URL CDN — genera URL pública con su dominio personalizado, copia con un clic
-- Análisis inteligente del endpoint — pegue una URL API S3 completa para extraer automáticamente el endpoint y nombre del bucket
-- Prueba de conexión — verifique sus credenciales R2 antes de guardar
-- Temas — claro, oscuro o sistema
-- Calidad configurable — compresión JPG de 1 a 100
-- Multilingüe — 10 idiomas soportados
+📸 Captura en un clic — captura el area visible de cualquier pestana desde la barra de herramientas
+☁️ Subida a Cloudflare R2 — subida automatica via API compatible con S3, organizada por carpeta de fecha/GUID
+🔗 URL CDN — genera una URL publica con tu dominio personalizado, copiada con un clic
+🧠 Analisis inteligente — pega una URL de API S3 completa y R2Shot extrae automaticamente el endpoint y el nombre del bucket
+🔍 Prueba de conexion — verifica tus credenciales R2 antes de guardar
+🎨 Temas — claro, oscuro o sistema
+⚙️ Calidad configurable — compresion JPG de 1 a 100
+🌍 Multilingue — 10 idiomas soportados
 
-Privacidad
+🛡️ PRIVACIDAD
 
-R2Shot funciona completamente en su dispositivo. No se recopilan, rastrean ni comparten datos.
+R2Shot funciona completamente en tu dispositivo. No se recopilan, rastrean ni comparten datos con terceros. Las capturas solo se suben a tu propio bucket de Cloudflare R2.
 
-Código abierto
-
-R2Shot es código abierto bajo licencia MIT.
-Código fuente: https://github.com/nocoo/r2shot
+Politica de privacidad: https://github.com/nocoo/r2shot/blob/main/PRIVACY.md

@@ -1,26 +1,26 @@
-R2Shot — One-Click Screenshot to Cloudflare R2
+R2Shot — One-Click Screenshot to Cloudflare R2 ⚡
 
 Capture any browser tab with a single click, instantly upload to your Cloudflare R2 bucket, and get a CDN URL copied to your clipboard. Perfect for developers, designers, and anyone who needs fast, reliable screenshot hosting.
 
-FEATURES
+✨ FEATURES
 
-- One-click capture — screenshot the visible area of any tab from your browser toolbar
-- Cloudflare R2 upload — automatic upload via S3-compatible API with organized date-folder/GUID naming
-- CDN URL — generates a public URL from your custom domain and copies it to clipboard with visual feedback
-- Smart endpoint parsing — paste a full S3 API URL and R2Shot auto-extracts the endpoint and bucket name
-- Connection testing — verify your R2 credentials work before saving
-- Theme support — choose between light, dark, or system theme
-- Configurable quality — adjust JPG compression from 1 to 100
-- Multilingual — supports 10 languages: English, Simplified Chinese, Traditional Chinese, Japanese, Korean, French, German, Spanish, Portuguese (BR), Russian
+📸 One-click capture — screenshot the visible area of any tab from your browser toolbar
+☁️ Cloudflare R2 upload — automatic upload via S3-compatible API with organized date-folder/GUID naming
+🔗 CDN URL — generates a public URL from your custom domain and copies it to clipboard with visual feedback
+🧠 Smart endpoint parsing — paste a full S3 API URL and R2Shot auto-extracts the endpoint and bucket name
+🔍 Connection testing — verify your R2 credentials work before saving
+🎨 Theme support — choose between light, dark, or system theme
+⚙️ Configurable quality — adjust JPG compression from 1 to 100
+🌍 Multilingual — supports 10 languages: English, Simplified Chinese, Traditional Chinese, Japanese, Korean, French, German, Spanish, Portuguese (BR), Russian
 
-HOW IT WORKS
+🚀 HOW IT WORKS
 
 1. Click the R2Shot icon in your browser toolbar
 2. Press "Capture" to screenshot the current tab
 3. The screenshot is automatically uploaded to your Cloudflare R2 bucket
 4. The CDN URL is ready to copy with one click
 
-SETUP
+🔧 SETUP
 
 1. Install the extension
 2. Open R2Shot Settings (click the gear icon in the popup)
@@ -33,18 +33,13 @@ SETUP
 4. Click "Test Connection" to verify
 5. Save your settings — you're ready to go!
 
-PERMISSIONS
+🔒 PERMISSIONS
 
 - activeTab: Required to capture screenshots of the current tab
 - storage: Required to save your R2 configuration locally
 
-PRIVACY
+🛡️ PRIVACY
 
 R2Shot works entirely on your device. No data is collected, tracked, or shared with third parties. Screenshots are uploaded only to your own Cloudflare R2 bucket using credentials you provide. All configuration is stored locally in your browser.
 
-Full privacy policy: https://github.com/nocoo/r2shot/blob/main/PRIVACY.md
-
-OPEN SOURCE
-
-R2Shot is open source under the MIT license.
-Source code: https://github.com/nocoo/r2shot
+Privacy policy: https://github.com/nocoo/r2shot/blob/main/PRIVACY.md

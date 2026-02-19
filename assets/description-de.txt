@@ -1,23 +1,20 @@
-R2Shot — Screenshot mit einem Klick zu Cloudflare R2
+R2Shot — Ein-Klick-Screenshot zu Cloudflare R2 ⚡
 
-Erfassen Sie jeden Browser-Tab mit einem einzigen Klick, laden Sie automatisch in Ihren Cloudflare R2 Bucket hoch und erhalten Sie eine CDN-URL in Ihrer Zwischenablage. Perfekt für Entwickler, Designer und alle, die schnelles, zuverlässiges Screenshot-Hosting benötigen.
+Erfassen Sie jeden Browser-Tab mit einem Klick, laden Sie automatisch in Ihren Cloudflare R2 Bucket hoch und erhalten Sie die CDN-URL in Ihrer Zwischenablage. Perfekt fuer Entwickler, Designer und alle, die schnelles, zuverlaessiges Screenshot-Hosting benoetigen.
 
-Funktionen
+✨ FUNKTIONEN
 
-- Ein-Klick-Aufnahme — Screenshot des sichtbaren Bereichs eines beliebigen Tabs über die Symbolleiste
-- Cloudflare R2 Upload — automatischer Upload über S3-kompatible API, Datumordner/GUID-Benennung
-- CDN-URL — generiert öffentliche URL mit benutzerdefinierter Domain, Ein-Klick-Kopie
-- Intelligente Endpunkt-Erkennung — S3 API URL einfügen, Endpunkt und Bucket-Name werden automatisch extrahiert
-- Verbindungstest — R2-Anmeldedaten vor dem Speichern überprüfen
-- Designs — hell, dunkel oder System
-- Konfigurierbare Qualität — JPG-Kompression von 1 bis 100
-- Mehrsprachig — 10 Sprachen unterstützt
+📸 Ein-Klick-Erfassung — Screenshot des sichtbaren Bereichs eines beliebigen Tabs ueber die Browser-Symbolleiste
+☁️ Cloudflare R2 Upload — automatischer Upload ueber S3-kompatible API, organisiert nach Datumsordner/GUID
+🔗 CDN-URL — generiert eine oeffentliche URL mit Ihrer benutzerdefinierten Domain, mit einem Klick kopiert
+🧠 Intelligente Endpoint-Erkennung — fuegen Sie eine vollstaendige S3-API-URL ein, R2Shot extrahiert automatisch Endpoint und Bucket-Name
+🔍 Verbindungstest — ueberpruefen Sie Ihre R2-Anmeldedaten vor dem Speichern
+🎨 Themes — Hell, Dunkel oder Systemeinstellung
+⚙️ Konfigurierbare Qualitaet — JPG-Komprimierung von 1 bis 100
+🌍 Mehrsprachig — 10 Sprachen unterstuetzt
 
-Datenschutz
+🛡️ DATENSCHUTZ
 
-R2Shot arbeitet vollständig auf Ihrem Gerät. Es werden keine Daten gesammelt, verfolgt oder weitergegeben.
+R2Shot funktioniert vollstaendig auf Ihrem Geraet. Es werden keine Daten gesammelt, verfolgt oder an Dritte weitergegeben. Screenshots werden ausschliesslich in Ihren eigenen Cloudflare R2 Bucket hochgeladen.
 
-Open Source
-
-R2Shot ist Open Source unter der MIT-Lizenz.
-Quellcode: https://github.com/nocoo/r2shot
+Datenschutzrichtlinie: https://github.com/nocoo/r2shot/blob/main/PRIVACY.md

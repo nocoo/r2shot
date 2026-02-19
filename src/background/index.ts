@@ -1,2 +1,9 @@
-// R2Shot background service worker
-console.log("R2Shot background service worker loaded");
+import { handleMessage } from "./message-handler";
+import type { ExtensionRequest } from "../types/messages";
+
+chrome.runtime.onMessage.addListener(
+  (request: ExtensionRequest, _sender, sendResponse) => {
+    handleMessage(request).then(sendResponse);
+    return true; // keep message channel open for async response
+  },
+);

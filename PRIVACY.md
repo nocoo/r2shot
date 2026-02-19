@@ -24,6 +24,15 @@ R2Shot uses `chrome.storage.local` to save your R2 configuration (endpoint URL, 
 - Is not accessible to any external service
 - Is deleted when you uninstall the extension
 
+## Security Considerations
+
+Your R2 credentials (Access Key ID and Secret Access Key) are stored as plain text in `chrome.storage.local`. This is a known limitation:
+
+- **Why no encryption?** Chrome extensions do not have access to a secure hardware-backed keystore. Any encryption key would itself need to be stored alongside the encrypted data, providing no meaningful security benefit.
+- **Isolation:** `chrome.storage.local` is sandboxed per-extension. Other extensions and websites cannot access this data.
+- **Risk:** If your device is compromised (e.g., malware with Chrome extension access), credentials could be read. This is the same model used by other extensions that store API keys (e.g., cloud storage clients, API testing tools).
+- **Recommendation:** Use R2 API tokens with the minimum required permissions (Object Read & Write for a single bucket). Avoid using your Cloudflare account-level API keys.
+
 ## Network Requests
 
 R2Shot makes network requests **only** to the Cloudflare R2 endpoint URL that you explicitly configure. These requests are used solely to:

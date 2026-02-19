@@ -1,6 +1,32 @@
 import { useSettings } from "./use-settings";
 import { useTheme, type Theme } from "../shared/use-theme";
+import { Button } from "../shared/button";
+import { Input } from "../shared/input";
+import { Label } from "../shared/label";
+import { cn } from "../shared/cn";
+import {
+  Save,
+  PlugZap,
+  Globe,
+  Key,
+  Lock,
+  FolderOpen,
+  Link,
+  ImageIcon,
+  Sun,
+  Moon,
+  Monitor,
+  CheckCircle2,
+  XCircle,
+  Loader2,
+} from "lucide-react";
 import "../shared/index.css";
+
+const themeOptions: { value: Theme; label: string; icon: typeof Sun }[] = [
+  { value: "light", label: "Light", icon: Sun },
+  { value: "dark", label: "Dark", icon: Moon },
+  { value: "system", label: "System", icon: Monitor },
+];
 
 export function Settings() {
   const {
@@ -18,97 +44,106 @@ export function Settings() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-        <div className="max-w-lg mx-auto p-6">
-          <h1 className="text-2xl font-bold mb-6">R2Shot Settings</h1>
-          <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+      <div className="min-h-screen bg-background text-foreground">
+        <div className="max-w-lg mx-auto p-6 flex flex-col items-center gap-4 pt-16">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="max-w-lg mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-6">R2Shot Settings</h1>
-
-        {/* Theme */}
-        <div className="mb-6">
-          <label
-            htmlFor="theme"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-          >
-            Theme
-          </label>
-          <select
-            id="theme"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-            value={theme}
-            onChange={(e) => changeTheme(e.target.value as Theme)}
-          >
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-            <option value="system">System</option>
-          </select>
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-lg mx-auto p-6 space-y-6">
+        {/* Header with logo */}
+        <div className="flex items-center gap-3">
+          <img
+            src="/icons/logo64.png"
+            alt="R2Shot logo"
+            className="h-10 w-10"
+          />
+          <h1 className="text-2xl font-bold">R2Shot Settings</h1>
         </div>
 
-        <hr className="my-6 border-gray-200 dark:border-gray-700" />
+        {/* Theme card */}
+        <div className="rounded-lg border border-border bg-card p-4 space-y-3">
+          <Label htmlFor="theme">Theme</Label>
+          <div className="flex gap-2">
+            {themeOptions.map(({ value, label, icon: Icon }) => (
+              <Button
+                key={value}
+                variant={theme === value ? "default" : "outline"}
+                size="sm"
+                onClick={() => changeTheme(value)}
+                aria-label={label}
+                className="flex-1"
+              >
+                <Icon className="h-4 w-4" />
+                {label}
+              </Button>
+            ))}
+          </div>
+        </div>
 
-        {/* R2 Configuration */}
-        <h2 className="text-lg font-semibold mb-4">R2 Configuration</h2>
+        {/* R2 Configuration card */}
+        <div className="rounded-lg border border-border bg-card p-4 space-y-4">
+          <h2 className="text-lg font-semibold">R2 Configuration</h2>
 
-        <div className="space-y-4">
-          <Field
+          <ConfigField
             id="endpoint"
             label="Endpoint URL"
+            icon={<Globe className="h-4 w-4 text-muted-foreground" />}
             value={config.endpoint}
             error={errors.endpoint}
             onChange={(v) => updateField("endpoint", v)}
             placeholder="https://<account-id>.r2.cloudflarestorage.com"
           />
 
-          <Field
+          <ConfigField
             id="accessKeyId"
             label="Access Key ID"
+            icon={<Key className="h-4 w-4 text-muted-foreground" />}
             value={config.accessKeyId}
             error={errors.accessKeyId}
             onChange={(v) => updateField("accessKeyId", v)}
           />
 
-          <Field
+          <ConfigField
             id="secretAccessKey"
             label="Secret Access Key"
+            icon={<Lock className="h-4 w-4 text-muted-foreground" />}
             value={config.secretAccessKey}
             error={errors.secretAccessKey}
             onChange={(v) => updateField("secretAccessKey", v)}
             type="password"
           />
 
-          <Field
+          <ConfigField
             id="bucketName"
             label="Bucket Name"
+            icon={<FolderOpen className="h-4 w-4 text-muted-foreground" />}
             value={config.bucketName}
             error={errors.bucketName}
             onChange={(v) => updateField("bucketName", v)}
           />
 
-          <Field
+          <ConfigField
             id="customDomain"
             label="Custom Domain"
+            icon={<Link className="h-4 w-4 text-muted-foreground" />}
             value={config.customDomain}
             error={errors.customDomain}
             onChange={(v) => updateField("customDomain", v)}
             placeholder="cdn.example.com"
           />
 
-          <div>
-            <label
-              htmlFor="jpgQuality"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
+          <div className="space-y-1.5">
+            <Label htmlFor="jpgQuality" className="flex items-center gap-2">
+              <ImageIcon className="h-4 w-4 text-muted-foreground" />
               JPG Quality
-            </label>
-            <input
+            </Label>
+            <Input
               id="jpgQuality"
               type="number"
               min={1}
@@ -117,58 +152,56 @@ export function Settings() {
               onChange={(e) =>
                 updateField("jpgQuality", parseInt(e.target.value, 10) || 90)
               }
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className={cn(errors.jpgQuality && "border-destructive")}
             />
             {errors.jpgQuality && (
-              <p className="text-sm text-red-600 dark:text-red-400 mt-1">
-                {errors.jpgQuality}
-              </p>
+              <p className="text-sm text-destructive">{errors.jpgQuality}</p>
             )}
           </div>
         </div>
 
         {/* Actions */}
-        <div className="mt-6 flex gap-3">
-          <button
-            onClick={save}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
+        <div className="flex gap-3">
+          <Button onClick={save}>
+            <Save className="h-4 w-4" />
             Save
-          </button>
-          <button
-            onClick={testConnection}
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-          >
+          </Button>
+          <Button variant="outline" onClick={testConnection}>
+            <PlugZap className="h-4 w-4" />
             Test Connection
-          </button>
+          </Button>
         </div>
 
         {/* Status messages */}
         {saveStatus === "saved" && (
-          <p className="mt-3 text-sm text-green-700 dark:text-green-400">
+          <div className="flex items-center gap-2 text-sm text-success bg-success/10 p-3 rounded-md">
+            <CheckCircle2 className="h-4 w-4" />
             Settings saved!
-          </p>
+          </div>
         )}
 
         {connectionStatus === "success" && (
-          <p className="mt-3 text-sm text-green-700 dark:text-green-400">
+          <div className="flex items-center gap-2 text-sm text-success bg-success/10 p-3 rounded-md">
+            <CheckCircle2 className="h-4 w-4" />
             Connection successful!
-          </p>
+          </div>
         )}
 
         {connectionStatus === "error" && connectionError && (
-          <p className="mt-3 text-sm text-red-700 dark:text-red-400">
+          <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-md">
+            <XCircle className="h-4 w-4" />
             Connection failed: {connectionError}
-          </p>
+          </div>
         )}
       </div>
     </div>
   );
 }
 
-interface FieldProps {
+interface ConfigFieldProps {
   id: string;
   label: string;
+  icon: React.ReactNode;
   value: string;
   error?: string;
   onChange: (value: string) => void;
@@ -176,38 +209,31 @@ interface FieldProps {
   placeholder?: string;
 }
 
-function Field({
+function ConfigField({
   id,
   label,
+  icon,
   value,
   error,
   onChange,
   type = "text",
   placeholder,
-}: FieldProps) {
+}: ConfigFieldProps) {
   return (
-    <div>
-      <label
-        htmlFor={id}
-        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-      >
+    <div className="space-y-1.5">
+      <Label htmlFor={id} className="flex items-center gap-2">
+        {icon}
         {label}
-      </label>
-      <input
+      </Label>
+      <Input
         id={id}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full px-3 py-2 border rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 ${
-          error
-            ? "border-red-500 dark:border-red-400"
-            : "border-gray-300 dark:border-gray-600"
-        }`}
+        className={cn(error && "border-destructive")}
       />
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400 mt-1">{error}</p>
-      )}
+      {error && <p className="text-sm text-destructive">{error}</p>}
     </div>
   );
 }

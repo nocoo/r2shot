@@ -133,10 +133,27 @@ describe("Settings", () => {
     });
   });
 
-  it("should render theme selector", async () => {
+  it("should render theme buttons", async () => {
     render(<Settings />);
     await waitFor(() => {
-      expect(screen.getByLabelText(/theme/i)).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /light/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /dark/i }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /system/i }),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("should render logo in header", async () => {
+    render(<Settings />);
+    await waitFor(() => {
+      const logo = screen.getByAltText("R2Shot logo");
+      expect(logo).toBeInTheDocument();
+      expect(logo).toHaveAttribute("src", "/icons/logo64.png");
     });
   });
 });

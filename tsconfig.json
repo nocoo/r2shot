@@ -20,7 +20,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["chrome", "vitest/globals"]
+    "types": ["node", "chrome", "vitest/globals"]
   },
   "include": ["src/**/*", "vite.config.ts", "vitest.config.ts", "vitest.e2e.config.ts"],
   "exclude": ["node_modules", "dist"]

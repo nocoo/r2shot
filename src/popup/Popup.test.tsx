@@ -9,6 +9,12 @@ vi.stubGlobal("chrome", {
     sendMessage: mockSendMessage,
     openOptionsPage: vi.fn(),
   },
+  storage: {
+    local: {
+      get: vi.fn(() => Promise.resolve({})),
+      set: vi.fn(() => Promise.resolve()),
+    },
+  },
 });
 
 // Mock clipboard

@@ -1,5 +1,6 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import type { R2Config } from "./r2-config";
+import { getS3Client } from "./s3-client";
 
 export function generateObjectKey(date: Date = new Date()): string {
   const yyyy = date.getUTCFullYear();
@@ -19,14 +20,7 @@ export async function uploadToR2(
   config: R2Config,
   blob: Blob,
 ): Promise<string> {
-  const client = new S3Client({
-    region: "auto",
-    endpoint: config.endpoint,
-    credentials: {
-      accessKeyId: config.accessKeyId,
-      secretAccessKey: config.secretAccessKey,
-    },
-  });
+  const client = getS3Client(config);
 
   const objectKey = generateObjectKey();
   const arrayBuffer = await blob.arrayBuffer();

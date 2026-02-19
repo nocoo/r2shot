@@ -1,5 +1,6 @@
-import { S3Client, HeadBucketCommand } from "@aws-sdk/client-s3";
+import { HeadBucketCommand } from "@aws-sdk/client-s3";
 import type { R2Config } from "./r2-config";
+import { getS3Client } from "./s3-client";
 
 export interface ConnectionResult {
   ok: boolean;
@@ -9,14 +10,7 @@ export interface ConnectionResult {
 export async function verifyR2Connection(
   config: R2Config,
 ): Promise<ConnectionResult> {
-  const client = new S3Client({
-    region: "auto",
-    endpoint: config.endpoint,
-    credentials: {
-      accessKeyId: config.accessKeyId,
-      secretAccessKey: config.secretAccessKey,
-    },
-  });
+  const client = getS3Client(config);
 
   try {
     await client.send(new HeadBucketCommand({ Bucket: config.bucketName }));

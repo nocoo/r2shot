@@ -2,18 +2,24 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { verifyR2Connection } from "./connection";
 import type { R2Config } from "./r2-config";
 
-vi.mock("@aws-sdk/client-s3", () => {
-  const mockSend = vi.fn();
-  const MockS3Client = vi.fn().mockImplementation(() => ({
+const mockSend = vi.fn();
+
+// Mock s3-client factory to return a controllable client
+vi.mock("./s3-client", () => ({
+  getS3Client: vi.fn().mockImplementation(() => ({
     send: mockSend,
-  }));
+  })),
+}));
+
+// Mock only HeadBucketCommand from AWS SDK
+vi.mock("@aws-sdk/client-s3", () => {
   const MockHeadBucketCommand = vi.fn().mockImplementation((input) => input);
   return {
-    S3Client: MockS3Client,
     HeadBucketCommand: MockHeadBucketCommand,
-    _mockSend: mockSend,
   };
 });
+
+import { getS3Client } from "./s3-client";
 
 describe("verifyR2Connection", () => {
   const config: R2Config = {
@@ -30,10 +36,7 @@ describe("verifyR2Connection", () => {
   });
 
   it("should return success when HeadBucket succeeds", async () => {
-    const { _mockSend } = (await import("@aws-sdk/client-s3")) as unknown as {
-      _mockSend: ReturnType<typeof vi.fn>;
-    };
-    _mockSend.mockResolvedValueOnce({});
+    mockSend.mockResolvedValueOnce({});
 
     const result = await verifyR2Connection(config);
 
@@ -41,10 +44,7 @@ describe("verifyR2Connection", () => {
   });
 
   it("should return failure with error message on rejection", async () => {
-    const { _mockSend } = (await import("@aws-sdk/client-s3")) as unknown as {
-      _mockSend: ReturnType<typeof vi.fn>;
-    };
-    _mockSend.mockRejectedValueOnce(new Error("Access Denied"));
+    mockSend.mockRejectedValueOnce(new Error("Access Denied"));
 
     const result = await verifyR2Connection(config);
 
@@ -52,31 +52,18 @@ describe("verifyR2Connection", () => {
   });
 
   it("should handle non-Error rejections", async () => {
-    const { _mockSend } = (await import("@aws-sdk/client-s3")) as unknown as {
-      _mockSend: ReturnType<typeof vi.fn>;
-    };
-    _mockSend.mockRejectedValueOnce("something weird");
+    mockSend.mockRejectedValueOnce("something weird");
 
     const result = await verifyR2Connection(config);
 
     expect(result).toEqual({ ok: false, error: "Connection failed" });
   });
 
-  it("should use correct R2 endpoint", async () => {
-    const { S3Client, _mockSend } = (await import(
-      "@aws-sdk/client-s3"
-    )) as unknown as {
-      S3Client: ReturnType<typeof vi.fn>;
-      _mockSend: ReturnType<typeof vi.fn>;
-    };
-    _mockSend.mockResolvedValueOnce({});
+  it("should use getS3Client with config", async () => {
+    mockSend.mockResolvedValueOnce({});
 
     await verifyR2Connection(config);
 
-    expect(S3Client).toHaveBeenCalledWith(
-      expect.objectContaining({
-        endpoint: "https://test-account.r2.cloudflarestorage.com",
-      }),
-    );
+    expect(getS3Client).toHaveBeenCalledWith(config);
   });
 });

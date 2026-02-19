@@ -2,21 +2,24 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { generateObjectKey, buildPublicUrl, uploadToR2 } from "./uploader";
 import type { R2Config } from "./r2-config";
 
-// Mock @aws-sdk/client-s3
-vi.mock("@aws-sdk/client-s3", () => {
-  const mockSend = vi.fn().mockResolvedValue({});
-  const MockS3Client = vi.fn().mockImplementation(() => ({
+const mockSend = vi.fn().mockResolvedValue({});
+
+// Mock s3-client factory to return a controllable client
+vi.mock("./s3-client", () => ({
+  getS3Client: vi.fn().mockImplementation(() => ({
     send: mockSend,
-  }));
+  })),
+}));
+
+// Mock only PutObjectCommand from AWS SDK
+vi.mock("@aws-sdk/client-s3", () => {
   const MockPutObjectCommand = vi.fn().mockImplementation((input) => input);
   return {
-    S3Client: MockS3Client,
     PutObjectCommand: MockPutObjectCommand,
-    _mockSend: mockSend,
-    _MockS3Client: MockS3Client,
-    _MockPutObjectCommand: MockPutObjectCommand,
   };
 });
+
+import { getS3Client } from "./s3-client";
 
 describe("uploader", () => {
   beforeEach(() => {
@@ -86,30 +89,19 @@ describe("uploader", () => {
       jpgQuality: 90,
     };
 
-    it("should create S3 client with correct R2 endpoint", async () => {
-      const { S3Client } = await import("@aws-sdk/client-s3");
+    it("should create S3 client via getS3Client with config", async () => {
       const blob = new Blob(["fake-image"], { type: "image/jpeg" });
 
       await uploadToR2(config, blob);
 
-      expect(S3Client).toHaveBeenCalledWith(
-        expect.objectContaining({
-          region: "auto",
-          endpoint: "https://test-account.r2.cloudflarestorage.com",
-          credentials: {
-            accessKeyId: "test-key-id",
-            secretAccessKey: "test-secret",
-          },
-        }),
-      );
+      expect(getS3Client).toHaveBeenCalledWith(config);
     });
 
     it("should send PutObjectCommand with correct params", async () => {
-      const { PutObjectCommand, _mockSend } = (await import(
+      const { PutObjectCommand } = (await import(
         "@aws-sdk/client-s3"
       )) as unknown as {
         PutObjectCommand: ReturnType<typeof vi.fn>;
-        _mockSend: ReturnType<typeof vi.fn>;
       };
 
       const blob = new Blob(["fake-image"], { type: "image/jpeg" });
@@ -125,7 +117,7 @@ describe("uploader", () => {
       const putArgs = PutObjectCommand.mock.calls[0][0];
       expect(putArgs.Key).toMatch(/^\d{4}-\d{2}-\d{2}\/[a-f0-9-]+\.jpg$/);
 
-      expect(_mockSend).toHaveBeenCalled();
+      expect(mockSend).toHaveBeenCalled();
     });
 
     it("should return the public URL of the uploaded file", async () => {
@@ -138,10 +130,7 @@ describe("uploader", () => {
     });
 
     it("should propagate S3 upload errors", async () => {
-      const { _mockSend } = (await import("@aws-sdk/client-s3")) as unknown as {
-        _mockSend: ReturnType<typeof vi.fn>;
-      };
-      _mockSend.mockRejectedValueOnce(new Error("Access denied"));
+      mockSend.mockRejectedValueOnce(new Error("Access denied"));
 
       const blob = new Blob(["fake-image"], { type: "image/jpeg" });
       await expect(uploadToR2(config, blob)).rejects.toThrow("Access denied");

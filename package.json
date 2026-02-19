@@ -13,6 +13,7 @@
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "lint": "eslint src --max-warnings 0",
     "lint:fix": "eslint src --fix",
+    "build:zip": "bash scripts/build.sh",
     "prepare": "git config core.hookspath .husky"
   },
   "devDependencies": {

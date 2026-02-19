@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { Popup } from "./Popup";
 
@@ -133,5 +133,67 @@ describe("Popup", () => {
     // Should be able to try again
     const retryBtn = screen.getByRole("button", { name: /try again/i });
     expect(retryBtn).toBeInTheDocument();
+  });
+
+  it("should render logo in header", () => {
+    render(<Popup />);
+    const logo = screen.getByAltText("R2Shot logo");
+    expect(logo).toBeInTheDocument();
+    expect(logo).toHaveAttribute("src", "/icons/logo32.png");
+  });
+
+  it("should show copied toast after clicking copy", async () => {
+    mockSendMessage.mockResolvedValue({
+      success: true,
+      url: "https://cdn.example.com/2026-02-19/abc.jpg",
+    });
+
+    render(<Popup />);
+    fireEvent.click(screen.getByRole("button", { name: /capture/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /copy/i })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /copy/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/copied to clipboard/i)).toBeInTheDocument();
+    });
+  });
+
+  it("should auto-dismiss copied toast after 2 seconds", async () => {
+    vi.useFakeTimers();
+
+    mockSendMessage.mockResolvedValue({
+      success: true,
+      url: "https://cdn.example.com/2026-02-19/abc.jpg",
+    });
+
+    render(<Popup />);
+
+    // Trigger capture and wait for success
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /capture/i }));
+      await vi.runAllTimersAsync();
+    });
+
+    // Click copy
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /copy/i }));
+    });
+
+    expect(screen.getByText(/copied to clipboard/i)).toBeInTheDocument();
+
+    // Advance past the 2s timeout
+    await act(async () => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    expect(
+      screen.queryByText(/copied to clipboard/i),
+    ).not.toBeInTheDocument();
+
+    vi.useRealTimers();
   });
 });

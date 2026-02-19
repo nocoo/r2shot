@@ -1,87 +1,122 @@
+import { useState, useEffect, useCallback } from "react";
 import { useCaptureAndUpload } from "./use-capture";
 import { useTheme } from "../shared/use-theme";
+import { Button } from "../shared/button";
+import {
+  Camera,
+  Settings,
+  Copy,
+  Check,
+  RefreshCw,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import "../shared/index.css";
 
 export function Popup() {
   useTheme(); // apply saved theme
   const { status, url, error, capture, reset } = useCaptureAndUpload();
+  const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
+  const handleCopy = useCallback(() => {
     if (url) {
       navigator.clipboard.writeText(url);
+      setCopied(true);
     }
-  };
+  }, [url]);
+
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(timer);
+  }, [copied]);
 
   const handleSettings = () => {
     chrome.runtime.openOptionsPage();
   };
 
   return (
-    <div className="w-80 p-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div className="w-80 p-4 bg-background text-foreground">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-bold">R2Shot</h1>
-        <button
+        <div className="flex items-center gap-2">
+          <img
+            src="/icons/logo32.png"
+            alt="R2Shot logo"
+            className="h-6 w-6"
+          />
+          <h1 className="text-lg font-bold">R2Shot</h1>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={handleSettings}
-          className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
           aria-label="Settings"
         >
-          Settings
-        </button>
+          <Settings className="h-4 w-4" />
+        </Button>
       </div>
 
       {/* Idle state */}
       {status === "idle" && (
-        <button
-          onClick={capture}
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
+        <Button className="w-full" onClick={capture}>
+          <Camera className="h-4 w-4" />
           Capture
-        </button>
+        </Button>
       )}
 
       {/* Capturing state */}
       {status === "capturing" && (
-        <div className="text-center py-2">
-          <p className="text-gray-600 dark:text-gray-400">Capturing...</p>
+        <div className="flex items-center justify-center gap-2 py-2 text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <p>Capturing...</p>
         </div>
       )}
 
       {/* Success state */}
       {status === "success" && url && (
         <div className="space-y-2">
-          <p className="text-sm text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-900/30 p-2 rounded break-all">
+          <p className="text-sm text-success bg-success/10 p-2 rounded-md break-all">
             {url}
           </p>
           <div className="flex gap-2">
-            <button
-              onClick={handleCopy}
-              className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Copy URL
-            </button>
-            <button
-              onClick={reset}
-              className="py-2 px-4 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-            >
+            <Button className="flex-1" onClick={handleCopy}>
+              {copied ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+              {copied ? "Copied!" : "Copy URL"}
+            </Button>
+            <Button variant="outline" onClick={reset}>
+              <RefreshCw className="h-4 w-4" />
               New
-            </button>
+            </Button>
           </div>
+          {/* Toast notification */}
+          {copied && (
+            <div
+              role="status"
+              className="flex items-center gap-2 text-sm text-success bg-success/10 p-2 rounded-md"
+            >
+              <Check className="h-4 w-4" />
+              Copied to clipboard!
+            </div>
+          )}
         </div>
       )}
 
       {/* Error state */}
       {status === "error" && (
         <div className="space-y-2">
-          <p className="text-sm text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/30 p-2 rounded">
-            {error}
-          </p>
-          <button
-            onClick={reset}
-            className="w-full py-2 px-4 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-          >
+          <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-2 rounded-md">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            <p>{error}</p>
+          </div>
+          <Button variant="outline" className="w-full" onClick={reset}>
+            <RefreshCw className="h-4 w-4" />
             Try Again
-          </button>
+          </Button>
         </div>
       )}
     </div>

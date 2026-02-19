@@ -1,0 +1,159 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import { useSettings } from "./use-settings";
+import type { R2Config } from "../core/r2-config";
+
+const mockStorage: Record<string, unknown> = {};
+
+vi.stubGlobal("chrome", {
+  storage: {
+    local: {
+      get: vi.fn((keys: string[]) => {
+        const result: Record<string, unknown> = {};
+        for (const key of keys) {
+          if (key in mockStorage) result[key] = mockStorage[key];
+        }
+        return Promise.resolve(result);
+      }),
+      set: vi.fn((items: Record<string, unknown>) => {
+        Object.assign(mockStorage, items);
+        return Promise.resolve();
+      }),
+    },
+  },
+  runtime: {
+    sendMessage: vi.fn(),
+  },
+});
+
+describe("useSettings", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    for (const key of Object.keys(mockStorage)) delete mockStorage[key];
+  });
+
+  it("should load default config on mount", async () => {
+    const { result } = renderHook(() => useSettings());
+
+    // Initially loading
+    expect(result.current.loading).toBe(true);
+
+    // Wait for load
+    await vi.waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(result.current.config.jpgQuality).toBe(90);
+    expect(result.current.config.accountId).toBe("");
+  });
+
+  it("should load stored config on mount", async () => {
+    const stored: R2Config = {
+      accountId: "my-account",
+      accessKeyId: "my-key",
+      secretAccessKey: "my-secret",
+      bucketName: "my-bucket",
+      cdnUrl: "https://cdn.example.com",
+      jpgQuality: 85,
+    };
+    mockStorage["r2config"] = stored;
+
+    const { result } = renderHook(() => useSettings());
+
+    await vi.waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(result.current.config).toEqual(stored);
+  });
+
+  it("should update a config field", async () => {
+    const { result } = renderHook(() => useSettings());
+
+    await vi.waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    act(() => {
+      result.current.updateField("accountId", "new-account");
+    });
+
+    expect(result.current.config.accountId).toBe("new-account");
+  });
+
+  it("should save config and show success", async () => {
+    const { result } = renderHook(() => useSettings());
+
+    await vi.waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    act(() => {
+      result.current.updateField("accountId", "test-id");
+      result.current.updateField("accessKeyId", "test-key");
+      result.current.updateField("secretAccessKey", "test-secret");
+      result.current.updateField("bucketName", "test-bucket");
+      result.current.updateField("cdnUrl", "https://cdn.test.com");
+    });
+
+    await act(async () => {
+      await result.current.save();
+    });
+
+    expect(result.current.saveStatus).toBe("saved");
+  });
+
+  it("should show validation errors on save with invalid config", async () => {
+    const { result } = renderHook(() => useSettings());
+
+    await vi.waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    // Config is empty by default, so validation should fail
+    await act(async () => {
+      await result.current.save();
+    });
+
+    expect(result.current.saveStatus).toBe("error");
+    expect(Object.keys(result.current.errors).length).toBeGreaterThan(0);
+  });
+
+  it("should test connection via chrome.runtime.sendMessage", async () => {
+    const mockSendMessage = vi.mocked(chrome.runtime.sendMessage);
+    mockSendMessage.mockResolvedValue({ success: true });
+
+    const { result } = renderHook(() => useSettings());
+
+    await vi.waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    await act(async () => {
+      await result.current.testConnection();
+    });
+
+    expect(result.current.connectionStatus).toBe("success");
+  });
+
+  it("should handle failed connection test", async () => {
+    const mockSendMessage = vi.mocked(chrome.runtime.sendMessage);
+    mockSendMessage.mockResolvedValue({
+      success: false,
+      error: "Access Denied",
+    });
+
+    const { result } = renderHook(() => useSettings());
+
+    await vi.waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    await act(async () => {
+      await result.current.testConnection();
+    });
+
+    expect(result.current.connectionStatus).toBe("error");
+    expect(result.current.connectionError).toBe("Access Denied");
+  });
+});

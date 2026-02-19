@@ -1,0 +1,1 @@
+npx vitest run --config vitest.config.ts && npm run lint && npx vitest run --config vitest.e2e.config.ts

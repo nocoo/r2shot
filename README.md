@@ -1,65 +1,135 @@
-# r2shot
+<p align="center">
+  <img src="logo.png" width="128" height="128" alt="R2Shot logo">
+</p>
 
-Chrome extension that captures visible tab screenshots, uploads them to Cloudflare R2 via S3-compatible API, and copies a CDN URL to clipboard.
+<h1 align="center">R2Shot</h1>
+
+<p align="center">
+  One-click screenshot capture, upload to Cloudflare R2, CDN URL to clipboard
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/manifest-v3-blue" alt="Manifest V3">
+  <img src="https://img.shields.io/badge/coverage-97%25-brightgreen" alt="Coverage 97%">
+  <img src="https://img.shields.io/badge/tests-103_passing-brightgreen" alt="103 tests passing">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License MIT">
+</p>
+
+---
 
 ## Features
 
-- One-click screenshot capture from browser toolbar
-- Automatic upload to Cloudflare R2 with date-folder/GUID naming
-- CDN URL generation and clipboard copy
-- Settings page for R2 configuration (account, keys, bucket, CDN URL, JPG quality)
-- Connection verification
-- Dark/light theme support
+- **One-click capture** — screenshot visible tab from browser toolbar
+- **Cloudflare R2 upload** — automatic upload via S3-compatible API with date-folder/GUID naming
+- **CDN URL** — generates public URL from custom domain, copies to clipboard with toast feedback
+- **Smart endpoint parsing** — paste a full S3 API URL and auto-extract endpoint + bucket name
+- **Connection test** — verify R2 credentials before saving
+- **Themes** — system / light / dark
+- **Configurable quality** — adjust JPG compression (1–100)
 
-## Tech Stack
-
-TypeScript, Vite 6, React 19, Tailwind CSS 4, Vitest 3, Chrome MV3, @aws-sdk/client-s3
-
-## Development
+## Getting Started
 
 ### Prerequisites
 
-- [Bun](https://bun.sh) (v1.3+)
+- [Bun](https://bun.sh/) v1.x+
+- Google Chrome
 
-### Setup
+### Install
 
 ```sh
 bun install
 ```
 
-This automatically configures git hooks via the `prepare` script.
+> The `prepare` script automatically sets up Git hooks.
+
+### Load in Chrome
+
+1. `bun run build`
+2. Navigate to `chrome://extensions/`
+3. Enable **Developer mode** (top-right toggle)
+4. Click **Load unpacked** → select the `dist/` directory
+
+---
+
+## Development
 
 ### Scripts
 
-| Command | Description |
-|---------|-------------|
+| Command | What it does |
+|---|---|
 | `bun run dev` | Start Vite dev server |
 | `bun run build` | Type-check and build for production |
-| `bun run test` | Run unit tests |
-| `bun run test:watch` | Run unit tests in watch mode |
-| `bun run test:coverage` | Run unit tests with coverage report |
+| `bun run test` | Run unit tests (Vitest) |
+| `bun run test:watch` | Run tests in watch mode |
+| `bun run test:coverage` | Run tests with V8 coverage report (90% threshold) |
 | `bun run test:e2e` | Run E2E tests |
-| `bun run lint` | Lint source (zero warnings enforced) |
+| `bun run lint` | Lint `src/` with ESLint (zero warnings enforced) |
 | `bun run lint:fix` | Lint and auto-fix |
 
 ### Git Hooks
 
 Hooks live in `.husky/` and are activated via `git config core.hookspath .husky`.
 
-| Hook | Runs |
-|------|------|
-| `pre-commit` | Unit tests |
-| `pre-push` | Unit tests + lint |
+| Stage | Command | Purpose |
+|---|---|---|
+| `pre-commit` | `bun run test` | Catch regressions before commit |
+| `pre-push` | `bun run test && bun run lint` | Full quality gate before push |
 
-### Testing
+### Test Coverage
 
-- **Unit tests**: 81 tests across 10 files, 90%+ coverage threshold on statements, branches, functions, and lines
-- **E2E tests**: 7 tests covering full capture-upload-URL workflow
-- Coverage is enforced in `vitest.config.ts`
+Coverage is enforced at **90%** for all four metrics:
 
-### Load Extension in Chrome
+```
+--------------------|---------|----------|---------|---------|
+File                | % Stmts | % Branch | % Funcs | % Lines |
+--------------------|---------|----------|---------|---------|
+All files           |   97.57 |    91.48 |   93.75 |   97.57 |
+--------------------|---------|----------|---------|---------|
+```
 
-1. `bun run build`
-2. Open `chrome://extensions`
-3. Enable "Developer mode"
-4. Click "Load unpacked" and select the `dist/` directory
+### Project Structure
+
+```
+r2shot/
+├── .husky/                # Git hooks (pre-commit, pre-push)
+├── e2e/                   # E2E tests
+│   └── workflow.test.ts
+├── public/
+│   ├── icons/             # Extension & UI icons (16–128px, logo 32/64px)
+│   └── manifest.json      # Chrome Extension Manifest V3
+├── scripts/
+│   └── generate-icons.sh  # Generate icons from logo.png via sips
+├── src/
+│   ├── background/        # Service worker (message routing)
+│   ├── core/              # Domain logic (upload, config, connection, storage)
+│   ├── popup/             # Toolbar popup (capture + copy UI)
+│   ├── settings/          # Settings page (R2 config, theme)
+│   ├── shared/            # Shared UI components (Button, Input, Label, theme)
+│   └── types/             # Message types
+├── logo.png               # Source logo (2048×2048)
+├── popup.html             # Popup entry HTML
+├── settings.html          # Settings entry HTML
+├── vite.config.ts         # Multi-entry Vite build config
+├── vitest.config.ts       # Vitest + coverage config
+├── vitest.e2e.config.ts   # E2E test config
+├── eslint.config.js       # ESLint flat config
+├── tsconfig.json          # TypeScript config (path aliases)
+└── package.json           # Scripts & dependencies
+```
+
+### Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Language | TypeScript |
+| UI | React 19, Tailwind CSS 4, Lucide icons |
+| Build | Vite 6 |
+| Testing | Vitest 3, Testing Library, happy-dom |
+| Upload | @aws-sdk/client-s3 (S3-compatible) |
+| Extension | Chrome Manifest V3 |
+
+---
+
+## License
+
+[MIT](LICENSE)

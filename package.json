@@ -5,8 +5,9 @@
   "description": "Chrome extension to capture screenshots and upload to Cloudflare R2",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build --mode development --watch",
     "build": "tsc --noEmit && vite build",
+    "build:dev": "tsc --noEmit && vite build --mode development",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

@@ -29,6 +29,7 @@ describe("verifyR2Connection", () => {
     bucketName: "test-bucket",
     customDomain: "cdn.test.com",
     jpgQuality: 90,
+    fullPage: false,
   };
 
   beforeEach(() => {

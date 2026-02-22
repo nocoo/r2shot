@@ -181,8 +181,8 @@ describe("full-page-screenshot", () => {
       const { finalBlob } = setupSingleCapture();
 
       const resultPromise = captureFullPage(42, 90);
-      // Advance past SCROLL_SETTLE_MS delay after getPageMetrics
-      await vi.advanceTimersByTimeAsync(200);
+      // Advance past SCROLL_SETTLE_MS delay after getPageMetrics + capture throttle
+      await vi.advanceTimersByTimeAsync(1000);
 
       const result = await resultPromise;
 
@@ -199,8 +199,8 @@ describe("full-page-screenshot", () => {
       const { finalBlob } = setupMultiCapture();
 
       const resultPromise = captureFullPage(42, 80);
-      // Need enough time for: settle after metrics + (2 scrolls × settle each)
-      await vi.advanceTimersByTimeAsync(500);
+      // Need enough time for: settle after metrics + 3 captures × (settle + throttle)
+      await vi.advanceTimersByTimeAsync(3000);
 
       const result = await resultPromise;
 
@@ -219,7 +219,7 @@ describe("full-page-screenshot", () => {
       setupMultiCapture();
 
       const resultPromise = captureFullPage(42, 85);
-      await vi.advanceTimersByTimeAsync(500);
+      await vi.advanceTimersByTimeAsync(3000);
       await resultPromise;
 
       // The last capture: remaining = 1920 - 2*768 = 384 CSS px → 768 physical px
@@ -237,7 +237,7 @@ describe("full-page-screenshot", () => {
       setupSingleCapture();
 
       const resultPromise = captureFullPage(42, 90);
-      await vi.advanceTimersByTimeAsync(200);
+      await vi.advanceTimersByTimeAsync(1000);
       await resultPromise;
 
       // close() called at least once for each bitmap drawn
@@ -248,7 +248,7 @@ describe("full-page-screenshot", () => {
       setupMultiCapture();
 
       const resultPromise = captureFullPage(42, 90);
-      await vi.advanceTimersByTimeAsync(500);
+      await vi.advanceTimersByTimeAsync(3000);
       await resultPromise;
 
       // restoreScroll calls executeScript with args [5, 100]
@@ -287,7 +287,7 @@ describe("full-page-screenshot", () => {
       const resultPromise = captureFullPage(42, 90);
       // Prevent unhandled rejection warning
       resultPromise.catch(() => {});
-      await vi.advanceTimersByTimeAsync(500);
+      await vi.advanceTimersByTimeAsync(3000);
 
       await expect(resultPromise).rejects.toThrow("Capture failed");
       // Should have called close on the bitmap from the successful capture
@@ -321,7 +321,7 @@ describe("full-page-screenshot", () => {
       const resultPromise = captureFullPage(42, 90);
       // Prevent unhandled rejection warning
       resultPromise.catch(() => {});
-      await vi.advanceTimersByTimeAsync(200);
+      await vi.advanceTimersByTimeAsync(1000);
 
       await expect(resultPromise).rejects.toThrow(
         "Failed to create 2D context for stitching",
@@ -350,7 +350,7 @@ describe("full-page-screenshot", () => {
       const resultPromise = captureFullPage(42, 90);
       // Prevent unhandled rejection warning
       resultPromise.catch(() => {});
-      await vi.advanceTimersByTimeAsync(200);
+      await vi.advanceTimersByTimeAsync(1000);
 
       await expect(resultPromise).rejects.toThrow("convertToBlob failed");
 

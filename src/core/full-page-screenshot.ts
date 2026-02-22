@@ -84,7 +84,13 @@ export async function restoreScroll(
 }
 
 /** Settle time after each scroll (ms). */
-const SCROLL_SETTLE_MS = 150;
+const SCROLL_SETTLE_MS = 300;
+
+/**
+ * Minimum interval between captureVisibleTab calls (ms).
+ * Chrome enforces MAX_CAPTURE_VISIBLE_TAB_CALLS_PER_SECOND (≈2/s).
+ */
+const MIN_CAPTURE_INTERVAL_MS = 550;
 
 /**
  * Capture a full-page screenshot by scrolling and stitching.
@@ -115,6 +121,7 @@ export async function captureFullPage(
 
   // Collect bitmaps
   const bitmaps: { bitmap: ImageBitmap; yOffset: number }[] = [];
+  let lastCaptureTime = 0;
 
   try {
     for (let i = 0; i < totalCaptures; i++) {
@@ -128,7 +135,14 @@ export async function captureFullPage(
         await delay(SCROLL_SETTLE_MS);
       }
 
+      // Throttle to stay within Chrome's MAX_CAPTURE_VISIBLE_TAB_CALLS_PER_SECOND quota
+      const elapsed = Date.now() - lastCaptureTime;
+      if (lastCaptureTime > 0 && elapsed < MIN_CAPTURE_INTERVAL_MS) {
+        await delay(MIN_CAPTURE_INTERVAL_MS - elapsed);
+      }
+
       const dataUrl = await captureVisibleTab(quality);
+      lastCaptureTime = Date.now();
 
       // Decode to ImageBitmap immediately and release the data URL string
       // Use dataUrlToBlob instead of fetch(dataUrl) to avoid CSP connect-src restrictions on data: URIs

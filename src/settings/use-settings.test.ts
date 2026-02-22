@@ -55,7 +55,7 @@ describe("useSettings", () => {
       bucketName: "my-bucket",
       customDomain: "cdn.example.com",
       jpgQuality: 85,
-      fullPage: false,
+      maxScreens: 5,
     };
     mockStorage["r2config"] = stored;
 

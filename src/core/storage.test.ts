@@ -47,7 +47,7 @@ describe("storage", () => {
         bucketName: "my-bucket",
         customDomain: "cdn.example.com",
         jpgQuality: 85,
-        fullPage: false,
+        maxScreens: 5,
       };
       mockStorage["r2config"] = stored;
 
@@ -74,7 +74,7 @@ describe("storage", () => {
         bucketName: "test-bucket",
         customDomain: "cdn.test.com",
         jpgQuality: 75,
-        fullPage: false,
+        maxScreens: 5,
       };
 
       await saveConfig(config);
@@ -92,7 +92,7 @@ describe("storage", () => {
         bucketName: "test-bucket",
         customDomain: "cdn.test.com/",
         jpgQuality: 75,
-        fullPage: false,
+        maxScreens: 5,
       };
 
       await saveConfig(config);

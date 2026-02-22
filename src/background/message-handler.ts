@@ -15,7 +15,7 @@ export async function handleMessage(
 ): Promise<CaptureResponse | ConnectionResponse> {
   switch (request.type) {
     case "CAPTURE_AND_UPLOAD":
-      return handleCaptureAndUpload();
+      return handleCaptureAndUpload(request.fullPage);
     case "VERIFY_CONNECTION":
       return handleVerifyConnection(request.config);
     default:
@@ -23,7 +23,9 @@ export async function handleMessage(
   }
 }
 
-async function handleCaptureAndUpload(): Promise<CaptureResponse> {
+async function handleCaptureAndUpload(
+  fullPage: boolean,
+): Promise<CaptureResponse> {
   try {
     const config = await loadConfig();
     const validation = validateR2Config(config);
@@ -36,7 +38,7 @@ async function handleCaptureAndUpload(): Promise<CaptureResponse> {
 
     let blob: Blob;
 
-    if (config.fullPage) {
+    if (fullPage) {
       // Get the active tab for content script injection
       const [tab] = await chrome.tabs.query({
         active: true,
@@ -45,7 +47,7 @@ async function handleCaptureAndUpload(): Promise<CaptureResponse> {
       if (!tab?.id) {
         return { success: false, error: "No active tab found" };
       }
-      blob = await captureFullPage(tab.id, config.jpgQuality);
+      blob = await captureFullPage(tab.id, config.jpgQuality, config.maxScreens);
     } else {
       const dataUrl = await captureVisibleTab(config.jpgQuality);
       blob = dataUrlToBlob(dataUrl);

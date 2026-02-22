@@ -161,36 +161,29 @@ export function Settings() {
             )}
           </div>
 
-          <div className="flex items-center justify-between">
-            <Label
-              htmlFor="fullPage"
-              className="flex items-center gap-2 cursor-pointer"
-            >
+          <div className="space-y-1.5">
+            <Label htmlFor="maxScreens" className="flex items-center gap-2">
               <Scan className="h-4 w-4 text-muted-foreground" />
-              Full Page Capture
+              Max Screens (Full Page)
             </Label>
-            <button
-              id="fullPage"
-              role="switch"
-              type="button"
-              aria-checked={config.fullPage}
-              onClick={() => updateField("fullPage", !config.fullPage)}
-              className={cn(
-                "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors",
-                config.fullPage ? "bg-primary" : "bg-muted",
-              )}
-            >
-              <span
-                className={cn(
-                  "pointer-events-none inline-block h-4 w-4 rounded-full bg-background shadow-sm ring-0 transition-transform",
-                  config.fullPage ? "translate-x-4" : "translate-x-0",
-                )}
-              />
-            </button>
+            <Input
+              id="maxScreens"
+              type="number"
+              min={1}
+              max={100}
+              value={config.maxScreens}
+              onChange={(e) =>
+                updateField("maxScreens", parseInt(e.target.value, 10) || 5)
+              }
+              className={cn(errors.maxScreens && "border-destructive")}
+            />
+            {errors.maxScreens && (
+              <p className="text-sm text-destructive">{errors.maxScreens}</p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              Maximum viewport heights to capture in full-page mode (1–100)
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground -mt-2">
-            Scroll and stitch the entire page into one image
-          </p>
         </div>
 
         {/* Actions */}

@@ -30,7 +30,7 @@ describe("useCaptureAndUpload", () => {
     const { result } = renderHook(() => useCaptureAndUpload());
 
     act(() => {
-      result.current.capture();
+      result.current.capture(false);
     });
 
     expect(result.current.status).toBe("capturing");
@@ -45,7 +45,7 @@ describe("useCaptureAndUpload", () => {
     const { result } = renderHook(() => useCaptureAndUpload());
 
     await act(async () => {
-      await result.current.capture();
+      await result.current.capture(false);
     });
 
     expect(result.current.status).toBe("success");
@@ -53,6 +53,10 @@ describe("useCaptureAndUpload", () => {
       "https://cdn.example.com/2026-02-19/abc.jpg",
     );
     expect(result.current.error).toBeNull();
+    expect(mockSendMessage).toHaveBeenCalledWith({
+      type: "CAPTURE_AND_UPLOAD",
+      fullPage: false,
+    });
   });
 
   it("should transition to error state on failure", async () => {
@@ -64,7 +68,7 @@ describe("useCaptureAndUpload", () => {
     const { result } = renderHook(() => useCaptureAndUpload());
 
     await act(async () => {
-      await result.current.capture();
+      await result.current.capture(false);
     });
 
     expect(result.current.status).toBe("error");
@@ -78,7 +82,7 @@ describe("useCaptureAndUpload", () => {
     const { result } = renderHook(() => useCaptureAndUpload());
 
     await act(async () => {
-      await result.current.capture();
+      await result.current.capture(false);
     });
 
     expect(result.current.status).toBe("error");
@@ -94,7 +98,7 @@ describe("useCaptureAndUpload", () => {
     const { result } = renderHook(() => useCaptureAndUpload());
 
     await act(async () => {
-      await result.current.capture();
+      await result.current.capture(false);
     });
 
     expect(result.current.status).toBe("success");

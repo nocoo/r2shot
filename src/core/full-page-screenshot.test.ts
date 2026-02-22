@@ -180,7 +180,7 @@ describe("full-page-screenshot", () => {
     it("should capture single viewport and return stitched blob", async () => {
       const { finalBlob } = setupSingleCapture();
 
-      const resultPromise = captureFullPage(42, 90);
+      const resultPromise = captureFullPage(42, 90, 5);
       // Advance past SCROLL_SETTLE_MS delay after getPageMetrics + capture throttle
       await vi.advanceTimersByTimeAsync(1000);
 
@@ -198,7 +198,7 @@ describe("full-page-screenshot", () => {
     it("should capture multiple viewports with scrolling", async () => {
       const { finalBlob } = setupMultiCapture();
 
-      const resultPromise = captureFullPage(42, 80);
+      const resultPromise = captureFullPage(42, 80, 5);
       // Need enough time for: settle after metrics + 3 captures × (settle + throttle)
       await vi.advanceTimersByTimeAsync(3000);
 
@@ -218,7 +218,7 @@ describe("full-page-screenshot", () => {
     it("should crop the last partial capture correctly", async () => {
       setupMultiCapture();
 
-      const resultPromise = captureFullPage(42, 85);
+      const resultPromise = captureFullPage(42, 85, 5);
       await vi.advanceTimersByTimeAsync(3000);
       await resultPromise;
 
@@ -236,7 +236,7 @@ describe("full-page-screenshot", () => {
     it("should close all bitmaps after drawing", async () => {
       setupSingleCapture();
 
-      const resultPromise = captureFullPage(42, 90);
+      const resultPromise = captureFullPage(42, 90, 5);
       await vi.advanceTimersByTimeAsync(1000);
       await resultPromise;
 
@@ -247,7 +247,7 @@ describe("full-page-screenshot", () => {
     it("should restore scroll position after capture", async () => {
       setupMultiCapture();
 
-      const resultPromise = captureFullPage(42, 90);
+      const resultPromise = captureFullPage(42, 90, 5);
       await vi.advanceTimersByTimeAsync(3000);
       await resultPromise;
 
@@ -284,7 +284,7 @@ describe("full-page-screenshot", () => {
       });
       mockCreateImageBitmap.mockResolvedValue(makeBitmap(1024, 768));
 
-      const resultPromise = captureFullPage(42, 90);
+      const resultPromise = captureFullPage(42, 90, 5);
       // Prevent unhandled rejection warning
       resultPromise.catch(() => {});
       await vi.advanceTimersByTimeAsync(3000);
@@ -318,7 +318,7 @@ describe("full-page-screenshot", () => {
         convertToBlob: mockConvertToBlob,
       }));
 
-      const resultPromise = captureFullPage(42, 90);
+      const resultPromise = captureFullPage(42, 90, 5);
       // Prevent unhandled rejection warning
       resultPromise.catch(() => {});
       await vi.advanceTimersByTimeAsync(1000);
@@ -347,7 +347,7 @@ describe("full-page-screenshot", () => {
       mockCreateImageBitmap.mockResolvedValue(makeBitmap(1024, 768));
       mockConvertToBlob.mockRejectedValue(new Error("convertToBlob failed"));
 
-      const resultPromise = captureFullPage(42, 90);
+      const resultPromise = captureFullPage(42, 90, 5);
       // Prevent unhandled rejection warning
       resultPromise.catch(() => {});
       await vi.advanceTimersByTimeAsync(1000);

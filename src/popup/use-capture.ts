@@ -7,7 +7,7 @@ interface CaptureState {
   status: CaptureStatus;
   url: string | null;
   error: string | null;
-  capture: () => Promise<void>;
+  capture: (fullPage: boolean) => Promise<void>;
   reset: () => void;
 }
 
@@ -16,7 +16,7 @@ export function useCaptureAndUpload(): CaptureState {
   const [url, setUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const capture = useCallback(async () => {
+  const capture = useCallback(async (fullPage: boolean) => {
     setStatus("capturing");
     setUrl(null);
     setError(null);
@@ -24,6 +24,7 @@ export function useCaptureAndUpload(): CaptureState {
     try {
       const response: CaptureResponse = await chrome.runtime.sendMessage({
         type: "CAPTURE_AND_UPLOAD",
+        fullPage,
       });
 
       if (response.success) {

@@ -5,7 +5,8 @@ export interface R2Config {
   bucketName: string;
   customDomain: string;
   jpgQuality: number;
-  fullPage: boolean;
+  /** Maximum number of viewport heights to capture in full-page mode. */
+  maxScreens: number;
 }
 
 export interface R2ConfigValidationResult {
@@ -25,7 +26,7 @@ export const DEFAULT_R2_CONFIG: R2Config = {
   bucketName: "",
   customDomain: "",
   jpgQuality: 90,
-  fullPage: false,
+  maxScreens: 5,
 };
 
 /**
@@ -95,6 +96,12 @@ export function validateR2Config(config: R2Config): R2ConfigValidationResult {
     errors.jpgQuality = "JPG quality must be an integer";
   } else if (config.jpgQuality < 1 || config.jpgQuality > 100) {
     errors.jpgQuality = "JPG quality must be between 1 and 100";
+  }
+
+  if (!Number.isInteger(config.maxScreens)) {
+    errors.maxScreens = "Max screens must be an integer";
+  } else if (config.maxScreens < 1 || config.maxScreens > 100) {
+    errors.maxScreens = "Max screens must be between 1 and 100";
   }
 
   return {

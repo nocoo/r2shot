@@ -64,6 +64,7 @@ describe("E2E: complete capture-and-upload workflow", () => {
     bucketName: "e2e-bucket",
     customDomain: "cdn.e2e-test.com",
     jpgQuality: 90,
+    maxScreens: 5,
   };
 
   // A minimal valid JPEG as base64 (1x1 pixel white)
@@ -87,7 +88,7 @@ describe("E2E: complete capture-and-upload workflow", () => {
   });
 
   it("should fail when no config is saved", async () => {
-    const result = await handleMessage({ type: "CAPTURE_AND_UPLOAD" });
+    const result = await handleMessage({ type: "CAPTURE_AND_UPLOAD", fullPage: false });
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -104,7 +105,7 @@ describe("E2E: complete capture-and-upload workflow", () => {
     vi.mocked(chrome.tabs.captureVisibleTab).mockResolvedValue(fakeDataUrl);
 
     // Step 3: Execute the capture-and-upload workflow
-    const result = await handleMessage({ type: "CAPTURE_AND_UPLOAD" });
+    const result = await handleMessage({ type: "CAPTURE_AND_UPLOAD", fullPage: false });
 
     // Step 4: Assertions
     expect(result.success).toBe(true);
@@ -132,7 +133,7 @@ describe("E2E: complete capture-and-upload workflow", () => {
       `data:image/jpeg;base64,${TINY_JPEG_B64}`,
     );
 
-    await handleMessage({ type: "CAPTURE_AND_UPLOAD" });
+    await handleMessage({ type: "CAPTURE_AND_UPLOAD", fullPage: false });
 
     expect(chrome.tabs.captureVisibleTab).toHaveBeenCalledWith(undefined, {
       format: "jpeg",
@@ -147,7 +148,7 @@ describe("E2E: complete capture-and-upload workflow", () => {
       new Error("No active tab"),
     );
 
-    const result = await handleMessage({ type: "CAPTURE_AND_UPLOAD" });
+    const result = await handleMessage({ type: "CAPTURE_AND_UPLOAD", fullPage: false });
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -163,7 +164,7 @@ describe("E2E: complete capture-and-upload workflow", () => {
     );
     mockS3Send.mockRejectedValueOnce(new Error("Forbidden"));
 
-    const result = await handleMessage({ type: "CAPTURE_AND_UPLOAD" });
+    const result = await handleMessage({ type: "CAPTURE_AND_UPLOAD", fullPage: false });
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -180,6 +181,7 @@ describe("E2E: connection verification workflow", () => {
     bucketName: "e2e-bucket",
     customDomain: "cdn.e2e-test.com",
     jpgQuality: 90,
+    maxScreens: 5,
   };
 
   beforeEach(() => {

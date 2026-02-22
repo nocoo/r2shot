@@ -87,7 +87,7 @@ describe("uploader", () => {
       bucketName: "test-bucket",
       customDomain: "cdn.test.com",
       jpgQuality: 90,
-      fullPage: false,
+      maxScreens: 5,
     };
 
     it("should create S3 client via getS3Client with config", async () => {

@@ -43,7 +43,7 @@ const baseConfig: R2Config = {
   bucketName: "bucket",
   customDomain: "cdn.example.com",
   jpgQuality: 90,
-  fullPage: false,
+  maxScreens: 5,
 };
 
 // Mock chrome.tabs.query for full-page capture
@@ -59,7 +59,7 @@ describe("handleMessage", () => {
   });
 
   describe("CAPTURE_AND_UPLOAD", () => {
-    const request: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD" };
+    const request: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD", fullPage: false };
 
     it("should capture visible tab, upload, and return CDN URL on success", async () => {
       const fakeDataUrl = "data:image/jpeg;base64,/9j/";
@@ -86,11 +86,11 @@ describe("handleMessage", () => {
     });
 
     it("should use full-page capture when fullPage is enabled", async () => {
-      const fullPageConfig = { ...baseConfig, fullPage: true };
+      const fullPageRequest: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD", fullPage: true };
       const fakeBlob = new Blob(["full-img"], { type: "image/jpeg" });
       const fakeCdnUrl = "https://cdn.example.com/2026-02-19/full.jpg";
 
-      vi.mocked(loadConfig).mockResolvedValue(fullPageConfig);
+      vi.mocked(loadConfig).mockResolvedValue(baseConfig);
       vi.mocked(validateR2Config).mockReturnValue({
         valid: true,
         errors: {},
@@ -98,12 +98,12 @@ describe("handleMessage", () => {
       vi.mocked(captureFullPage).mockResolvedValue(fakeBlob);
       vi.mocked(uploadToR2).mockResolvedValue(fakeCdnUrl);
 
-      const result = await handleMessage(request);
+      const result = await handleMessage(fullPageRequest);
 
       expect(result).toEqual({ success: true, url: fakeCdnUrl });
-      expect(captureFullPage).toHaveBeenCalledWith(42, 90);
+      expect(captureFullPage).toHaveBeenCalledWith(42, 90, 5);
       expect(captureVisibleTab).not.toHaveBeenCalled();
-      expect(uploadToR2).toHaveBeenCalledWith(fullPageConfig, fakeBlob);
+      expect(uploadToR2).toHaveBeenCalledWith(baseConfig, fakeBlob);
     });
 
     it("should return error if config is invalid", async () => {
@@ -157,16 +157,16 @@ describe("handleMessage", () => {
     });
 
     it("should return error when no active tab found for full-page capture", async () => {
-      const fullPageConfig = { ...baseConfig, fullPage: true };
+      const fullPageRequest: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD", fullPage: true };
 
-      vi.mocked(loadConfig).mockResolvedValue(fullPageConfig);
+      vi.mocked(loadConfig).mockResolvedValue(baseConfig);
       vi.mocked(validateR2Config).mockReturnValue({
         valid: true,
         errors: {},
       });
       vi.mocked(chrome.tabs.query).mockResolvedValue([]);
 
-      const result = await handleMessage(request);
+      const result = await handleMessage(fullPageRequest);
 
       expect(result).toEqual({
         success: false,
@@ -213,7 +213,7 @@ describe("handleMessage", () => {
         bucketName: "override-bucket",
         customDomain: "cdn.override.com",
         jpgQuality: 80,
-        fullPage: false,
+        maxScreens: 5,
       };
 
       vi.mocked(validateR2Config).mockReturnValue({
@@ -240,7 +240,7 @@ describe("handleMessage", () => {
         bucketName: "",
         customDomain: "",
         jpgQuality: 90,
-        fullPage: false,
+        maxScreens: 5,
       };
 
       vi.mocked(validateR2Config).mockReturnValue({
@@ -265,7 +265,8 @@ describe("handleMessage", () => {
     it("should return error for unknown message type", async () => {
       const result = await handleMessage({
         type: "UNKNOWN" as "CAPTURE_AND_UPLOAD",
-      });
+        fullPage: false,
+      } as CaptureAndUploadRequest);
       expect(result).toEqual({
         success: false,
         error: "Unknown message type",

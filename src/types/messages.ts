@@ -2,6 +2,7 @@ export type MessageType = "CAPTURE_AND_UPLOAD" | "VERIFY_CONNECTION";
 
 export interface CaptureAndUploadRequest {
   type: "CAPTURE_AND_UPLOAD";
+  fullPage: boolean;
 }
 
 export interface VerifyConnectionRequest {
@@ -13,7 +14,7 @@ export interface VerifyConnectionRequest {
     bucketName: string;
     customDomain: string;
     jpgQuality: number;
-    fullPage: boolean;
+    maxScreens: number;
   };
 }
 

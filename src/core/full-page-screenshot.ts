@@ -105,6 +105,7 @@ const MIN_CAPTURE_INTERVAL_MS = 550;
 export async function captureFullPage(
   tabId: number,
   quality: number,
+  maxScreens: number,
 ): Promise<Blob> {
   const metrics = await getPageMetrics(tabId);
   // Allow the scroll-to-top to settle
@@ -112,12 +113,16 @@ export async function captureFullPage(
 
   const { scrollHeight, viewportHeight, devicePixelRatio } = metrics;
 
+  // Clamp to maxScreens viewport heights to guard against infinite-scroll pages
+  const maxHeight = viewportHeight * maxScreens;
+  const effectiveHeight = Math.min(scrollHeight, maxHeight);
+
   // Physical pixel dimensions for the final canvas
   const canvasWidth = Math.round(metrics.viewportWidth * devicePixelRatio);
-  const canvasHeight = Math.round(scrollHeight * devicePixelRatio);
+  const canvasHeight = Math.round(effectiveHeight * devicePixelRatio);
 
   // Calculate how many captures we need
-  const totalCaptures = Math.ceil(scrollHeight / viewportHeight);
+  const totalCaptures = Math.ceil(effectiveHeight / viewportHeight);
 
   // Collect bitmaps
   const bitmaps: { bitmap: ImageBitmap; yOffset: number }[] = [];
@@ -128,7 +133,7 @@ export async function captureFullPage(
       const scrollY = i * viewportHeight;
       // The last capture may only cover a partial viewport
       const isLast = i === totalCaptures - 1;
-      const remainingHeight = scrollHeight - scrollY;
+      const remainingHeight = effectiveHeight - scrollY;
 
       if (i > 0) {
         await scrollTo(tabId, scrollY);

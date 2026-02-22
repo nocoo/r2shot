@@ -19,7 +19,7 @@ describe("s3-client", () => {
     bucketName: "bucket-1",
     customDomain: "cdn.test.com",
     jpgQuality: 90,
-    fullPage: false,
+    maxScreens: 5,
   };
 
   beforeEach(() => {

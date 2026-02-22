@@ -1,4 +1,4 @@
-import { captureVisibleTab } from "./screenshot";
+import { captureVisibleTab, dataUrlToBlob } from "./screenshot";
 
 /**
  * Page metrics returned by the injected content script.
@@ -131,8 +131,8 @@ export async function captureFullPage(
       const dataUrl = await captureVisibleTab(quality);
 
       // Decode to ImageBitmap immediately and release the data URL string
-      const response = await fetch(dataUrl);
-      const blobChunk = await response.blob();
+      // Use dataUrlToBlob instead of fetch(dataUrl) to avoid CSP connect-src restrictions on data: URIs
+      const blobChunk = dataUrlToBlob(dataUrl);
       const bitmap = await createImageBitmap(blobChunk);
 
       if (isLast && remainingHeight < viewportHeight) {

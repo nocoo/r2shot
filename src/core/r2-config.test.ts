@@ -14,6 +14,7 @@ describe("R2Config validation", () => {
     bucketName: "my-bucket",
     customDomain: "cdn.example.com",
     jpgQuality: 90,
+    fullPage: false,
   };
 
   describe("validateR2Config", () => {
@@ -140,6 +141,7 @@ describe("R2Config validation", () => {
         bucketName: "",
         customDomain: "",
         jpgQuality: 0,
+        fullPage: false,
       });
       expect(result.valid).toBe(false);
       expect(Object.keys(result.errors).length).toBeGreaterThanOrEqual(5);

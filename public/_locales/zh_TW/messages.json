@@ -90,5 +90,11 @@
   },
   "settings": {
     "message": "設定"
+  },
+  "fullPageCapture": {
+    "message": "整頁截圖"
+  },
+  "fullPageCaptureDescription": {
+    "message": "透過捲動並拼接截圖來擷取整個頁面"
   }
 }

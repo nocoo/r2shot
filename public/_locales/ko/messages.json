@@ -90,5 +90,11 @@
   },
   "settings": {
     "message": "설정"
+  },
+  "fullPageCapture": {
+    "message": "전체 페이지 캡처"
+  },
+  "fullPageCaptureDescription": {
+    "message": "스크롤하여 스크린샷을 이어붙여 전체 페이지를 캡처합니다"
   }
 }

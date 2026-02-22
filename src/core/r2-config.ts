@@ -5,6 +5,7 @@ export interface R2Config {
   bucketName: string;
   customDomain: string;
   jpgQuality: number;
+  fullPage: boolean;
 }
 
 export interface R2ConfigValidationResult {
@@ -24,6 +25,7 @@ export const DEFAULT_R2_CONFIG: R2Config = {
   bucketName: "",
   customDomain: "",
   jpgQuality: 90,
+  fullPage: false,
 };
 
 /**

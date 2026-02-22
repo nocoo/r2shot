@@ -1,5 +1,6 @@
 import { loadConfig } from "../core/storage";
 import { captureVisibleTab, dataUrlToBlob } from "../core/screenshot";
+import { captureFullPage } from "../core/full-page-screenshot";
 import { uploadToR2 } from "../core/uploader";
 import { verifyR2Connection } from "../core/connection";
 import { validateR2Config, type R2Config } from "../core/r2-config";
@@ -33,8 +34,23 @@ async function handleCaptureAndUpload(): Promise<CaptureResponse> {
       };
     }
 
-    const dataUrl = await captureVisibleTab(config.jpgQuality);
-    const blob = dataUrlToBlob(dataUrl);
+    let blob: Blob;
+
+    if (config.fullPage) {
+      // Get the active tab for content script injection
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      if (!tab?.id) {
+        return { success: false, error: "No active tab found" };
+      }
+      blob = await captureFullPage(tab.id, config.jpgQuality);
+    } else {
+      const dataUrl = await captureVisibleTab(config.jpgQuality);
+      blob = dataUrlToBlob(dataUrl);
+    }
+
     const publicUrl = await uploadToR2(config, blob);
 
     return { success: true, url: publicUrl };

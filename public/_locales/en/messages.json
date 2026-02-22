@@ -90,5 +90,11 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "fullPageCapture": {
+    "message": "Full Page Capture"
+  },
+  "fullPageCaptureDescription": {
+    "message": "Capture the entire page by scrolling and stitching screenshots"
   }
 }

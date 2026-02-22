@@ -90,5 +90,11 @@
   },
   "settings": {
     "message": "设置"
+  },
+  "fullPageCapture": {
+    "message": "整页截图"
+  },
+  "fullPageCaptureDescription": {
+    "message": "通过滚动并拼接截图来捕获整个页面"
   }
 }

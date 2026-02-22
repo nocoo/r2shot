@@ -90,5 +90,11 @@
   },
   "settings": {
     "message": "設定"
+  },
+  "fullPageCapture": {
+    "message": "ページ全体をキャプチャ"
+  },
+  "fullPageCaptureDescription": {
+    "message": "スクロールしてスクリーンショットを繋ぎ合わせ、ページ全体をキャプチャします"
   }
 }

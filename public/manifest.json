@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
-  "permissions": ["activeTab", "storage"],
+  "permissions": ["activeTab", "storage", "scripting"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {

@@ -90,5 +90,11 @@
   },
   "settings": {
     "message": "Настройки"
+  },
+  "fullPageCapture": {
+    "message": "Снимок всей страницы"
+  },
+  "fullPageCaptureDescription": {
+    "message": "Захватывает всю страницу, прокручивая и склеивая снимки экрана"
   }
 }

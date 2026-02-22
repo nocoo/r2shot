@@ -13,6 +13,7 @@ export interface VerifyConnectionRequest {
     bucketName: string;
     customDomain: string;
     jpgQuality: number;
+    fullPage: boolean;
   };
 }
 

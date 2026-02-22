@@ -90,5 +90,11 @@
   },
   "settings": {
     "message": "Einstellungen"
+  },
+  "fullPageCapture": {
+    "message": "Gesamte Seite erfassen"
+  },
+  "fullPageCaptureDescription": {
+    "message": "Erfasst die gesamte Seite durch Scrollen und Zusammenfügen von Screenshots"
   }
 }

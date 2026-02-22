@@ -90,5 +90,11 @@
   },
   "settings": {
     "message": "Configurações"
+  },
+  "fullPageCapture": {
+    "message": "Captura de página inteira"
+  },
+  "fullPageCaptureDescription": {
+    "message": "Captura a página inteira rolando e unindo as capturas de tela"
   }
 }

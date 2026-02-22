@@ -173,6 +173,49 @@ describe("handleMessage", () => {
         error: "No active tab found",
       });
     });
+
+    it("should return error when full-page capture is attempted on chrome:// URL", async () => {
+      const fullPageRequest: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD", fullPage: true };
+
+      vi.mocked(loadConfig).mockResolvedValue(baseConfig);
+      vi.mocked(validateR2Config).mockReturnValue({
+        valid: true,
+        errors: {},
+      });
+      vi.mocked(chrome.tabs.query).mockResolvedValue([
+        { id: 42, url: "chrome://extensions/" } as chrome.tabs.Tab,
+      ]);
+
+      const result = await handleMessage(fullPageRequest);
+
+      expect(result).toEqual({
+        success: false,
+        error:
+          "Full-page capture is not available on browser internal pages. Please try on a regular web page.",
+      });
+      expect(captureFullPage).not.toHaveBeenCalled();
+    });
+
+    it("should return error when full-page capture is attempted on chrome-extension:// URL", async () => {
+      const fullPageRequest: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD", fullPage: true };
+
+      vi.mocked(loadConfig).mockResolvedValue(baseConfig);
+      vi.mocked(validateR2Config).mockReturnValue({
+        valid: true,
+        errors: {},
+      });
+      vi.mocked(chrome.tabs.query).mockResolvedValue([
+        { id: 42, url: "chrome-extension://abc123/options.html" } as chrome.tabs.Tab,
+      ]);
+
+      const result = await handleMessage(fullPageRequest);
+
+      expect(result).toEqual({
+        success: false,
+        error:
+          "Full-page capture is not available on browser internal pages. Please try on a regular web page.",
+      });
+    });
   });
 
   describe("VERIFY_CONNECTION", () => {

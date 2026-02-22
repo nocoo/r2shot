@@ -47,6 +47,20 @@ async function handleCaptureAndUpload(
       if (!tab?.id) {
         return { success: false, error: "No active tab found" };
       }
+      const url = tab.url ?? "";
+      if (
+        url.startsWith("chrome://") ||
+        url.startsWith("chrome-extension://") ||
+        url.startsWith("edge://") ||
+        url.startsWith("about:") ||
+        url.startsWith("devtools://")
+      ) {
+        return {
+          success: false,
+          error:
+            "Full-page capture is not available on browser internal pages. Please try on a regular web page.",
+        };
+      }
       blob = await captureFullPage(tab.id, config.jpgQuality, config.maxScreens);
     } else {
       const dataUrl = await captureVisibleTab(config.jpgQuality);

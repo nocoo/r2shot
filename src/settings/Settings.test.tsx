@@ -164,4 +164,166 @@ describe("Settings", () => {
       expect(screen.getByText(/R2Shot v0\.1\.0/)).toBeInTheDocument();
     });
   });
+
+  it("should show loading state initially", async () => {
+    // Mock storage to hang so loading stays true
+    let resolveGet: (v: Record<string, unknown>) => void;
+    vi.mocked(chrome.storage.local.get).mockImplementationOnce(
+      () => new Promise((r) => { resolveGet = r; }),
+    );
+
+    const { unmount } = render(<Settings />);
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
+
+    // Resolve to unblock cleanup, then unmount
+    resolveGet!({});
+    await waitFor(() => {
+      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+    });
+    unmount();
+  });
+
+  it("should show connection success message after test connection", async () => {
+    vi.mocked(chrome.runtime.sendMessage).mockResolvedValueOnce({
+      success: true,
+    });
+
+    render(<Settings />);
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /test connection/i }),
+      ).toBeInTheDocument();
+    });
+
+    // Fill required fields so config is valid
+    fireEvent.change(screen.getByLabelText(/endpoint url/i), {
+      target: { value: "https://abc.r2.cloudflarestorage.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/access key id/i), {
+      target: { value: "key" },
+    });
+    fireEvent.change(screen.getByLabelText(/secret access key/i), {
+      target: { value: "secret" },
+    });
+    fireEvent.change(screen.getByLabelText(/bucket name/i), {
+      target: { value: "bucket" },
+    });
+    fireEvent.change(screen.getByLabelText(/custom domain/i), {
+      target: { value: "cdn.test.com" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /test connection/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Connection successful!")).toBeInTheDocument();
+    });
+  });
+
+  it("should show connection error message on failed test", async () => {
+    vi.mocked(chrome.runtime.sendMessage).mockResolvedValueOnce({
+      success: false,
+      error: "Bucket not found",
+    });
+
+    render(<Settings />);
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /test connection/i }),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /test connection/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Connection failed: Bucket not found/),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("should show error when test connection throws", async () => {
+    vi.mocked(chrome.runtime.sendMessage).mockRejectedValueOnce(
+      new Error("Network error"),
+    );
+
+    render(<Settings />);
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /test connection/i }),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /test connection/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Connection failed: Network error/),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("should show error when test connection throws non-Error", async () => {
+    vi.mocked(chrome.runtime.sendMessage).mockRejectedValueOnce(
+      "something went wrong",
+    );
+
+    render(<Settings />);
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", { name: /test connection/i }),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /test connection/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Connection failed: Connection test failed/),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("should update jpgQuality when changing the input", async () => {
+    render(<Settings />);
+    await waitFor(() => {
+      expect(screen.getByLabelText(/jpg quality/i)).toBeInTheDocument();
+    });
+
+    const input = screen.getByLabelText(/jpg quality/i) as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "75" } });
+    expect(input.value).toBe("75");
+  });
+
+  it("should default jpgQuality to 90 on invalid input", async () => {
+    render(<Settings />);
+    await waitFor(() => {
+      expect(screen.getByLabelText(/jpg quality/i)).toBeInTheDocument();
+    });
+
+    const input = screen.getByLabelText(/jpg quality/i) as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "" } });
+    expect(input.value).toBe("90");
+  });
+
+  it("should update maxScreens when changing the input", async () => {
+    render(<Settings />);
+    await waitFor(() => {
+      expect(screen.getByLabelText(/max screens/i)).toBeInTheDocument();
+    });
+
+    const input = screen.getByLabelText(/max screens/i) as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "10" } });
+    expect(input.value).toBe("10");
+  });
+
+  it("should default maxScreens to 5 on invalid input", async () => {
+    render(<Settings />);
+    await waitFor(() => {
+      expect(screen.getByLabelText(/max screens/i)).toBeInTheDocument();
+    });
+
+    const input = screen.getByLabelText(/max screens/i) as HTMLInputElement;
+    fireEvent.change(input, { target: { value: "" } });
+    expect(input.value).toBe("5");
+  });
 });

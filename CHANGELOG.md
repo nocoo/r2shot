@@ -5,6 +5,13 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-04-14
+
+### Fixed
+
+- CORS failure on Chrome 142+ by adding `host_permissions` for R2 storage endpoints
+- `DOMParser is not defined` crash in service worker by replacing browser XML parser with fast-xml-parser via Vite build plugin
+
 ## [1.1.0] - 2026-02-22
 
 ### Added
@@ -52,5 +59,6 @@ Initial public release.
 - 115 tests (108 unit + 7 E2E), 97%+ coverage
 - Git hooks — pre-commit (UT), pre-push (UT + lint)
 
+[1.1.1]: https://github.com/nocoo/r2shot/releases/tag/v1.1.1
 [1.1.0]: https://github.com/nocoo/r2shot/releases/tag/v1.1.0
 [1.0.0]: https://github.com/nocoo/r2shot/releases/tag/v1.0.0

@@ -35,8 +35,44 @@ function devManifestIcons(): Plugin {
   };
 }
 
+/**
+ * Vite plugin that redirects @aws-sdk/xml-builder's browser XML parser
+ * to the non-browser variant using fast-xml-parser instead of DOMParser,
+ * which is unavailable in MV3 service workers.
+ *
+ * Vite's built-in browser field resolution remaps "./xml-parser" →
+ * "./xml-parser.browser" before plugins see it, so we intercept the
+ * resolved absolute path and swap it back to the non-browser file.
+ */
+function fixXmlParserForServiceWorker(): Plugin {
+  const browserFile = resolve(
+    __dirname,
+    "node_modules/@aws-sdk/xml-builder/dist-es/xml-parser.browser.js",
+  );
+  const nodeFile = resolve(
+    __dirname,
+    "node_modules/@aws-sdk/xml-builder/dist-es/xml-parser.js",
+  );
+
+  return {
+    name: "fix-xml-parser-for-service-worker",
+    enforce: "pre",
+    load(id) {
+      if (id === browserFile) {
+        // Redirect to the non-browser variant that uses fast-xml-parser
+        return readFileSync(nodeFile, "utf-8");
+      }
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), tailwindcss(), devManifestIcons()],
+  plugins: [
+    fixXmlParserForServiceWorker(),
+    react(),
+    tailwindcss(),
+    devManifestIcons(),
+  ],
   resolve: {
     alias: {
       "@": resolve(__dirname, "src"),

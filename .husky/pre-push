@@ -1,2 +1,1 @@
-#!/usr/bin/env sh
-bun vitest run --config vitest.config.ts && bun run lint
+bun run build && bun run test:coverage && bun run lint

@@ -1,6 +1,6 @@
 {
   "name": "r2shot",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": true,
   "description": "Chrome extension to capture screenshots and upload to Cloudflare R2",
   "type": "module",

@@ -16,7 +16,8 @@
     "lint:fix": "eslint src --fix",
     "build:zip": "bash scripts/build.sh",
     "prepare": "git config core.hookspath .husky",
-    "release": "bun run scripts/release.ts"
+    "release": "bun run scripts/release.ts",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -50,5 +51,10 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.5.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --max-warnings=0"
+    ]
   }
 }

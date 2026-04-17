@@ -133,6 +133,28 @@ describe("R2Config validation", () => {
       expect(result.errors.jpgQuality).toBe("JPG quality must be an integer");
     });
 
+    it("should reject non-integer maxScreens", () => {
+      const result = validateR2Config({ ...validConfig, maxScreens: 1.5 });
+      expect(result.valid).toBe(false);
+      expect(result.errors.maxScreens).toBe("Max screens must be an integer");
+    });
+
+    it("should reject maxScreens below 1", () => {
+      const result = validateR2Config({ ...validConfig, maxScreens: 0 });
+      expect(result.valid).toBe(false);
+      expect(result.errors.maxScreens).toBe(
+        "Max screens must be between 1 and 100",
+      );
+    });
+
+    it("should reject maxScreens above 100", () => {
+      const result = validateR2Config({ ...validConfig, maxScreens: 101 });
+      expect(result.valid).toBe(false);
+      expect(result.errors.maxScreens).toBe(
+        "Max screens must be between 1 and 100",
+      );
+    });
+
     it("should collect multiple errors at once", () => {
       const result = validateR2Config({
         endpoint: "",

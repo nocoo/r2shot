@@ -275,6 +275,34 @@ describe("handleMessage", () => {
       expect(verifyR2Connection).toHaveBeenCalledWith(overrideConfig);
     });
 
+    it("should return error when verifyR2Connection throws an Error", async () => {
+      vi.mocked(loadConfig).mockResolvedValue(baseConfig);
+      vi.mocked(validateR2Config).mockReturnValue({
+        valid: true,
+        errors: {},
+      });
+      vi.mocked(verifyR2Connection).mockRejectedValue(
+        new Error("Network timeout"),
+      );
+
+      const result = await handleMessage({ type: "VERIFY_CONNECTION" });
+
+      expect(result).toEqual({ success: false, error: "Network timeout" });
+    });
+
+    it("should return 'Unknown error' when verifyR2Connection throws a non-Error value", async () => {
+      vi.mocked(loadConfig).mockResolvedValue(baseConfig);
+      vi.mocked(validateR2Config).mockReturnValue({
+        valid: true,
+        errors: {},
+      });
+      vi.mocked(verifyR2Connection).mockRejectedValue("string error");
+
+      const result = await handleMessage({ type: "VERIFY_CONNECTION" });
+
+      expect(result).toEqual({ success: false, error: "Unknown error" });
+    });
+
     it("should return error when config override is invalid", async () => {
       const invalidConfig: R2Config = {
         endpoint: "",

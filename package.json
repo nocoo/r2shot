@@ -46,8 +46,9 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1029.0",
     "clsx": "^2.1.1",
-    "fast-xml-parser": "^5.5.11",
+    "fast-xml-parser": "^5.7.2",
     "lucide-react": "^0.574.0",
+    "postcss": "^8.5.12",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.5.0"

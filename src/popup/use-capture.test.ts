@@ -111,4 +111,17 @@ describe("useCaptureAndUpload", () => {
     expect(result.current.url).toBeNull();
     expect(result.current.error).toBeNull();
   });
+
+  it("should fall back to 'Unknown error' when sendMessage throws a non-Error value", async () => {
+    mockSendMessage.mockRejectedValue("string failure");
+
+    const { result } = renderHook(() => useCaptureAndUpload());
+
+    await act(async () => {
+      await result.current.capture(false);
+    });
+
+    expect(result.current.status).toBe("error");
+    expect(result.current.error).toBe("Unknown error");
+  });
 });

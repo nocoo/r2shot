@@ -203,4 +203,28 @@ describe("Popup", () => {
 
     vi.useRealTimers();
   });
+
+  it("should toggle full-page switch and pass fullPage flag to capture", async () => {
+    mockSendMessage.mockResolvedValue({
+      success: true,
+      url: "https://cdn.example.com/full.jpg",
+    });
+
+    render(<Popup />);
+
+    const toggle = screen.getByRole("switch");
+    expect(toggle).toHaveAttribute("aria-checked", "false");
+
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute("aria-checked", "true");
+
+    fireEvent.click(screen.getByRole("button", { name: /capture/i }));
+
+    await waitFor(() => {
+      expect(mockSendMessage).toHaveBeenCalledWith({
+        type: "CAPTURE_AND_UPLOAD",
+        fullPage: true,
+      });
+    });
+  });
 });

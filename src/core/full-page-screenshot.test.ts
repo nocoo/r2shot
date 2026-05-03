@@ -363,5 +363,35 @@ describe("full-page-screenshot", () => {
       );
       expect(restoreCalls.length).toBeGreaterThan(0);
     });
+
+    it("should swallow errors thrown by restoreScroll in the finally block", async () => {
+      const metrics = {
+        scrollWidth: 1024,
+        scrollHeight: 768,
+        viewportWidth: 1024,
+        viewportHeight: 768,
+        originalScrollX: 0,
+        originalScrollY: 0,
+        devicePixelRatio: 1,
+      };
+
+      mockExecuteScript
+        .mockResolvedValueOnce([{ result: metrics }]) // getPageMetrics
+        .mockRejectedValueOnce(new Error("restore failed")); // restoreScroll
+      mockCaptureVisibleTab.mockResolvedValue("data:image/jpeg;base64,abc");
+      mockFetch.mockResolvedValue({
+        blob: () => Promise.resolve(new Blob(["img"])),
+      });
+      mockCreateImageBitmap.mockResolvedValue(makeBitmap(1024, 768));
+      const finalBlob = new Blob(["final"], { type: "image/jpeg" });
+      mockConvertToBlob.mockResolvedValue(finalBlob);
+
+      const resultPromise = captureFullPage(42, 90, 5);
+      await vi.advanceTimersByTimeAsync(1000);
+
+      // The captureFullPage promise should still resolve to the stitched blob
+      // because restore failures are intentionally swallowed.
+      await expect(resultPromise).resolves.toBe(finalBlob);
+    });
   });
 });

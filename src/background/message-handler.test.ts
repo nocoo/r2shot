@@ -330,6 +330,40 @@ describe("handleMessage", () => {
       });
       expect(loadConfig).not.toHaveBeenCalled();
     });
+
+    it("should fall back to 'Unknown error' when verifyR2Connection returns ok=false without an error message", async () => {
+      vi.mocked(loadConfig).mockResolvedValue(baseConfig);
+      vi.mocked(validateR2Config).mockReturnValue({
+        valid: true,
+        errors: {},
+      });
+      vi.mocked(verifyR2Connection).mockResolvedValue({ ok: false });
+
+      const result = await handleMessage({ type: "VERIFY_CONNECTION" });
+
+      expect(result).toEqual({
+        success: false,
+        error: "Connection failed",
+      });
+    });
+  });
+
+  describe("CAPTURE_AND_UPLOAD non-Error rejection", () => {
+    it("should fall back to 'Unknown error' when capture throws a non-Error value", async () => {
+      vi.mocked(loadConfig).mockResolvedValue(baseConfig);
+      vi.mocked(validateR2Config).mockReturnValue({
+        valid: true,
+        errors: {},
+      });
+      vi.mocked(captureVisibleTab).mockRejectedValue("string failure");
+
+      const result = await handleMessage({
+        type: "CAPTURE_AND_UPLOAD",
+        fullPage: false,
+      });
+
+      expect(result).toEqual({ success: false, error: "Unknown error" });
+    });
   });
 
   describe("unknown message type", () => {

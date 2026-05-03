@@ -229,4 +229,42 @@ describe("useSettings", () => {
 
     expect(result.current.saveStatus).toBe("error");
   });
+
+  it("should auto-extract bucket name from pasted endpoint URL with path", async () => {
+    const { result } = renderHook(() => useSettings());
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    act(() => {
+      result.current.updateField(
+        "endpoint",
+        "https://acc.r2.cloudflarestorage.com/my-bucket",
+      );
+    });
+
+    expect(result.current.config.endpoint).toBe(
+      "https://acc.r2.cloudflarestorage.com",
+    );
+    expect(result.current.config.bucketName).toBe("my-bucket");
+  });
+
+  it("should fall back to 'Connection test failed' when sendMessage rejects with non-Error", async () => {
+    const mockSendMessage = vi.mocked(chrome.runtime.sendMessage);
+    mockSendMessage.mockRejectedValue("string failure");
+
+    const { result } = renderHook(() => useSettings());
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    await act(async () => {
+      await result.current.testConnection();
+    });
+
+    expect(result.current.connectionStatus).toBe("error");
+    expect(result.current.connectionError).toBe("Connection test failed");
+  });
 });

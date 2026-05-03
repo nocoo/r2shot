@@ -326,4 +326,18 @@ describe("Settings", () => {
     fireEvent.change(input, { target: { value: "" } });
     expect(input.value).toBe("5");
   });
+
+  it("should change theme when a theme button is clicked", async () => {
+    render(<Settings />);
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /dark/i })).toBeInTheDocument();
+    });
+
+    const darkBtn = screen.getByRole("button", { name: /dark/i });
+    fireEvent.click(darkBtn);
+
+    await waitFor(() => {
+      expect(document.documentElement.classList.contains("dark")).toBe(true);
+    });
+  });
 });

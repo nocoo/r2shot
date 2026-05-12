@@ -16,11 +16,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // Mock S3
 const mockS3Send = vi.fn().mockResolvedValue({});
 vi.mock("@aws-sdk/client-s3", () => {
-  const MockS3Client = vi.fn().mockImplementation(() => ({
-    send: mockS3Send,
-  }));
-  const MockPutObjectCommand = vi.fn().mockImplementation((input) => input);
-  const MockHeadBucketCommand = vi.fn().mockImplementation((input) => input);
+  const MockS3Client = vi.fn().mockImplementation(function () {
+    return { send: mockS3Send };
+  });
+  const MockPutObjectCommand = vi.fn().mockImplementation(function (input: unknown) { return input; });
+  const MockHeadBucketCommand = vi.fn().mockImplementation(function (input: unknown) { return input; });
   return {
     S3Client: MockS3Client,
     PutObjectCommand: MockPutObjectCommand,

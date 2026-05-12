@@ -5,6 +5,26 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-05-12
+
+### Changed
+
+- Upgrade Vite from 6.x to 8.0.12
+- Upgrade vulnerable dependencies
+
+### Added
+
+- Automated release script (`bun run release`)
+- G1 static analysis compliance (typecheck + lint-staged)
+- G2 security scanning (gitleaks + osv-scanner)
+- L2 API E2E tests in CI
+- CI workflow_dispatch trigger and base-ci v2026.1
+- Expanded test coverage to 95%+ (159 tests across 14 files)
+
+### Fixed
+
+- Coverage config aligned with best practices
+
 ## [1.1.2] - 2026-04-14
 
 ### Fixed
@@ -58,6 +78,7 @@ Initial public release.
 - 115 tests (108 unit + 7 E2E), 97%+ coverage
 - Git hooks — pre-commit (UT), pre-push (UT + lint)
 
+[1.2.0]: https://github.com/nocoo/r2shot/releases/tag/v1.2.0
 [1.1.2]: https://github.com/nocoo/r2shot/releases/tag/v1.1.2
 [1.1.0]: https://github.com/nocoo/r2shot/releases/tag/v1.1.0
 [1.0.0]: https://github.com/nocoo/r2shot/releases/tag/v1.0.0

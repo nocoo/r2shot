@@ -26,10 +26,12 @@ vi.stubGlobal("createImageBitmap", mockCreateImageBitmap);
 
 const mockDrawImage = vi.fn();
 const mockConvertToBlob = vi.fn();
-const MockOffscreenCanvas = vi.fn().mockImplementation(() => ({
-  getContext: () => ({ drawImage: mockDrawImage }),
-  convertToBlob: mockConvertToBlob,
-}));
+const MockOffscreenCanvas = vi.fn().mockImplementation(function () {
+  return {
+    getContext: () => ({ drawImage: mockDrawImage }),
+    convertToBlob: mockConvertToBlob,
+  };
+});
 vi.stubGlobal("OffscreenCanvas", MockOffscreenCanvas);
 
 // ── fetch mock (for data URL → blob conversion inside captureFullPage) ─
@@ -313,10 +315,12 @@ describe("full-page-screenshot", () => {
       mockCreateImageBitmap.mockResolvedValue(makeBitmap(1024, 768));
 
       // Override OffscreenCanvas to return null context
-      MockOffscreenCanvas.mockImplementationOnce(() => ({
-        getContext: () => null,
-        convertToBlob: mockConvertToBlob,
-      }));
+      MockOffscreenCanvas.mockImplementationOnce(function () {
+        return {
+          getContext: () => null,
+          convertToBlob: mockConvertToBlob,
+        };
+      });
 
       const resultPromise = captureFullPage(42, 90, 5);
       // Prevent unhandled rejection warning

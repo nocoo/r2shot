@@ -3,9 +3,9 @@ import { getS3Client, resetS3Client } from "./s3-client";
 import type { R2Config } from "./r2-config";
 
 vi.mock("@aws-sdk/client-s3", () => {
-  const MockS3Client = vi.fn().mockImplementation(() => ({
-    send: vi.fn(),
-  }));
+  const MockS3Client = vi.fn().mockImplementation(function () {
+    return { send: vi.fn() };
+  });
   return { S3Client: MockS3Client };
 });
 

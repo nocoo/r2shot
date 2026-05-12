@@ -6,14 +6,14 @@ const mockSend = vi.fn().mockResolvedValue({});
 
 // Mock s3-client factory to return a controllable client
 vi.mock("./s3-client", () => ({
-  getS3Client: vi.fn().mockImplementation(() => ({
-    send: mockSend,
-  })),
+  getS3Client: vi.fn().mockImplementation(function () {
+    return { send: mockSend };
+  }),
 }));
 
 // Mock only PutObjectCommand from AWS SDK
 vi.mock("@aws-sdk/client-s3", () => {
-  const MockPutObjectCommand = vi.fn().mockImplementation((input) => input);
+  const MockPutObjectCommand = vi.fn().mockImplementation(function (input: unknown) { return input; });
   return {
     PutObjectCommand: MockPutObjectCommand,
   };

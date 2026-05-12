@@ -6,14 +6,14 @@ const mockSend = vi.fn();
 
 // Mock s3-client factory to return a controllable client
 vi.mock("./s3-client", () => ({
-  getS3Client: vi.fn().mockImplementation(() => ({
-    send: mockSend,
-  })),
+  getS3Client: vi.fn().mockImplementation(function () {
+    return { send: mockSend };
+  }),
 }));
 
 // Mock only HeadBucketCommand from AWS SDK
 vi.mock("@aws-sdk/client-s3", () => {
-  const MockHeadBucketCommand = vi.fn().mockImplementation((input) => input);
+  const MockHeadBucketCommand = vi.fn().mockImplementation(function (input: unknown) { return input; });
   return {
     HeadBucketCommand: MockHeadBucketCommand,
   };

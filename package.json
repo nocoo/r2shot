@@ -45,17 +45,22 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1045.0",
+    "brace-expansion": "^5.0.6",
     "clsx": "^2.1.1",
     "fast-xml-parser": "^5.7.3",
     "lucide-react": "^0.574.0",
     "postcss": "^8.5.12",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.5.0"
+    "tailwind-merge": "^3.5.0",
+    "ws": "^8.20.1"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --max-warnings=0"
     ]
+  },
+  "overrides": {
+    "ws": "^8.20.1"
   }
 }

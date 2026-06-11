@@ -26,6 +26,15 @@ vi.stubGlobal("chrome", {
   },
 });
 
+// @types/chrome >= 0.1.43 exposes a callback overload whose return type is
+// `void`; narrow to the Promise overload so `mockResolvedValue` type-checks.
+const sendMessagePromise = chrome.runtime.sendMessage as <
+  M = unknown,
+  R = unknown,
+>(
+  message: M,
+) => Promise<R>;
+
 describe("useSettings", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -129,7 +138,7 @@ describe("useSettings", () => {
   });
 
   it("should test connection with current UI config via chrome.runtime.sendMessage", async () => {
-    const mockSendMessage = vi.mocked(chrome.runtime.sendMessage);
+    const mockSendMessage = vi.mocked(sendMessagePromise);
     mockSendMessage.mockResolvedValue({ success: true });
 
     const { result } = renderHook(() => useSettings());
@@ -160,7 +169,7 @@ describe("useSettings", () => {
   });
 
   it("should handle failed connection test", async () => {
-    const mockSendMessage = vi.mocked(chrome.runtime.sendMessage);
+    const mockSendMessage = vi.mocked(sendMessagePromise);
     mockSendMessage.mockResolvedValue({
       success: false,
       error: "Access Denied",
@@ -251,7 +260,7 @@ describe("useSettings", () => {
   });
 
   it("should fall back to 'Connection test failed' when sendMessage rejects with non-Error", async () => {
-    const mockSendMessage = vi.mocked(chrome.runtime.sendMessage);
+    const mockSendMessage = vi.mocked(sendMessagePromise);
     mockSendMessage.mockRejectedValue("string failure");
 
     const { result } = renderHook(() => useSettings());

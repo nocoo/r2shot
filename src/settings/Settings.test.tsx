@@ -27,6 +27,15 @@ vi.stubGlobal("chrome", {
   },
 });
 
+// @types/chrome >= 0.1.43 exposes a callback overload whose return type is
+// `void`; narrow to the Promise overload so `mockResolvedValueOnce`/
+// `mockRejectedValueOnce` type-check.
+const mockSendMessage = vi.mocked(
+  chrome.runtime.sendMessage as <M = unknown, R = unknown>(
+    message: M,
+  ) => Promise<R>,
+);
+
 describe("Settings", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -184,7 +193,7 @@ describe("Settings", () => {
   });
 
   it("should show connection success message after test connection", async () => {
-    vi.mocked(chrome.runtime.sendMessage).mockResolvedValueOnce({
+    mockSendMessage.mockResolvedValueOnce({
       success: true,
     });
 
@@ -220,7 +229,7 @@ describe("Settings", () => {
   });
 
   it("should show connection error message on failed test", async () => {
-    vi.mocked(chrome.runtime.sendMessage).mockResolvedValueOnce({
+    mockSendMessage.mockResolvedValueOnce({
       success: false,
       error: "Bucket not found",
     });
@@ -242,7 +251,7 @@ describe("Settings", () => {
   });
 
   it("should show error when test connection throws", async () => {
-    vi.mocked(chrome.runtime.sendMessage).mockRejectedValueOnce(
+    mockSendMessage.mockRejectedValueOnce(
       new Error("Network error"),
     );
 
@@ -263,7 +272,7 @@ describe("Settings", () => {
   });
 
   it("should show error when test connection throws non-Error", async () => {
-    vi.mocked(chrome.runtime.sendMessage).mockRejectedValueOnce(
+    mockSendMessage.mockRejectedValueOnce(
       "something went wrong",
     );
 

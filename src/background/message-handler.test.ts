@@ -53,6 +53,14 @@ vi.stubGlobal("chrome", {
   },
 });
 
+// @types/chrome >= 0.1.43 exposes a callback overload whose return type is
+// `void`; narrow to the Promise overload so `mockResolvedValue` type-checks.
+const mockTabsQuery = vi.mocked(
+  chrome.tabs.query as (
+    queryInfo: chrome.tabs.QueryInfo,
+  ) => Promise<chrome.tabs.Tab[]>,
+);
+
 describe("handleMessage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -164,7 +172,7 @@ describe("handleMessage", () => {
         valid: true,
         errors: {},
       });
-      vi.mocked(chrome.tabs.query).mockResolvedValue([]);
+      mockTabsQuery.mockResolvedValue([]);
 
       const result = await handleMessage(fullPageRequest);
 
@@ -182,7 +190,7 @@ describe("handleMessage", () => {
         valid: true,
         errors: {},
       });
-      vi.mocked(chrome.tabs.query).mockResolvedValue([
+      mockTabsQuery.mockResolvedValue([
         { id: 42, url: "chrome://extensions/" } as chrome.tabs.Tab,
       ]);
 
@@ -204,7 +212,7 @@ describe("handleMessage", () => {
         valid: true,
         errors: {},
       });
-      vi.mocked(chrome.tabs.query).mockResolvedValue([
+      mockTabsQuery.mockResolvedValue([
         { id: 42, url: "chrome-extension://abc123/options.html" } as chrome.tabs.Tab,
       ]);
 

@@ -5,6 +5,14 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] - 2026-06-16
+
+### Security
+
+- Force transitive `vite` to `^8.0.16` via `overrides`, eliminating the
+  vulnerable `vite@8.0.12` pulled in by `vitest` (GHSA-fx2h-pf6j-xcff
+  `server.fs.deny` bypass, GHSA-v6wh-96g9-6wx3 launch-editor NTLMv2 disclosure)
+
 ## [1.2.0] - 2026-05-12
 
 ### Changed
@@ -78,6 +86,7 @@ Initial public release.
 - 115 tests (108 unit + 7 E2E), 97%+ coverage
 - Git hooks — pre-commit (UT), pre-push (UT + lint)
 
+[1.2.1]: https://github.com/nocoo/r2shot/releases/tag/v1.2.1
 [1.2.0]: https://github.com/nocoo/r2shot/releases/tag/v1.2.0
 [1.1.2]: https://github.com/nocoo/r2shot/releases/tag/v1.1.2
 [1.1.0]: https://github.com/nocoo/r2shot/releases/tag/v1.1.0

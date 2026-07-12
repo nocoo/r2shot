@@ -37,8 +37,8 @@ function devManifestIcons(): Plugin {
 
 /**
  * Vite plugin that redirects @aws-sdk/xml-builder's browser XML parser
- * to the non-browser variant using fast-xml-parser instead of DOMParser,
- * which is unavailable in MV3 service workers.
+ * to the non-browser variant, which uses AWS's own pure-JS parser instead
+ * of DOMParser (unavailable in MV3 service workers).
  *
  * Vite's built-in browser field resolution remaps "./xml-parser" →
  * "./xml-parser.browser" before plugins see it, so we intercept the
@@ -59,7 +59,6 @@ function fixXmlParserForServiceWorker(): Plugin {
     enforce: "pre",
     load(id) {
       if (id === browserFile) {
-        // Redirect to the non-browser variant that uses fast-xml-parser
         return readFileSync(nodeFile, "utf-8");
       }
     },

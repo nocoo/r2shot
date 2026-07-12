@@ -47,7 +47,6 @@
     "@aws-sdk/client-s3": "3.1085.0",
     "brace-expansion": "^5.0.7",
     "clsx": "^2.1.1",
-    "fast-xml-parser": "^5.9.3",
     "lucide-react": "^1.24.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

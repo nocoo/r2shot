@@ -44,14 +44,14 @@
     "vitest": "4.1.10"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.1086.0",
+    "@aws-sdk/client-s3": "3.1088.0",
     "brace-expansion": "^5.0.7",
     "clsx": "^2.1.1",
     "lucide-react": "^1.24.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "tailwind-merge": "^3.6.0",
-    "ws": "^8.21.0"
+    "ws": "8.21.1"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -59,7 +59,7 @@
     ]
   },
   "overrides": {
-    "ws": "^8.20.1",
+    "ws": "^8.21.1",
     "esbuild": "^0.28.1",
     "vite": "^8.1.4"
   }

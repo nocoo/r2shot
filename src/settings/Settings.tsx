@@ -156,9 +156,9 @@ export function Settings() {
               }
               className={cn(errors.jpgQuality && "border-destructive")}
             />
-            {errors.jpgQuality && (
+            {errors.jpgQuality ? (
               <p className="text-sm text-destructive">{errors.jpgQuality}</p>
-            )}
+            ) : null}
           </div>
 
           <div className="space-y-1.5">
@@ -177,9 +177,9 @@ export function Settings() {
               }
               className={cn(errors.maxScreens && "border-destructive")}
             />
-            {errors.maxScreens && (
+            {errors.maxScreens ? (
               <p className="text-sm text-destructive">{errors.maxScreens}</p>
-            )}
+            ) : null}
             <p className="text-xs text-muted-foreground">
               Maximum viewport heights to capture in full-page mode (1–100)
             </p>
@@ -264,7 +264,7 @@ function ConfigField({
         placeholder={placeholder}
         className={cn(error && "border-destructive")}
       />
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
     </div>
   );
 }

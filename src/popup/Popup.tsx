@@ -128,7 +128,7 @@ export function Popup() {
             </Button>
           </div>
           {/* Toast notification */}
-          {copied && (
+          {copied ? (
             <div
               role="status"
               className="flex items-center gap-2 text-sm text-success bg-success/10 p-2 rounded-md"
@@ -136,7 +136,7 @@ export function Popup() {
               <Check className="h-4 w-4" />
               Copied to clipboard!
             </div>
-          )}
+          ) : null}
         </div>
       )}
 

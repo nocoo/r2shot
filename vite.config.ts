@@ -1,8 +1,8 @@
-import { defineConfig, type Plugin } from "vite";
-import react from "@vitejs/plugin-react";
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
-import { resolve } from "path";
-import { readFileSync, writeFileSync } from "fs";
+import react from "@vitejs/plugin-react";
+import { defineConfig, type Plugin } from "vite";
 
 /**
  * Vite plugin that rewrites manifest.json icon paths to use dev (red) icons
@@ -27,7 +27,9 @@ function devManifestIcons(): Plugin {
         const raw = readFileSync(manifestPath, "utf-8");
         const patched = raw.replace(/icons\//g, "icons/dev/");
         writeFileSync(manifestPath, patched, "utf-8");
-        console.log("\n  [dev-manifest-icons] Rewrote icon paths to icons/dev/");
+        console.log(
+          "\n  [dev-manifest-icons] Rewrote icon paths to icons/dev/",
+        );
       } catch {
         // manifest.json may not exist yet during dev server start
       }

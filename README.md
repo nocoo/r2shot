@@ -71,8 +71,8 @@ bun install
 | `bun run test:watch` | Run tests in watch mode |
 | `bun run test:coverage` | Run tests with V8 coverage report (90% threshold) |
 | `bun run test:e2e` | Run E2E tests |
-| `bun run lint` | Lint `src/` with ESLint (zero warnings enforced) |
-| `bun run lint:fix` | Lint and auto-fix |
+| `bun run lint` | Lint + format check with Biome (zero warnings enforced) |
+| `bun run lint:fix` | Lint, format, and auto-fix with Biome |
 
 ### Git Hooks
 
@@ -124,7 +124,7 @@ r2shot/
 ├── vite.config.ts         # Multi-entry Vite build config
 ├── vitest.config.ts       # Vitest + coverage config
 ├── vitest.e2e.config.ts   # E2E test config
-├── eslint.config.js       # ESLint flat config
+├── biome.jsonc            # Biome linter + formatter config
 ├── tsconfig.json          # TypeScript config (path aliases)
 └── package.json           # Scripts & dependencies
 ```

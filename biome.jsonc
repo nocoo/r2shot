@@ -6,7 +6,10 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["src/**/*.{ts,tsx,js,jsx,json}"]
+    "includes": [
+      "src/**/*.{ts,tsx,js,jsx,json}",
+      "*.{ts,js,mjs,cjs,json,jsonc}"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -27,7 +30,7 @@
       "react": "recommended"
     },
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "correctness": {
         "noUnusedVariables": "error",
         "noUnusedImports": "error",

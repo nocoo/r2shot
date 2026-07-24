@@ -1,5 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import "@testing-library/jest-dom";
 import { Popup } from "./Popup";
 
@@ -38,7 +44,9 @@ describe("Popup", () => {
   it("should render description text above capture button", () => {
     render(<Popup />);
     expect(
-      screen.getByText(/take a screenshot of the current tab and upload to r2/i),
+      screen.getByText(
+        /take a screenshot of the current tab and upload to r2/i,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -197,9 +205,7 @@ describe("Popup", () => {
       vi.advanceTimersByTime(2000);
     });
 
-    expect(
-      screen.queryByText(/copied to clipboard/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/copied to clipboard/i)).not.toBeInTheDocument();
 
     vi.useRealTimers();
   });

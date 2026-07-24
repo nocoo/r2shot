@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { handleMessage } from "./message-handler";
-import type { CaptureAndUploadRequest } from "../types/messages";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { R2Config } from "../core/r2-config";
+import type { CaptureAndUploadRequest } from "../types/messages";
+import { handleMessage } from "./message-handler";
 
 // Mock all core modules
 vi.mock("../core/storage", () => ({
@@ -29,12 +29,12 @@ vi.mock("../core/full-page-screenshot", () => ({
   captureFullPage: vi.fn(),
 }));
 
-import { loadConfig } from "../core/storage";
-import { captureVisibleTab, dataUrlToBlob } from "../core/screenshot";
-import { captureFullPage } from "../core/full-page-screenshot";
-import { uploadToR2 } from "../core/uploader";
 import { verifyR2Connection } from "../core/connection";
+import { captureFullPage } from "../core/full-page-screenshot";
 import { validateR2Config } from "../core/r2-config";
+import { captureVisibleTab, dataUrlToBlob } from "../core/screenshot";
+import { loadConfig } from "../core/storage";
+import { uploadToR2 } from "../core/uploader";
 
 const baseConfig: R2Config = {
   endpoint: "https://acc.r2.cloudflarestorage.com",
@@ -67,7 +67,10 @@ describe("handleMessage", () => {
   });
 
   describe("CAPTURE_AND_UPLOAD", () => {
-    const request: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD", fullPage: false };
+    const request: CaptureAndUploadRequest = {
+      type: "CAPTURE_AND_UPLOAD",
+      fullPage: false,
+    };
 
     it("should capture visible tab, upload, and return CDN URL on success", async () => {
       const fakeDataUrl = "data:image/jpeg;base64,/9j/";
@@ -94,7 +97,10 @@ describe("handleMessage", () => {
     });
 
     it("should use full-page capture when fullPage is enabled", async () => {
-      const fullPageRequest: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD", fullPage: true };
+      const fullPageRequest: CaptureAndUploadRequest = {
+        type: "CAPTURE_AND_UPLOAD",
+        fullPage: true,
+      };
       const fakeBlob = new Blob(["full-img"], { type: "image/jpeg" });
       const fakeCdnUrl = "https://cdn.example.com/2026-02-19/full.jpg";
 
@@ -153,7 +159,9 @@ describe("handleMessage", () => {
         valid: true,
         errors: {},
       });
-      vi.mocked(captureVisibleTab).mockResolvedValue("data:image/jpeg;base64,x");
+      vi.mocked(captureVisibleTab).mockResolvedValue(
+        "data:image/jpeg;base64,x",
+      );
       vi.mocked(dataUrlToBlob).mockReturnValue(
         new Blob(["x"], { type: "image/jpeg" }),
       );
@@ -165,7 +173,10 @@ describe("handleMessage", () => {
     });
 
     it("should return error when no active tab found for full-page capture", async () => {
-      const fullPageRequest: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD", fullPage: true };
+      const fullPageRequest: CaptureAndUploadRequest = {
+        type: "CAPTURE_AND_UPLOAD",
+        fullPage: true,
+      };
 
       vi.mocked(loadConfig).mockResolvedValue(baseConfig);
       vi.mocked(validateR2Config).mockReturnValue({
@@ -183,7 +194,10 @@ describe("handleMessage", () => {
     });
 
     it("should return error when full-page capture is attempted on chrome:// URL", async () => {
-      const fullPageRequest: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD", fullPage: true };
+      const fullPageRequest: CaptureAndUploadRequest = {
+        type: "CAPTURE_AND_UPLOAD",
+        fullPage: true,
+      };
 
       vi.mocked(loadConfig).mockResolvedValue(baseConfig);
       vi.mocked(validateR2Config).mockReturnValue({
@@ -205,7 +219,10 @@ describe("handleMessage", () => {
     });
 
     it("should return error when full-page capture is attempted on chrome-extension:// URL", async () => {
-      const fullPageRequest: CaptureAndUploadRequest = { type: "CAPTURE_AND_UPLOAD", fullPage: true };
+      const fullPageRequest: CaptureAndUploadRequest = {
+        type: "CAPTURE_AND_UPLOAD",
+        fullPage: true,
+      };
 
       vi.mocked(loadConfig).mockResolvedValue(baseConfig);
       vi.mocked(validateR2Config).mockReturnValue({
@@ -213,7 +230,10 @@ describe("handleMessage", () => {
         errors: {},
       });
       mockTabsQuery.mockResolvedValue([
-        { id: 42, url: "chrome-extension://abc123/options.html" } as chrome.tabs.Tab,
+        {
+          id: 42,
+          url: "chrome-extension://abc123/options.html",
+        } as chrome.tabs.Tab,
       ]);
 
       const result = await handleMessage(fullPageRequest);

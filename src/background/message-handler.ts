@@ -1,13 +1,13 @@
-import { loadConfig } from "../core/storage";
-import { captureVisibleTab, dataUrlToBlob } from "../core/screenshot";
-import { captureFullPage } from "../core/full-page-screenshot";
-import { uploadToR2 } from "../core/uploader";
 import { verifyR2Connection } from "../core/connection";
-import { validateR2Config, type R2Config } from "../core/r2-config";
+import { captureFullPage } from "../core/full-page-screenshot";
+import { type R2Config, validateR2Config } from "../core/r2-config";
+import { captureVisibleTab, dataUrlToBlob } from "../core/screenshot";
+import { loadConfig } from "../core/storage";
+import { uploadToR2 } from "../core/uploader";
 import type {
-  ExtensionRequest,
   CaptureResponse,
   ConnectionResponse,
+  ExtensionRequest,
 } from "../types/messages";
 
 export async function handleMessage(
@@ -61,7 +61,11 @@ async function handleCaptureAndUpload(
             "Full-page capture is not available on browser internal pages. Please try on a regular web page.",
         };
       }
-      blob = await captureFullPage(tab.id, config.jpgQuality, config.maxScreens);
+      blob = await captureFullPage(
+        tab.id,
+        config.jpgQuality,
+        config.maxScreens,
+      );
     } else {
       const dataUrl = await captureVisibleTab(config.jpgQuality);
       blob = dataUrlToBlob(dataUrl);

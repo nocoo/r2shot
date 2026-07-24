@@ -18,7 +18,9 @@ export interface VerifyConnectionRequest {
   };
 }
 
-export type ExtensionRequest = CaptureAndUploadRequest | VerifyConnectionRequest;
+export type ExtensionRequest =
+  | CaptureAndUploadRequest
+  | VerifyConnectionRequest;
 
 export interface SuccessResponse {
   success: true;

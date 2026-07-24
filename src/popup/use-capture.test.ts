@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { act, renderHook } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useCaptureAndUpload } from "./use-capture";
 
 const mockSendMessage = vi.fn();
@@ -77,7 +77,9 @@ describe("useCaptureAndUpload", () => {
   });
 
   it("should handle chrome.runtime.sendMessage throwing", async () => {
-    mockSendMessage.mockRejectedValue(new Error("Extension context invalidated"));
+    mockSendMessage.mockRejectedValue(
+      new Error("Extension context invalidated"),
+    );
 
     const { result } = renderHook(() => useCaptureAndUpload());
 

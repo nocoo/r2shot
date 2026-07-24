@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useTheme } from "./use-theme";
 
 const mockStorage: Record<string, unknown> = {};
@@ -28,9 +28,11 @@ vi.stubGlobal("chrome", {
 vi.stubGlobal("matchMedia", (query: string) => ({
   matches: query === "(prefers-color-scheme: dark)" ? mediaQueryMatches : false,
   media: query,
-  addEventListener: vi.fn((_event: string, handler: (e: MediaQueryListEvent) => void) => {
-    mediaChangeHandler = handler;
-  }),
+  addEventListener: vi.fn(
+    (_event: string, handler: (e: MediaQueryListEvent) => void) => {
+      mediaChangeHandler = handler;
+    },
+  ),
   removeEventListener: vi.fn(() => {
     mediaChangeHandler = null;
   }),
@@ -55,7 +57,7 @@ describe("useTheme", () => {
   });
 
   it("should load saved theme from storage", async () => {
-    mockStorage["r2shot_theme"] = "dark";
+    mockStorage.r2shot_theme = "dark";
     const { result, unmount } = renderHook(() => useTheme());
 
     await waitFor(() => {
@@ -67,7 +69,7 @@ describe("useTheme", () => {
   });
 
   it("should apply light theme (no dark class)", async () => {
-    mockStorage["r2shot_theme"] = "light";
+    mockStorage.r2shot_theme = "light";
     const { result, unmount } = renderHook(() => useTheme());
 
     await waitFor(() => {
@@ -141,7 +143,7 @@ describe("useTheme", () => {
   });
 
   it("should ignore invalid saved theme values", async () => {
-    mockStorage["r2shot_theme"] = "invalid-value";
+    mockStorage.r2shot_theme = "invalid-value";
     const { result, unmount } = renderHook(() => useTheme());
 
     // Should stay at default "system"

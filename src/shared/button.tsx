@@ -1,4 +1,4 @@
-import { forwardRef, type ButtonHTMLAttributes } from "react";
+import { type ButtonHTMLAttributes, forwardRef } from "react";
 import { cn } from "./cn";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -9,8 +9,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const variantStyles: Record<string, string> = {
   default:
     "bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm",
-  outline:
-    "border border-border bg-transparent hover:bg-muted text-foreground",
+  outline: "border border-border bg-transparent hover:bg-muted text-foreground",
   ghost: "hover:bg-muted text-foreground",
   destructive:
     "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",

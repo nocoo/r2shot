@@ -12,15 +12,15 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
-    "lint": "eslint src --max-warnings 0",
-    "lint:fix": "eslint src --fix",
+    "lint": "biome check src --error-on-warnings",
+    "lint:fix": "biome check src --write --error-on-warnings",
     "build:zip": "bash scripts/build.sh",
     "prepare": "git config core.hookspath .husky",
     "release": "bun run scripts/release.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@biomejs/biome": "^2.5.4",
     "@tailwindcss/vite": "4.3.3",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "7.0.0",
@@ -29,17 +29,11 @@
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@typescript-eslint/eslint-plugin": "8.65.0",
-    "@typescript-eslint/parser": "8.65.0",
     "@vitejs/plugin-react": "^6.0.4",
     "@vitest/coverage-v8": "4.1.10",
-    "eslint": "10.7.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "globals": "^17.7.0",
     "happy-dom": "^20.11.1",
     "tailwindcss": "4.3.3",
     "typescript": "^6.0.3",
-    "typescript-eslint": "8.65.0",
     "vite": "8.1.5",
     "vitest": "4.1.10"
   },
@@ -54,8 +48,8 @@
     "ws": "8.21.1"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --max-warnings=0"
+    "*.{ts,tsx,js,jsx,json}": [
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
     ]
   },
   "overrides": {

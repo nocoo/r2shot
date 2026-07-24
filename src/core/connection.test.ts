@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { verifyR2Connection } from "./connection";
 import type { R2Config } from "./r2-config";
 
@@ -13,7 +13,11 @@ vi.mock("./s3-client", () => ({
 
 // Mock only HeadBucketCommand from AWS SDK
 vi.mock("@aws-sdk/client-s3", () => {
-  const MockHeadBucketCommand = vi.fn().mockImplementation(function (input: unknown) { return input; });
+  const MockHeadBucketCommand = vi.fn().mockImplementation(function (
+    input: unknown,
+  ) {
+    return input;
+  });
   return {
     HeadBucketCommand: MockHeadBucketCommand,
   };

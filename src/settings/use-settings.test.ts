@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
-import { useSettings } from "./use-settings";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { R2Config } from "../core/r2-config";
+import { useSettings } from "./use-settings";
 
 const mockStorage: Record<string, unknown> = {};
 
@@ -66,7 +66,7 @@ describe("useSettings", () => {
       jpgQuality: 85,
       maxScreens: 5,
     };
-    mockStorage["r2config"] = stored;
+    mockStorage.r2config = stored;
 
     const { result } = renderHook(() => useSettings());
 

@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  type R2Config,
   DEFAULT_R2_CONFIG,
-  validateR2Config,
   parseR2Endpoint,
+  type R2Config,
+  validateR2Config,
 } from "../core/r2-config";
 import { loadConfig, saveConfig } from "../core/storage";
 import type { ConnectionResponse } from "../types/messages";

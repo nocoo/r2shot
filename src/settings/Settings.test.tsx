@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import "@testing-library/jest-dom";
 import { Settings } from "./Settings";
 
@@ -64,9 +64,7 @@ describe("Settings", () => {
   it("should render save button", async () => {
     render(<Settings />);
     await waitFor(() => {
-      expect(
-        screen.getByRole("button", { name: /save/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /save/i })).toBeInTheDocument();
     });
   });
 
@@ -98,17 +96,13 @@ describe("Settings", () => {
     render(<Settings />);
 
     await waitFor(() => {
-      expect(
-        screen.getByRole("button", { name: /save/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /save/i })).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByRole("button", { name: /save/i }));
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/endpoint url is required/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/endpoint url is required/i)).toBeInTheDocument();
     });
   });
 
@@ -149,9 +143,7 @@ describe("Settings", () => {
       expect(
         screen.getByRole("button", { name: /light/i }),
       ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: /dark/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /dark/i })).toBeInTheDocument();
       expect(
         screen.getByRole("button", { name: /system/i }),
       ).toBeInTheDocument();
@@ -176,16 +168,19 @@ describe("Settings", () => {
 
   it("should show loading state initially", async () => {
     // Mock storage to hang so loading stays true
-    let resolveGet: (v: Record<string, unknown>) => void;
+    let resolveGet: ((v: Record<string, unknown>) => void) | undefined;
     vi.mocked(chrome.storage.local.get).mockImplementationOnce(
-      () => new Promise((r) => { resolveGet = r; }),
+      () =>
+        new Promise((r) => {
+          resolveGet = r;
+        }),
     );
 
     const { unmount } = render(<Settings />);
     expect(screen.getByText("Loading...")).toBeInTheDocument();
 
     // Resolve to unblock cleanup, then unmount
-    resolveGet!({});
+    resolveGet?.({});
     await waitFor(() => {
       expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
     });
@@ -251,9 +246,7 @@ describe("Settings", () => {
   });
 
   it("should show error when test connection throws", async () => {
-    mockSendMessage.mockRejectedValueOnce(
-      new Error("Network error"),
-    );
+    mockSendMessage.mockRejectedValueOnce(new Error("Network error"));
 
     render(<Settings />);
     await waitFor(() => {
@@ -272,9 +265,7 @@ describe("Settings", () => {
   });
 
   it("should show error when test connection throws non-Error", async () => {
-    mockSendMessage.mockRejectedValueOnce(
-      "something went wrong",
-    );
+    mockSendMessage.mockRejectedValueOnce("something went wrong");
 
     render(<Settings />);
     await waitFor(() => {

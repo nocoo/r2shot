@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
-  type R2Config,
-  validateR2Config,
-  type R2ConfigValidationResult,
   parseR2Endpoint,
+  type R2Config,
+  type R2ConfigValidationResult,
+  validateR2Config,
 } from "./r2-config";
 
 describe("R2Config validation", () => {
@@ -196,9 +196,7 @@ describe("R2Config validation", () => {
     });
 
     it("should extract endpoint without bucket from bare URL", () => {
-      const result = parseR2Endpoint(
-        "https://abc123.r2.cloudflarestorage.com",
-      );
+      const result = parseR2Endpoint("https://abc123.r2.cloudflarestorage.com");
       expect(result).toEqual({
         endpoint: "https://abc123.r2.cloudflarestorage.com",
       });

@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { loadConfig, saveConfig } from "./storage";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DEFAULT_R2_CONFIG, type R2Config } from "./r2-config";
+import { loadConfig, saveConfig } from "./storage";
 
 // Mock chrome.storage.local
 const mockStorage: Record<string, unknown> = {};
@@ -49,14 +49,16 @@ describe("storage", () => {
         jpgQuality: 85,
         maxScreens: 5,
       };
-      mockStorage["r2config"] = stored;
+      mockStorage.r2config = stored;
 
       const config = await loadConfig();
       expect(config).toEqual(stored);
     });
 
     it("should merge partial stored config with defaults", async () => {
-      mockStorage["r2config"] = { endpoint: "https://partial.r2.cloudflarestorage.com" };
+      mockStorage.r2config = {
+        endpoint: "https://partial.r2.cloudflarestorage.com",
+      };
 
       const config = await loadConfig();
       expect(config.endpoint).toBe("https://partial.r2.cloudflarestorage.com");

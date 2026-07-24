@@ -1,27 +1,27 @@
-import { useSettings } from "./use-settings";
-import { useTheme, type Theme } from "../shared/use-theme";
-import { Button } from "../shared/button";
-import { Input } from "../shared/input";
-import { Label } from "../shared/label";
-import { cn } from "../shared/cn";
-import { getVersion } from "../shared/version";
 import {
-  Save,
-  PlugZap,
-  Globe,
-  Key,
-  Lock,
+  CheckCircle2,
   FolderOpen,
-  Link,
+  Globe,
   ImageIcon,
+  Key,
+  Link,
+  Loader2,
+  Lock,
+  Monitor,
+  Moon,
+  PlugZap,
+  Save,
   Scan,
   Sun,
-  Moon,
-  Monitor,
-  CheckCircle2,
   XCircle,
-  Loader2,
 } from "lucide-react";
+import { Button } from "../shared/button";
+import { cn } from "../shared/cn";
+import { Input } from "../shared/input";
+import { Label } from "../shared/label";
+import { type Theme, useTheme } from "../shared/use-theme";
+import { getVersion } from "../shared/version";
+import { useSettings } from "./use-settings";
 import "../shared/index.css";
 
 const themeOptions: { value: Theme; label: string; icon: typeof Sun }[] = [

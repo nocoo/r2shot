@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { getS3Client, resetS3Client } from "./s3-client";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { R2Config } from "./r2-config";
+import { getS3Client, resetS3Client } from "./s3-client";
 
 vi.mock("@aws-sdk/client-s3", () => {
   const MockS3Client = vi.fn().mockImplementation(function () {

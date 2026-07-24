@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  getPageMetrics,
-  scrollTo,
-  restoreScroll,
   captureFullPage,
+  getPageMetrics,
+  restoreScroll,
+  scrollTo,
 } from "./full-page-screenshot";
 
 // ── Chrome API mocks ───────────────────────────────────────────────────

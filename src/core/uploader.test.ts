@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { generateObjectKey, buildPublicUrl, uploadToR2 } from "./uploader";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { R2Config } from "./r2-config";
+import { buildPublicUrl, generateObjectKey, uploadToR2 } from "./uploader";
 
 const mockSend = vi.fn().mockResolvedValue({});
 
@@ -13,7 +13,11 @@ vi.mock("./s3-client", () => ({
 
 // Mock only PutObjectCommand from AWS SDK
 vi.mock("@aws-sdk/client-s3", () => {
-  const MockPutObjectCommand = vi.fn().mockImplementation(function (input: unknown) { return input; });
+  const MockPutObjectCommand = vi.fn().mockImplementation(function (
+    input: unknown,
+  ) {
+    return input;
+  });
   return {
     PutObjectCommand: MockPutObjectCommand,
   };
@@ -53,18 +57,12 @@ describe("uploader", () => {
 
   describe("buildPublicUrl", () => {
     it("should combine domain and object key with https", () => {
-      const url = buildPublicUrl(
-        "cdn.example.com",
-        "2026-02-19/abc-123.jpg",
-      );
+      const url = buildPublicUrl("cdn.example.com", "2026-02-19/abc-123.jpg");
       expect(url).toBe("https://cdn.example.com/2026-02-19/abc-123.jpg");
     });
 
     it("should not double-slash if domain has trailing slash", () => {
-      const url = buildPublicUrl(
-        "cdn.example.com/",
-        "2026-02-19/abc.jpg",
-      );
+      const url = buildPublicUrl("cdn.example.com/", "2026-02-19/abc.jpg");
       expect(url).toBe("https://cdn.example.com/2026-02-19/abc.jpg");
     });
 

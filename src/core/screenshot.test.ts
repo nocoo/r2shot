@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { captureVisibleTab, dataUrlToBlob } from "./screenshot";
 
 const mockCaptureVisibleTab = vi.fn();
@@ -15,8 +15,7 @@ describe("screenshot", () => {
 
   describe("captureVisibleTab", () => {
     it("should call chrome.tabs.captureVisibleTab with jpeg format", async () => {
-      const fakeDataUrl =
-        "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD";
+      const fakeDataUrl = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD";
       mockCaptureVisibleTab.mockResolvedValue(fakeDataUrl);
 
       const result = await captureVisibleTab(90);
@@ -41,13 +40,9 @@ describe("screenshot", () => {
     });
 
     it("should propagate errors from chrome API", async () => {
-      mockCaptureVisibleTab.mockRejectedValue(
-        new Error("Cannot capture tab"),
-      );
+      mockCaptureVisibleTab.mockRejectedValue(new Error("Cannot capture tab"));
 
-      await expect(captureVisibleTab(90)).rejects.toThrow(
-        "Cannot capture tab",
-      );
+      await expect(captureVisibleTab(90)).rejects.toThrow("Cannot capture tab");
     });
   });
 
@@ -63,9 +58,7 @@ describe("screenshot", () => {
     });
 
     it("should throw on invalid data URL", () => {
-      expect(() => dataUrlToBlob("not-a-data-url")).toThrow(
-        "Invalid data URL",
-      );
+      expect(() => dataUrlToBlob("not-a-data-url")).toThrow("Invalid data URL");
     });
 
     it("should handle data URL with no base64 content", () => {

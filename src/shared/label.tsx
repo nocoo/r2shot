@@ -6,6 +6,7 @@ export const Label = forwardRef<
   LabelHTMLAttributes<HTMLLabelElement>
 >(({ className, ...props }, ref) => {
   return (
+    // biome-ignore lint/a11y/noLabelWithoutControl: generic forwardRef wrapper; htmlFor / children are supplied by callers
     <label
       ref={ref}
       className={cn(

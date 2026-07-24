@@ -16,8 +16,7 @@ export async function verifyR2Connection(
     await client.send(new HeadBucketCommand({ Bucket: config.bucketName }));
     return { ok: true };
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : "Connection failed";
+    const message = err instanceof Error ? err.message : "Connection failed";
     return { ok: false, error: message };
   }
 }

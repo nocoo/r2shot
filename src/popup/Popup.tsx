@@ -1,18 +1,18 @@
-import { useState, useEffect, useCallback } from "react";
-import { useCaptureAndUpload } from "./use-capture";
-import { useTheme } from "../shared/use-theme";
+import {
+  AlertCircle,
+  Camera,
+  Check,
+  Copy,
+  Loader2,
+  RefreshCw,
+  Scan,
+  Settings,
+} from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "../shared/button";
 import { cn } from "../shared/cn";
-import {
-  Camera,
-  Settings,
-  Copy,
-  Check,
-  RefreshCw,
-  Loader2,
-  AlertCircle,
-  Scan,
-} from "lucide-react";
+import { useTheme } from "../shared/use-theme";
+import { useCaptureAndUpload } from "./use-capture";
 import "../shared/index.css";
 
 export function Popup() {
@@ -43,11 +43,7 @@ export function Popup() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <img
-            src="/icons/logo32.png"
-            alt="R2Shot logo"
-            className="h-6 w-6"
-          />
+          <img src="/icons/logo32.png" alt="R2Shot logo" className="h-6 w-6" />
           <h1 className="text-lg font-bold">R2Shot</h1>
         </div>
         <Button

@@ -5,6 +5,79 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## v1.3.0
+
+### Added
+- Enable react domain and stricter hooks-adjacent rules
+
+### Changed
+- Expand biome coverage to root configs and update docs
+- Bump typescript to 7.0.2
+- Replace ts-eslint with biome for lint + format
+- STU-2145: chore(deps): 2026-07-23 batch — happy-dom + plugin-react + aws-sdk s3 (#151)
+- STU-2120: chore(deps): 2026-07-22 batch — aws-sdk s3 + react 19.2.8 (#147)
+- 2026-07-21 batch — brace-expansion CVE, aws-sdk, typescript-eslint 8.65, jest-dom v7 (#143)
+- Bump happy-dom 20.10.6 → 20.11.0
+- Bump lucide-react 1.24.0 → 1.25.0
+- Bump @aws-sdk/client-s3 3.1089.0 → 3.1090.0
+- Bump vite 8.1.4 → 8.1.5
+- Bump tailwindcss + @tailwindcss/vite 4.3.2 → 4.3.3
+- Bump @aws-sdk/client-s3 3.1088.0 → 3.1089.0
+- Bump @aws-sdk/client-s3 3.1086.0 → 3.1088.0
+- Bump ws 8.21.0 → 8.21.1
+- Bump typescript-eslint family 8.63.0 → 8.64.0 (#122)
+- Bump @aws-sdk/client-s3 3.1085.0 → 3.1086.0 (#121)
+- Bump @aws-sdk/client-s3 3.1084.0 → 3.1085.0
+- Bump eslint 10.6.0 → 10.7.0
+- Bump vite 8.1.3 → 8.1.4
+- Bump lucide-react 1.23.0 → 1.24.0
+- Bump @aws-sdk/client-s3 3.1083.0 → 3.1084.0
+- Bump @types/node 26.1.0 → 26.1.1
+- Bump @aws-sdk/client-s3 3.1081.0 → 3.1083.0
+- Bump @aws-sdk/client-s3 3.1080.0 → 3.1081.0
+- Upgrade dependencies (batch 2026-07-07)
+- Upgrade dependencies (batch 2026-07-03)
+- Add root .npmrc for supply chain security baseline
+- Upgrade dependencies (batch 2026-07-02)
+- Upgrade dependencies (batch 2026-07-01)
+- Upgrade dependencies (batch 2026-06-30) (#81)
+- Bump lucide-react 1.21.0 → 1.22.0
+- Bump postcss 8.5.15 → 8.5.16
+- Bump eslint 10.5.0 → 10.6.0
+- Bump @types/node 26.0.0 → 26.0.1
+- Pin direct vite to 8.1.0 (no caret)
+- Bump vite 8.0.16 → 8.1.0
+- Bump @vitejs/plugin-react 6.0.2 → 6.0.3
+- Bump @aws-sdk/client-s3 3.1074.0 → 3.1075.0
+- Bump globals 17.6.0 → 17.7.0
+- Bump typescript-eslint 8.61.1 → 8.62.0
+- Bump @aws-sdk/client-s3 3.1073.0 → 3.1074.0
+- Bump @types/chrome 0.1.43 → 0.2.0
+- Bump @types/node 25.9.3 → 26.0.0
+- Bump lucide-react 1.20.0 → 1.21.0
+- Bump @aws-sdk/client-s3 3.1071.0 → 3.1073.0
+- Bump fast-xml-parser 5.9.2 → 5.9.3
+- Pin base-ci reusable workflow to v2026.5 SHA
+- Bump @aws-sdk/client-s3 3.1070.0 → 3.1071.0
+- Bump fast-xml-parser 5.9.0 → 5.9.2
+- Bump happy-dom 20.10.5 → 20.10.6
+- Bump lucide-react 1.18.0 -> 1.20.0
+- Bump happy-dom 20.10.4 -> 20.10.5
+- Bump @aws-sdk/client-s3 3.1069.0 -> 3.1070.0
+- Bump happy-dom 20.10.3 -> 20.10.4
+- Bump fast-xml-parser 5.8.0 -> 5.9.0
+- Bump @aws-sdk/client-s3 3.1068.0 -> 3.1069.0
+- Bump vitest family 4.1.8 -> 4.1.9
+- Bump typescript-eslint family 8.61.0 -> 8.61.1
+
+### Fixed
+- Widen lint scripts from src to repo root
+- Regenerate bun.lock against official npm registry
+
+### Removed
+- Drop unused fast-xml-parser dep
+- Drop unused root postcss dep
+
 ## [1.2.1] - 2026-06-16
 
 ### Security

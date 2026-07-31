@@ -5,6 +5,11 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.3.1] - 2026-07-31
+
+### Changed
+- STU-2029: chore(deps): 2026-07-31 batch — vite 8.1.5→8.2.0, lucide-react 1.25.0→1.28.0, brace-expansion 5.0.8→5.0.9, @vitejs/plugin-react 6.0.4→6.0.5, @types/react-dom 19.2.3→19.2.4, @types/react 19.2.17→19.2.18, @aws-sdk/client-s3 3.1093.0→3.1099.0, @types/node 26.1.1→26.1.2, @biomejs/biome 2.5.5→2.5.6
+
 ## v1.3.0
 
 ### Added
@@ -159,6 +164,7 @@ Initial public release.
 - 115 tests (108 unit + 7 E2E), 97%+ coverage
 - Git hooks — pre-commit (UT), pre-push (UT + lint)
 
+[1.3.1]: https://github.com/nocoo/r2shot/releases/tag/v1.3.1
 [1.2.1]: https://github.com/nocoo/r2shot/releases/tag/v1.2.1
 [1.2.0]: https://github.com/nocoo/r2shot/releases/tag/v1.2.0
 [1.1.2]: https://github.com/nocoo/r2shot/releases/tag/v1.1.2

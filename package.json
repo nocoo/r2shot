@@ -38,7 +38,7 @@
     "vitest": "4.1.10"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.1107.0",
+    "@aws-sdk/client-s3": "3.1108.0",
     "brace-expansion": "5.0.9",
     "clsx": "^2.1.1",
     "lucide-react": "1.31.0",

@@ -25,7 +25,7 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "^16.3.2",
-    "@types/chrome": "0.2.5",
+    "@types/chrome": "0.2.6",
     "@types/node": "26.2.0",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
@@ -38,7 +38,7 @@
     "vitest": "4.1.10"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.1109.0",
+    "@aws-sdk/client-s3": "3.1110.0",
     "brace-expansion": "5.0.9",
     "clsx": "^2.1.1",
     "lucide-react": "1.31.0",

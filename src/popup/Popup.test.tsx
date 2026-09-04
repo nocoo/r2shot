@@ -6,7 +6,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/vitest";
 import { Popup } from "./Popup";
 
 const mockSendMessage = vi.fn();

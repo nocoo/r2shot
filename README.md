@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" width="128" height="128" alt="R2Shot logo">
+  <img src="assets/brand/icon-rounded.png" width="128" height="128" alt="R2Shot logo">
 </p>
 
 <h1 align="center">R2Shot</h1>
@@ -117,7 +117,7 @@ r2shot/
 │   ├── settings/          # Settings page (R2 config, theme)
 │   ├── shared/            # Shared UI components (Button, Input, Label, theme)
 │   └── types/             # Message types
-├── logo.png               # Source logo (2048x2048)
+├── logo.png               # Transparent source logo (920x920)
 ├── popup.html             # Popup entry HTML
 ├── settings.html          # Settings entry HTML
 ├── PRIVACY.md             # Privacy policy

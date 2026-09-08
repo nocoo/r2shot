@@ -1,186 +1,126 @@
 <p align="center">
-  <img src="assets/brand/icon-rounded.png" width="128" height="128" alt="R2Shot logo">
+  <img src="assets/brand/icon-rounded.png" alt="R2Shot" width="128" height="128" />
 </p>
 
 <h1 align="center">R2Shot</h1>
 
-<p align="center">
-  One-click screenshot capture, upload to Cloudflare R2, CDN URL to clipboard
-</p>
+<p align="center">截取网页、上传到自己的 R2 存储，并复制分享链接。</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/manifest-v3-blue" alt="Manifest V3">
-  <img src="https://img.shields.io/badge/coverage-97%25-brightgreen" alt="Coverage 97%">
-  <img src="https://img.shields.io/badge/tests-115_passing-brightgreen" alt="115 tests passing">
-  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License MIT">
+  <a href="https://chromewebstore.google.com/detail/r2shot/chhcpjnlcbomogddjockcpjjpiijogha">Chrome 应用商店</a> ·
+  <a href="docs/README.en.md">English</a>
 </p>
 
-<p align="center">
-  <a href="https://chromewebstore.google.com/detail/r2shot/chhcpjnlcbomogddjockcpjjpiijogha">
-    <img src="https://developer.chrome.com/static/docs/webstore/branding/image/HRs9MPufa1J1h5glNhut.png" alt="Available in the Chrome Web Store" height="75">
-  </a>
-</p>
+## 这是什么
 
----
+R2Shot 是一个 Chrome 扩展，把网页截图和图片上传放在同一个弹窗里。配置自己的 Cloudflare R2 bucket 与公开域名后，截图会直接上传到该 bucket；上传成功后可点击 Copy URL 复制链接，用于笔记、文档或消息分享。
 
-## Features
+扩展需要你提供 R2 存储和访问凭据，没有独立的上传服务或账户系统。当前弹窗和设置界面使用英文，扩展名称与描述包含多语言资源。
 
-- **One-click capture** -- screenshot visible tab from browser toolbar
-- **Cloudflare R2 upload** -- automatic upload via S3-compatible API with date-folder/GUID naming
-- **CDN URL** -- generates public URL from custom domain, copies to clipboard with toast feedback
-- **Smart endpoint parsing** -- paste a full S3 API URL and auto-extract endpoint + bucket name
-- **Connection test** -- verify R2 credentials before saving
-- **Themes** -- system / light / dark
-- **Configurable quality** -- adjust JPG compression (1-100)
-- **i18n** -- 10 languages: English, 简体中文, 繁體中文, 日本語, 한국어, Francais, Deutsch, Espanol, Portugues (BR), Русский
+## 功能
 
-## Getting Started
+- 截取当前标签页的可见区域，或开启 Full Page 纵向滚动并拼接截图。
+- 以 JPEG 上传，压缩质量可设为 1–100；整页截图默认最多 5 个视口高度，可调整为 1–100。
+- 按 UTC 日期目录和随机 UUID 保存图片，例如 `2026-09-08/<uuid>.jpg`。
+- 根据公开域名生成 HTTPS 图片链接，提供复制按钮和上传错误反馈。
+- 粘贴完整 R2 S3 API 地址时自动提取 endpoint 和 bucket 名称；可以测试 bucket 连接。
+- 将配置保存在本机浏览器，支持浅色、深色和跟随系统主题。
 
-### Prerequisites
+整页模式按当前视口宽度拼接已加载内容，并在完成后尝试恢复原来的滚动位置。浏览器内部页面不支持该模式；动态页面和无限滚动页面的结果受已加载内容及截图高度上限影响。
 
-- [Bun](https://bun.sh/) v1.x+
-- Google Chrome
+## 使用
 
-### Install
+### 安装
 
-```sh
-bun install
+从 [Chrome 应用商店](https://chromewebstore.google.com/detail/r2shot/chhcpjnlcbomogddjockcpjjpiijogha)安装并固定扩展图标。也可以按下方开发步骤构建，再在 `chrome://extensions/` 开启 Developer mode，使用 Load unpacked 加载 `dist/`。
+
+### 配置与截图
+
+打开扩展的 Settings，填写：
+
+| 配置项 | 内容 |
+| --- | --- |
+| Endpoint URL | R2 S3 API 地址，例如 `https://<account-id>.r2.cloudflarestorage.com` |
+| Access Key ID / Secret Access Key | 有权读写目标 bucket 的 R2 凭据 |
+| Bucket Name | 上传目标 bucket |
+| Custom Domain | 已配置公开访问的域名，例如 `cdn.example.com`，不带 `https://` |
+| JPG Quality | JPEG 质量，默认 90 |
+| Max Screens (Full Page) | 整页模式的最大视口高度数量，默认 5 |
+
+点击 Test Connection 检查 bucket 访问，再点击 Save。连接测试使用 `HeadBucket`；公开域名是否正确指向图片，还需要通过实际上传后的链接确认。
+
+回到普通网页，打开弹窗，选择是否开启 Full Page，然后点击 Capture。成功后点击 Copy URL。R2 凭据以明文保存在扩展的 `chrome.storage.local` 中；适合使用仅允许目标 bucket 的凭据，详细说明见[隐私政策](PRIVACY.md)。
+
+## 开发
+
+需要 Bun、Node.js 22.12+ 和 Chrome。从仓库根目录执行：
+
+```bash
+git clone https://github.com/nocoo/r2shot.git
+cd r2shot
+bun install --frozen-lockfile
+bun run build
 ```
 
-> The `prepare` script automatically sets up Git hooks.
+构建产物位于 `dist/`，在 Chrome 中作为 unpacked extension 加载。开发时运行：
 
-### Load in Chrome
-
-1. `bun run build`
-2. Navigate to `chrome://extensions/`
-3. Enable **Developer mode** (top-right toggle)
-4. Click **Load unpacked** -> select the `dist/` directory
-
----
-
-## Development
-
-### Scripts
-
-| Command | What it does |
-|---|---|
-| `bun run dev` | Start Vite dev server |
-| `bun run build` | Type-check and build for production |
-| `bun run build:zip` | Build + package into `dist/r2shot-<version>.zip` for Chrome Web Store |
-| `bun run test` | Run unit tests (Vitest) |
-| `bun run test:watch` | Run tests in watch mode |
-| `bun run test:coverage` | Run tests with V8 coverage report (90% threshold) |
-| `bun run test:e2e` | Run E2E tests |
-| `bun run lint` | Lint + format check with Biome (zero warnings enforced) |
-| `bun run lint:fix` | Lint, format, and auto-fix with Biome |
-
-### Git Hooks
-
-Hooks live in `.husky/` and are activated via `git config core.hookspath .husky`.
-
-| Stage | Command | Purpose |
-|---|---|---|
-| `pre-commit` | `bun run test` | Catch regressions before commit |
-| `pre-push` | `bun run test && bun run lint` | Full quality gate before push |
-
-### Test Coverage
-
-Coverage is enforced at **90%** for all four metrics:
-
-```
---------------------|---------|----------|---------|---------|
-File                | % Stmts | % Branch | % Funcs | % Lines |
---------------------|---------|----------|---------|---------|
-All files           |   97.62 |    91.60 |   93.93 |   97.62 |
---------------------|---------|----------|---------|---------|
+```bash
+bun run dev
 ```
 
-### Project Structure
+该命令监听文件并重新构建扩展，使用红色开发图标。修改后在 `chrome://extensions/` 重新加载扩展；它不启动普通网页开发服务器。
 
-```
-r2shot/
-├── .husky/                # Git hooks (pre-commit, pre-push)
-├── assets/                # Store descriptions (10 languages)
-├── e2e/                   # E2E tests
-│   └── workflow.test.ts
-├── public/
-│   ├── _locales/          # i18n messages (10 languages)
-│   ├── icons/             # Extension & UI icons (16-128px, logo 32/64px)
-│   └── manifest.json      # Chrome Extension Manifest V3
-├── scripts/
-│   ├── build.sh           # Build + package ZIP for Chrome Web Store
-│   └── generate-icons.sh  # Generate icons from logo.png via sips
-├── src/
-│   ├── background/        # Service worker (message routing)
-│   ├── core/              # Domain logic (upload, config, connection, storage)
-│   ├── popup/             # Toolbar popup (capture + copy UI)
-│   ├── settings/          # Settings page (R2 config, theme)
-│   ├── shared/            # Shared UI components (Button, Input, Label, theme)
-│   └── types/             # Message types
-├── logo.png               # Transparent source logo (920x920)
-├── popup.html             # Popup entry HTML
-├── settings.html          # Settings entry HTML
-├── PRIVACY.md             # Privacy policy
-├── vite.config.ts         # Multi-entry Vite build config
-├── vitest.config.ts       # Vitest + coverage config
-├── vitest.e2e.config.ts   # E2E test config
-├── biome.jsonc            # Biome linter + formatter config
-├── tsconfig.json          # TypeScript config (path aliases)
-└── package.json           # Scripts & dependencies
-```
-
-### Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Language | TypeScript |
-| UI | React 19, Tailwind CSS 4, Lucide icons |
-| Build | Vite 6 |
-| Testing | Vitest 3, Testing Library, happy-dom |
-| Upload | @aws-sdk/client-s3 (S3-compatible) |
-| Extension | Chrome Manifest V3 |
-
----
-
-## Publishing to Chrome Web Store
-
-### Build
-
-```sh
+```bash
+bun run typecheck
+bun run lint
 bun run build:zip
 ```
 
-This produces `dist/r2shot-<version>.zip` containing the built extension ready for upload.
+`build:zip` 需要 Bash 和 `zip`，会生成 `dist/r2shot-<version>.zip`。截图、存储和剪贴板功能需要在真实的扩展环境中使用。
 
-### Store Assets
+```text
+src/popup/         截图弹窗与复制操作
+src/settings/      R2 配置与主题
+src/background/    扩展消息处理
+src/core/          截图、滚动拼接、S3 上传和本地配置
+public/            Manifest V3、图标与本地化资源
+e2e/               截图到上传的工作流测试
+```
 
-| Asset | Location | Status |
-|---|---|---|
-| Description (EN) | `assets/description-en.txt` | Done |
-| Description (ZH) | `assets/description-zh.txt` | Done |
-| Description (ZH-TW) | `assets/description-zh-tw.txt` | Done |
-| Description (JA) | `assets/description-ja.txt` | Done |
-| Description (KO) | `assets/description-ko.txt` | Done |
-| Description (FR) | `assets/description-fr.txt` | Done |
-| Description (DE) | `assets/description-de.txt` | Done |
-| Description (ES) | `assets/description-es.txt` | Done |
-| Description (PT-BR) | `assets/description-pt-br.txt` | Done |
-| Description (RU) | `assets/description-ru.txt` | Done |
-| Privacy Policy | [`PRIVACY.md`](PRIVACY.md) | Done |
-| Store Icon (128x128) | `public/icons/icon128.png` | Done |
+## 测试
 
-### Steps
+从仓库根目录执行：
 
-1. Register at the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole/) ($5 one-time fee)
-2. Run `bun run build:zip` to generate the ZIP
-3. Upload `dist/r2shot-<version>.zip`
-4. Fill in listing details using the descriptions in `assets/`
-5. Set privacy policy URL to `https://github.com/nocoo/r2shot/blob/main/PRIVACY.md`
-6. Upload store icon and at least 1 screenshot (1280x800 or 640x400)
-7. Submit for review (typically 1-3 business days)
+| 测试层 | 命令 |
+| --- | --- |
+| 单元与组件测试 | `bun run test` |
+| 工作流集成测试 | `bun run test:e2e` |
+| 单元测试监听模式 | `bun run test:watch` |
 
----
+测试使用 Vitest 和 happy-dom，模拟 Chrome API 与 S3 网络边界，不需要真实 R2 凭据。实际 Chrome 加载、滚动截图和公开链接访问需要加载 `dist/` 后手动验证。`bun run test:coverage` 可生成覆盖率报告。
 
-## License
+## 技术栈
 
-[MIT](LICENSE)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![Cloudflare R2](https://img.shields.io/badge/Cloudflare_R2-F38020?logo=cloudflare&logoColor=white)
+![Manifest V3](https://img.shields.io/badge/Chrome-Manifest_V3-4285F4?logo=googlechrome&logoColor=white)
+
+| 部分 | 实现 |
+| --- | --- |
+| 扩展 | Chrome Manifest V3、后台 Service Worker、Chrome Tabs / Scripting / Storage API |
+| 界面 | React、Tailwind CSS、Lucide |
+| 图片与上传 | OffscreenCanvas、AWS SDK for JavaScript 的 S3 客户端、Cloudflare R2 |
+| 构建与测试 | Vite、TypeScript、Biome、Vitest、Testing Library、happy-dom |
+
+## 文档
+
+- [隐私政策与本地凭据存储](PRIVACY.md)
+- [变更记录](CHANGELOG.md)
+- [扩展清单](public/manifest.json)
+
+## 许可证
+
+[MIT](LICENSE) © 2026 Zheng Li

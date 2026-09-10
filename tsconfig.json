@@ -16,9 +16,6 @@
     "isolatedModules": true,
     "outDir": "dist",
     "rootDir": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "types": ["node", "chrome", "vitest/globals"]
   },
   "include": [

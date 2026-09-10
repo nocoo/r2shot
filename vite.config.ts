@@ -74,11 +74,6 @@ export default defineConfig({
     tailwindcss(),
     devManifestIcons(),
   ],
-  resolve: {
-    alias: {
-      "@": resolve(__dirname, "src"),
-    },
-  },
   build: {
     rollupOptions: {
       input: {

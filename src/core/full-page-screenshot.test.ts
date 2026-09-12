@@ -34,10 +34,6 @@ const MockOffscreenCanvas = vi.fn().mockImplementation(function () {
 });
 vi.stubGlobal("OffscreenCanvas", MockOffscreenCanvas);
 
-// ── fetch mock (for data URL → blob conversion inside captureFullPage) ─
-const mockFetch = vi.fn();
-vi.stubGlobal("fetch", mockFetch);
-
 // ── Timers ──────────────────────────────────────────────────────────────
 vi.useFakeTimers();
 
@@ -143,9 +139,6 @@ describe("full-page-screenshot", () => {
       // First call: getPageMetrics, subsequent calls: restoreScroll
       mockExecuteScript.mockResolvedValue([{ result: metrics }]);
       mockCaptureVisibleTab.mockResolvedValue("data:image/jpeg;base64,abc");
-      mockFetch.mockResolvedValue({
-        blob: () => Promise.resolve(new Blob(["img"])),
-      });
       mockCreateImageBitmap.mockResolvedValue(makeBitmap(1024, 768));
       const finalBlob = new Blob(["final"], { type: "image/jpeg" });
       mockConvertToBlob.mockResolvedValue(finalBlob);
@@ -167,9 +160,6 @@ describe("full-page-screenshot", () => {
 
       mockExecuteScript.mockResolvedValue([{ result: metrics }]);
       mockCaptureVisibleTab.mockResolvedValue("data:image/jpeg;base64,xyz");
-      mockFetch.mockResolvedValue({
-        blob: () => Promise.resolve(new Blob(["chunk"])),
-      });
       // Full viewport bitmaps: 1600×1536 (800×2, 768×2)
       // The last capture will be cropped
       mockCreateImageBitmap.mockResolvedValue(makeBitmap(1600, 1536));
@@ -281,9 +271,6 @@ describe("full-page-screenshot", () => {
       mockCaptureVisibleTab
         .mockResolvedValueOnce("data:image/jpeg;base64,ok")
         .mockRejectedValueOnce(new Error("Capture failed"));
-      mockFetch.mockResolvedValue({
-        blob: () => Promise.resolve(new Blob(["img"])),
-      });
       mockCreateImageBitmap.mockResolvedValue(makeBitmap(1024, 768));
 
       const resultPromise = captureFullPage(42, 90, 5);
@@ -309,9 +296,6 @@ describe("full-page-screenshot", () => {
 
       mockExecuteScript.mockResolvedValue([{ result: metrics }]);
       mockCaptureVisibleTab.mockResolvedValue("data:image/jpeg;base64,abc");
-      mockFetch.mockResolvedValue({
-        blob: () => Promise.resolve(new Blob(["img"])),
-      });
       mockCreateImageBitmap.mockResolvedValue(makeBitmap(1024, 768));
 
       // Override OffscreenCanvas to return null context
@@ -345,9 +329,6 @@ describe("full-page-screenshot", () => {
 
       mockExecuteScript.mockResolvedValue([{ result: metrics }]);
       mockCaptureVisibleTab.mockResolvedValue("data:image/jpeg;base64,abc");
-      mockFetch.mockResolvedValue({
-        blob: () => Promise.resolve(new Blob(["img"])),
-      });
       mockCreateImageBitmap.mockResolvedValue(makeBitmap(1024, 768));
       mockConvertToBlob.mockRejectedValue(new Error("convertToBlob failed"));
 
@@ -383,9 +364,6 @@ describe("full-page-screenshot", () => {
         .mockResolvedValueOnce([{ result: metrics }]) // getPageMetrics
         .mockRejectedValueOnce(new Error("restore failed")); // restoreScroll
       mockCaptureVisibleTab.mockResolvedValue("data:image/jpeg;base64,abc");
-      mockFetch.mockResolvedValue({
-        blob: () => Promise.resolve(new Blob(["img"])),
-      });
       mockCreateImageBitmap.mockResolvedValue(makeBitmap(1024, 768));
       const finalBlob = new Blob(["final"], { type: "image/jpeg" });
       mockConvertToBlob.mockResolvedValue(finalBlob);

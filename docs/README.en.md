@@ -96,8 +96,11 @@ Run from the repository root:
 | Unit and component tests | `bun run test` |
 | Workflow integration tests | `bun run test:e2e` |
 | Unit tests in watch mode | `bun run test:watch` |
+| Full local quality check | `bun run verify` |
 
 Tests use Vitest and happy-dom with mocked Chrome APIs and S3 network boundaries; they do not need real R2 credentials. Verify Chrome loading, scrolling screenshots, and public-link access manually after loading `dist/`. Use `bun run test:coverage` to generate a coverage report.
+
+`bun run verify` first confirms that `bun.lock` installs frozen, then runs linting, the production build, coverage tests, and workflow integration tests. Use it before committing dependency or build-configuration changes.
 
 ## Stack
 

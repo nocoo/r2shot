@@ -12,6 +12,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
+    "verify": "bun install --frozen-lockfile && bun run lint && bun run build && bun run test:coverage && bun run test:e2e",
     "lint": "biome check . --error-on-warnings",
     "lint:fix": "biome check . --write --error-on-warnings",
     "build:zip": "bash scripts/build.sh",

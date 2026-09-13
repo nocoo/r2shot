@@ -96,8 +96,11 @@ e2e/               截图到上传的工作流测试
 | 单元与组件测试 | `bun run test` |
 | 工作流集成测试 | `bun run test:e2e` |
 | 单元测试监听模式 | `bun run test:watch` |
+| 完整本地质量验证 | `bun run verify` |
 
 测试使用 Vitest 和 happy-dom，模拟 Chrome API 与 S3 网络边界，不需要真实 R2 凭据。实际 Chrome 加载、滚动截图和公开链接访问需要加载 `dist/` 后手动验证。`bun run test:coverage` 可生成覆盖率报告。
+
+`bun run verify` 先验证 `bun.lock` 可冻结安装，再依次执行静态检查、生产构建、覆盖率测试和工作流集成测试，适合在提交依赖或构建配置变更前运行。
 
 ## 技术栈
 

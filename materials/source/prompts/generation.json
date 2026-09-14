@@ -1,0 +1,17 @@
+{
+  "provider": "Azure OpenAI",
+  "deployment": "gpt-image-2.5-sunburst",
+  "helper": "agi-image-generation/scripts/generate.py (workflow skill; only needed for new images)",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "purpose": "Decorative scenery; no generated logos, interface elements, or lettering",
+  "originals": {
+    "r2shot": {
+      "file": "materials/source/images/r2shot-original.png",
+      "sha256": "028ba3152c7eb6202ec7bc54f0a403b08cd86b24b4192cfbe7800e250ca2ba19",
+      "prompt": "materials/source/prompts/r2shot.txt"
+    }
+  }
+}

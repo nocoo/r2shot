@@ -1,0 +1,7 @@
+PASS Packaged settings: version, endpoint parsing, unsaved connection test, validation and storage
+PASS Real visible-tab capture, JPEG dimensions and signed upload bytes
+PASS Full-page stitching, output dimensions and restored scroll position
+PASS Failed upload, hidden result and successful retry
+PASS Clipboard success and denial with isolated stubs
+PASS Settings fit 390, 860 and 1280px widths
+PASS Light/dark UI and result screenshots from the installed ZIP

@@ -1,0 +1,66 @@
+{
+  "accent": "#177c70",
+  "ink": "#203d37",
+  "muted": "#617b73",
+  "soft": "#edf6f1",
+  "line": "#d7e6df",
+  "title": "From browser.<br>To your bucket.",
+  "note": "Chrome 123+ · Bring your own Cloudflare R2 bucket",
+  "intro": "Keep the useful view.<br>Share it your way.",
+  "features": [
+    [
+      "Visible area or full page",
+      "Capture the current viewport, or scroll and stitch a longer page. Set a height limit and JPEG quality to suit the image you need."
+    ],
+    [
+      "A link from your domain",
+      "Upload directly to your Cloudflare R2 bucket, then copy an HTTPS link from your configured public domain. Each image gets a date folder and a UUID."
+    ],
+    [
+      "Your setup, close at hand",
+      "Paste an S3 endpoint, test bucket access, and tune capture settings in one workspace. Your configuration stays in local browser storage."
+    ]
+  ],
+  "showcase": "Your destination. All set.",
+  "showcaseNote": "Connection, capture quality, and appearance, together in one workspace.",
+  "views": [
+    "Settings · light",
+    "Capture result · dark"
+  ],
+  "screenshots": [
+    "r2shot-settings-light",
+    "r2shot-result-dark"
+  ],
+  "steps": [
+    [
+      "Connect your bucket",
+      "Enter your R2 endpoint, access credentials, bucket, and a public domain already connected in Cloudflare."
+    ],
+    [
+      "Choose your view",
+      "On a regular webpage, open R2Shot and select Visible area or Full page. Keep the tab active during capture."
+    ],
+    [
+      "Capture, upload, copy",
+      "R2Shot uploads the JPEG directly to your bucket. When it succeeds, click Copy URL to share the public link."
+    ]
+  ],
+  "faq": [
+    [
+      "What do I need to get started?",
+      "Your own Cloudflare R2 bucket, scoped access credentials, and a public domain configured to serve its files. Cloudflare usage charges may apply. R2Shot is independent and is not affiliated with or endorsed by Cloudflare."
+    ],
+    [
+      "Where are screenshots and credentials stored?",
+      "Screenshot bytes are processed in browser memory and sent directly to your R2 endpoint. The extension keeps no screenshot history. Credentials are stored in plain text in extension-local storage; use keys scoped to the intended bucket. Uploaded files stay in your bucket until you delete them there."
+    ],
+    [
+      "How much of a full page can I capture?",
+      "Choose 1–100 viewport heights, with 5 as the default. Images are also limited to 32 million pixels and 32,767 pixels per side. Full-page capture uses loaded content at the current viewport width; sticky elements and dynamic or infinite-scroll pages can affect the result."
+    ],
+    [
+      "What does Test Connection check?",
+      "It sends a signed HEAD request to the bucket using the values currently in the form. It does not upload an image, configure public access, or prove the public domain works. Open a link after your first successful upload to verify the complete setup."
+    ]
+  ]
+}

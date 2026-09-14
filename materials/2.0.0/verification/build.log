@@ -1,0 +1,24 @@
+$ bash scripts/build.sh
+Building extension...
+$ tsc --noEmit && vite build
+vite v8.3.0 building client environment for production...
+transforming...
+✓ 17 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/popup.html                   3.04 kB │ gzip: 1.23 kB
+dist/settings.html                6.23 kB │ gzip: 2.01 kB
+dist/assets/ui.css               10.07 kB │ gzip: 2.85 kB
+dist/chunks/ui.C1QheL1m.js        1.13 kB │ gzip: 0.54 kB
+dist/chunks/storage.CyZJ6TIV.js   1.89 kB │ gzip: 0.83 kB
+dist/popup.js                     2.17 kB │ gzip: 0.96 kB
+dist/settings.js                  3.36 kB │ gzip: 1.30 kB
+dist/background.js                6.08 kB │ gzip: 2.69 kB
+
+✓ built in 28ms
+
+Packaging R2Shot v2.0.0
+
+  Done: ./dist/r2shot-2.0.0.zip (72K)
+
+Upload this file to the Chrome Web Store Developer Dashboard.

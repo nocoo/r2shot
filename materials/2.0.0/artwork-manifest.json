@@ -1,0 +1,101 @@
+[
+  {
+    "product": "r2shot",
+    "kind": "screenshots",
+    "variant": 1,
+    "file": "store/screenshots/r2shot-screenshots-01-1280x800.png",
+    "width": 1280,
+    "height": 800,
+    "language": "en",
+    "source": "../source/layouts/r2shot-screenshots-01-1280x800.html",
+    "description": "From browser. To your bucket."
+  },
+  {
+    "product": "r2shot",
+    "kind": "screenshots",
+    "variant": 2,
+    "file": "store/screenshots/r2shot-screenshots-02-1280x800.png",
+    "width": 1280,
+    "height": 800,
+    "language": "en",
+    "source": "../source/layouts/r2shot-screenshots-02-1280x800.html",
+    "description": "Your storage. Your settings."
+  },
+  {
+    "product": "r2shot",
+    "kind": "screenshots",
+    "variant": 3,
+    "file": "store/screenshots/r2shot-screenshots-03-1280x800.png",
+    "width": 1280,
+    "height": 800,
+    "language": "en",
+    "source": "../source/layouts/r2shot-screenshots-03-1280x800.html",
+    "description": "The whole page. One clean link."
+  },
+  {
+    "product": "r2shot",
+    "kind": "banners",
+    "variant": 1,
+    "file": "store/banners/r2shot-banners-01-440x280.png",
+    "width": 440,
+    "height": 280,
+    "language": "en",
+    "source": "../source/layouts/r2shot-banners-01-440x280.html",
+    "description": "From browser. To your bucket."
+  },
+  {
+    "product": "r2shot",
+    "kind": "banners",
+    "variant": 2,
+    "file": "store/banners/r2shot-banners-02-440x280.png",
+    "width": 440,
+    "height": 280,
+    "language": "en",
+    "source": "../source/layouts/r2shot-banners-02-440x280.html",
+    "description": "Your storage. Your settings."
+  },
+  {
+    "product": "r2shot",
+    "kind": "banners",
+    "variant": 3,
+    "file": "store/banners/r2shot-banners-03-440x280.png",
+    "width": 440,
+    "height": 280,
+    "language": "en",
+    "source": "../source/layouts/r2shot-banners-03-440x280.html",
+    "description": "The whole page. One clean link."
+  },
+  {
+    "product": "r2shot",
+    "kind": "marquee",
+    "variant": 1,
+    "file": "store/marquee/r2shot-marquee-01-1400x560.png",
+    "width": 1400,
+    "height": 560,
+    "language": "en",
+    "source": "../source/layouts/r2shot-marquee-01-1400x560.html",
+    "description": "From browser. To your bucket."
+  },
+  {
+    "product": "r2shot",
+    "kind": "marquee",
+    "variant": 2,
+    "file": "store/marquee/r2shot-marquee-02-1400x560.png",
+    "width": 1400,
+    "height": 560,
+    "language": "en",
+    "source": "../source/layouts/r2shot-marquee-02-1400x560.html",
+    "description": "Your storage. Your settings."
+  },
+  {
+    "product": "r2shot",
+    "kind": "marquee",
+    "variant": 3,
+    "file": "store/marquee/r2shot-marquee-03-1400x560.png",
+    "width": 1400,
+    "height": 560,
+    "language": "en",
+    "source": "../source/layouts/r2shot-marquee-03-1400x560.html",
+    "description": "The whole page. One clean link."
+  }
+]

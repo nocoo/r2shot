@@ -1,0 +1,12 @@
+R2Shot 2.0.0
+
+• New compact sea-glass popup and settings workspace, with the original R2Shot logo.
+• Native JavaScript and CSS replace the previous UI framework; native Fetch and Web Crypto replace the bundled S3 SDK.
+• Visible-area and full-page capture, configurable JPEG quality, and explicit Copy URL action.
+• Lower full-page memory use, image-size bounds, tab checks, capture throttling, and scroll restoration.
+• Endpoint parsing, normalized public domains, secret reveal, inline validation, and testing before saving.
+• Light, dark, and system themes; complete interface translations in all 10 languages.
+• Existing local R2 configuration and theme are retained.
+• Requires Chrome 123 or later. Adds the scoped host permission https://*.r2.cloudflarestorage.com/* for direct authenticated R2 requests.
+
+A product of hexly.ai.

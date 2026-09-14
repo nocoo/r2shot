@@ -55,3 +55,10 @@ When bumping a version:
 ## Retrospective
 
 (Record lessons learned from mistakes here)
+
+## Design and submission material ownership
+
+- Generate R2Shot deliverables from this repository using `bun run materials`; validate with `bun run materials:check`. Never depend on a sibling project or an external joint-delivery directory.
+- Editable campaign inputs are in `materials/source/`; versioned ZIPs, English store copy, screenshots, banners, marquees, landing HTML and verification are in `materials/<version>/`. Keep generated `unpacked/` out of Git.
+- Preserve the original logos and the historical concept/approved HTML in `docs/design/`. Each product owns its material outputs and is committed/pushed separately.
+- Notify the user when the tested package is ready for manual acceptance. Use `TESTING.md`; do not record live R2/CDN or user acceptance as passed until actually verified.

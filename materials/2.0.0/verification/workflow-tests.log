@@ -1,0 +1,9 @@
+$ vitest run --config vitest.e2e.config.ts
+
+ RUN  v5.0.0 .
+
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  09:38:20
+   Duration  1.75s (tests 98%, transform 1%)

@@ -1,0 +1,1 @@
+Capture a tab or full page, upload to your Cloudflare R2 bucket, and copy a public link. A product of hexly.ai.

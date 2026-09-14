@@ -1,0 +1,53 @@
+R2Shot — From browser. To your bucket.
+
+A screenshot should be easy to share. R2Shot brings capture, Cloudflare R2 upload, and a public link into one small Chrome popup. Your bucket holds the files. Your domain serves them. You keep moving.
+
+WHAT'S NEW IN 2.0
+
+A compact sea-glass interface makes the destination and capture scope clear. The redesigned settings workspace groups your R2 connection, image quality, full-page limit, and theme in one place. It keeps the original R2Shot logo and your existing configuration, while replacing the previous UI framework with a much smaller native JavaScript interface.
+
+CAPTURE WHAT YOU NEED
+
+Choose Visible area for the current viewport, or Full page to scroll and stitch the loaded page vertically. Set a maximum of 1–100 viewport heights for full-page capture; the default is 5. R2Shot restores the original scroll position after capture and releases each intermediate bitmap as it goes.
+
+Full-page capture works on regular webpages at the current viewport width. Keep the original tab active while it runs. Dynamic content, sticky elements, and infinite-scroll pages may affect results. Capture is bounded by the configured height and a 32-million-pixel image limit.
+
+STRAIGHT TO YOUR R2 STORAGE
+
+Captures upload as JPEG files directly to the Cloudflare R2 bucket you configure. Each image receives a random UUID filename in a UTC date folder, such as YYYY-MM-DD/uuid.jpg. No publisher relay sits between your browser and your bucket.
+
+After a successful upload, R2Shot builds an HTTPS image URL from your public domain. Click Copy URL to place it on your clipboard. Copying is a deliberate action, and the popup reports upload and copy failures clearly.
+
+CONFIGURE WITH CONFIDENCE
+
+• Paste an R2 S3 API URL to extract the endpoint and bucket name.
+• Enter your access key ID, secret access key, and destination bucket.
+• Supply your public domain with or without https://.
+• Test bucket connectivity before saving, using the values currently in the form.
+• Adjust JPEG quality from 1 to 100, with 90 as the default.
+• Choose light, dark, or system theme for both popup and settings.
+
+Test Connection checks access with a bucket HEAD request. It does not test an upload or configure public access. Your public domain must already be connected to the bucket in Cloudflare.
+
+SMALL BY DESIGN
+
+R2Shot uses native JavaScript, browser capture APIs, Fetch, and Web Crypto. No UI framework, remote fonts, analytics, account system, or publisher cloud sync runs in the extension. Settings stay in local browser storage. Screenshot bytes go only to your configured R2 endpoint.
+
+R2 credentials are stored locally in plain text within the extension's storage. The secret is used on-device to sign requests; it is not sent as the secret itself. Use credentials scoped to the bucket you want to use. Uploaded files and public access remain under your Cloudflare configuration.
+
+GET STARTED
+
+1. Open R2Shot Settings from the popup.
+2. Enter your R2 endpoint, credentials, bucket, and public domain.
+3. Test the connection and save.
+4. Open a webpage, choose the capture area, and capture.
+5. Click Copy URL after the upload succeeds.
+
+You provide your own Cloudflare R2 storage, credentials, and public access configuration. Cloudflare usage charges may apply. R2Shot is an independent product and is not affiliated with or endorsed by Cloudflare.
+
+Available in English, Simplified Chinese, Traditional Chinese, Japanese, Korean, French, German, Spanish, Brazilian Portuguese, and Russian. The interface follows Chrome's language. Requires Chrome 123 or later.
+
+A product of hexly.ai.
+
+Source and support: https://github.com/nocoo/r2shot
+Privacy: https://github.com/nocoo/r2shot/blob/main/PRIVACY.md

@@ -1,0 +1,31 @@
+{
+  "ink": "#203d37",
+  "muted": "#5f7971",
+  "accent": "#177c70",
+  "page": "#edf7f2",
+  "titles": [
+    "From browser.<br>To your bucket.",
+    "Your storage.<br>Your settings.",
+    "The whole page.<br>One clean link."
+  ],
+  "short": [
+    "Capture a page. Upload to R2.<br>Copy the link. Keep moving.",
+    "Connect your bucket, tune JPEG quality,<br>and choose your capture limit.",
+    "Scroll, stitch, and upload.<br>Your R2 bucket takes it from here."
+  ],
+  "compact": [
+    "From browser.<br>To your bucket.",
+    "Your screenshots.<br>Your storage.",
+    "The whole page.<br>One clean link."
+  ],
+  "features": [
+    "Visible area · Full page",
+    "Own bucket · Own public domain",
+    "Capture → Upload → Copy URL"
+  ],
+  "ui": [
+    "r2shot-popup-light",
+    "r2shot-settings-light",
+    "r2shot-result-dark"
+  ]
+}

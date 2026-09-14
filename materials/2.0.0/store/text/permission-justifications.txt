@@ -1,0 +1,11 @@
+activeTab
+Captures the active tab after a user gesture and displays its title and URL in the popup.
+
+scripting
+Reads page dimensions and scrolls the active tab during full-page capture, then restores its original position. No persistent content script runs on navigation.
+
+storage
+Stores the R2 endpoint, bucket, access key ID, secret access key, public domain, image quality, full-page limit, and theme in chrome.storage.local.
+
+Host permissions: https://*.r2.cloudflarestorage.com/*
+New in 2.0.0. Allows direct authenticated HEAD and PUT requests to the R2 S3 endpoint entered by the user. HEAD tests bucket connectivity; PUT uploads JPEG screenshot bytes. The wildcard covers different Cloudflare account and jurisdiction endpoints; no other hosts are requested.

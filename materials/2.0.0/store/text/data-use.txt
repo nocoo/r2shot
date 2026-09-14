@@ -1,0 +1,9 @@
+Publisher collection: none. No analytics, advertising, account, request relay, or remote executable code.
+Local storage: R2 configuration and theme, including access credentials stored as plain text in extension-local storage.
+Authentication information: the access key ID and a derived Signature V4 signature appear in R2 requests. The secret access key is used locally for signing and is not transmitted as the secret itself.
+Website content: the user-selected screenshot area may contain text, images, and personal information visible on the page. It is processed in memory and uploaded only when Capture is pressed.
+Browsing data: the current tab title and URL are displayed locally; no browsing history or screenshot history is retained by the extension.
+Destinations: the configured R2 endpoint receives screenshot bytes, object path, signed request metadata, and standard network metadata such as IP address. Redirects are rejected.
+Clipboard: Copy URL writes the generated public URL only after the user clicks the button.
+Purpose: perform the user-requested screenshot upload. No sale, advertising use, or credit/lending use of data.
+Deletion: uninstall removes local configuration; revoke credentials and remove uploaded files in Cloudflare separately. Uninstalling does not delete bucket objects.

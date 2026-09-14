@@ -1,0 +1,1 @@
+Capture the active browser page, upload the JPEG screenshot directly to a user-configured Cloudflare R2 bucket, and provide a public URL to copy.

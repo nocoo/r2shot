@@ -1,0 +1,124 @@
+{
+	"scope": {
+		"id": "hexly-campaign",
+		"appliesTo": [
+			"hexly.ai project introduction and brand archive",
+			"Hexly-authored promotional video, deck, social and campaign material"
+		],
+		"productUIChanged": false,
+		"officialIdentityRecolored": false,
+		"campaignReplacesOfficialIdentity": false
+	},
+	"ui": {
+		"source": "src/styles/base.css",
+		"baseline": "d600805f7c2833d601bc32d6e3db0b02360eb0c6",
+		"light": {
+			"page": "#f0f0e9",
+			"ink": "#30372e",
+			"muted": "#68705f",
+			"accent": "#bf5c3c",
+			"line": "#d4d8cb",
+			"surface": "#f8f8f2",
+			"soft": "#e8ebdf",
+			"shadow": "#35442c"
+		},
+		"dark": {
+			"page": "#1e2824",
+			"ink": "#e6e9dc",
+			"muted": "#a0aa9a",
+			"accent": "#e79670",
+			"line": "#3d4940",
+			"surface": "#27332c",
+			"soft": "#26352b",
+			"shadow": "#070d09"
+		}
+	},
+	"font": {
+		"family": "Space Grotesk",
+		"weight": 600,
+		"letterSpacingEm": -0.043478260869565216,
+		"title": "R2Shot",
+		"license": "SIL OFL 1.1",
+		"source": "space-grotesk.woff2",
+		"fontSha256": "0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d",
+		"width": 478.573,
+		"height": 133.92,
+		"glyphBoundsUnits": [69.499755859375, -14, 3259.308646824049, 714],
+		"canvasPaddingPx": 16
+	},
+	"artwork": {
+		"minimumMarkPx": 16,
+		"preferredNavigationPx": 24,
+		"minimumWordmarkWidthPx": 86,
+		"minimumLockupWidthPx": 160,
+		"preserveOriginalColors": true,
+		"palette": [
+			{
+				"color": "#4d818c",
+				"role": "background",
+				"label": {
+					"en": "Dolphin wake",
+					"zh": "展示底色"
+				},
+				"source": "Selected R2Shot presentation, finishing 01; background.base in archived settings.json"
+			},
+			{
+				"color": "#3fc2d0",
+				"label": {
+					"en": "Lagoon cyan",
+					"zh": "泻湖青"
+				},
+				"source": "Original r2shot 17e2f07d03a8, sampled sRGB pixel (568, 298); palette.json",
+				"role": "primary"
+			},
+			{
+				"color": "#198eba",
+				"label": {
+					"en": "Ocean blue",
+					"zh": "海蓝"
+				},
+				"source": "Original r2shot 17e2f07d03a8, sampled sRGB pixel (217, 676); palette.json",
+				"role": "accent"
+			},
+			{
+				"color": "#dbffff",
+				"label": {
+					"en": "Ice mint",
+					"zh": "冰薄荷"
+				},
+				"source": "Original r2shot 17e2f07d03a8, sampled sRGB pixel (494, 280); palette.json",
+				"role": "accent"
+			},
+			{
+				"color": "#143361",
+				"label": {
+					"en": "Deep water",
+					"zh": "深海蓝"
+				},
+				"source": "Original r2shot 17e2f07d03a8, sampled sRGB pixel (653, 181); palette.json",
+				"role": "accent"
+			},
+			{
+				"color": "#2ebad5",
+				"label": {
+					"en": "Tail turquoise",
+					"zh": "尾鳍青"
+				},
+				"source": "Original r2shot 17e2f07d03a8, sampled sRGB pixel (854, 632); palette.json",
+				"role": "accent"
+			}
+		],
+		"paletteScope": "Evidence from archived artwork, not a product UI theme prescription"
+	},
+	"texture": {
+		"tile": [512, 512],
+		"inkOpacity": 0.036,
+		"accentOpacity": 0.022,
+		"recommendedTileCssPx": [360, 480],
+		"decorative": true
+	},
+	"productUI": {
+		"action": "unchanged",
+		"source": "src/data/projects/r2shot.json at d600805f7c2833d601bc32d6e3db0b02360eb0c6"
+	}
+}

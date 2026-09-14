@@ -1,6 +1,6 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import type { R2Config } from "./r2-config";
-import { getS3Client } from "./s3-client";
+import { normalizePublicDomain } from "./r2-config";
+import { requestR2 } from "./s3-client";
 
 export function generateObjectKey(date: Date = new Date()): string {
   const yyyy = date.getUTCFullYear();
@@ -12,7 +12,7 @@ export function generateObjectKey(date: Date = new Date()): string {
 }
 
 export function buildPublicUrl(domain: string, objectKey: string): string {
-  const cleaned = domain.replace(/\/+$/, "");
+  const cleaned = normalizePublicDomain(domain);
   return `https://${cleaned}/${objectKey}`;
 }
 
@@ -20,19 +20,9 @@ export async function uploadToR2(
   config: R2Config,
   blob: Blob,
 ): Promise<string> {
-  const client = getS3Client(config);
-
   const objectKey = generateObjectKey();
-  const arrayBuffer = await blob.arrayBuffer();
-
-  const command = new PutObjectCommand({
-    Bucket: config.bucketName,
-    Key: objectKey,
-    Body: new Uint8Array(arrayBuffer),
-    ContentType: "image/jpeg",
-  });
-
-  await client.send(command);
+  const body = new Uint8Array(await blob.arrayBuffer());
+  await requestR2(config, "PUT", objectKey, body);
 
   return buildPublicUrl(config.customDomain, objectKey);
 }

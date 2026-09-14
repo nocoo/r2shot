@@ -60,6 +60,13 @@ export function parseR2Endpoint(input: string): ParsedEndpoint {
   return { endpoint };
 }
 
+export function normalizePublicDomain(value: string): string {
+  return value
+    .trim()
+    .replace(/^https:\/\//i, "")
+    .replace(/\/+$/, "");
+}
+
 export function validateR2Config(config: R2Config): R2ConfigValidationResult {
   const errors: Partial<Record<keyof R2Config, string>> = {};
 
@@ -68,7 +75,13 @@ export function validateR2Config(config: R2Config): R2ConfigValidationResult {
   } else {
     try {
       const url = new URL(config.endpoint.trim());
-      if (url.protocol !== "https:") {
+      if (
+        url.protocol !== "https:" ||
+        url.username ||
+        url.password ||
+        url.search ||
+        url.hash
+      ) {
         errors.endpoint = "Endpoint URL must start with https://";
       }
     } catch {
@@ -90,6 +103,24 @@ export function validateR2Config(config: R2Config): R2ConfigValidationResult {
 
   if (!config.customDomain.trim()) {
     errors.customDomain = "Custom domain is required";
+  } else {
+    const domain = normalizePublicDomain(config.customDomain);
+    try {
+      const url = new URL(`https://${domain}`);
+      if (
+        domain.includes("://") ||
+        url.username ||
+        url.password ||
+        url.search ||
+        url.hash ||
+        !url.hostname ||
+        /\s/.test(domain)
+      )
+        throw new Error("Invalid domain");
+    } catch {
+      errors.customDomain =
+        "Enter a public HTTPS domain, without query parameters";
+    }
   }
 
   if (!Number.isInteger(config.jpgQuality)) {

@@ -96,5 +96,110 @@
   },
   "fullPageCaptureDescription": {
     "message": "Захватывает всю страницу, прокручивая и склеивая снимки экрана"
+  },
+  "workspace": {
+    "message": "Рабочее пространство"
+  },
+  "localSettings": {
+    "message": "Настройки хранятся локально"
+  },
+  "currentPage": {
+    "message": "Текущая страница"
+  },
+  "productTagline": {
+    "message": "Снимайте. Загружайте. Делитесь."
+  },
+  "captureArea": {
+    "message": "Область снимка"
+  },
+  "visibleArea": {
+    "message": "Видимая область"
+  },
+  "fullPage": {
+    "message": "Вся страница"
+  },
+  "destination": {
+    "message": "Место загрузки"
+  },
+  "setupRequired": {
+    "message": "Настройте бакет R2"
+  },
+  "setupHint": {
+    "message": "Подключите бакет в настройках."
+  },
+  "captureUpload": {
+    "message": "Снять и загрузить"
+  },
+  "captureWorking": {
+    "message": "Съёмка и загрузка…"
+  },
+  "captureFailed": {
+    "message": "Не удалось сделать снимок. Повторите попытку."
+  },
+  "uploadComplete": {
+    "message": "Загружено в ваш бакет. Ссылка готова."
+  },
+  "publicLink": {
+    "message": "Публичная ссылка"
+  },
+  "yourBucket": {
+    "message": "Ваш бакет. Ваши файлы."
+  },
+  "copyFailed": {
+    "message": "Копирование заблокировано. Выделите ссылку и скопируйте вручную."
+  },
+  "loadFailed": {
+    "message": "Не удалось загрузить настройки. Откройте страницу заново."
+  },
+  "saveFailed": {
+    "message": "Не удалось сохранить настройки."
+  },
+  "connectionError": {
+    "message": "Проверка подключения не удалась."
+  },
+  "captureSettings": {
+    "message": "Настройки снимка"
+  },
+  "endpointHint": {
+    "message": "Вставьте полный URL S3 API для автоматического заполнения бакета."
+  },
+  "domainHint": {
+    "message": "Подключите этот публичный домен к бакету в Cloudflare."
+  },
+  "show": {
+    "message": "Показать"
+  },
+  "hide": {
+    "message": "Скрыть"
+  },
+  "maxScreens": {
+    "message": "Лимит всей страницы"
+  },
+  "maxScreensHint": {
+    "message": "Максимальное число высот экрана на один снимок."
+  },
+  "smallerFiles": {
+    "message": "Меньше размер"
+  },
+  "sharperImages": {
+    "message": "Выше чёткость"
+  },
+  "outputPath": {
+    "message": "Путь файла"
+  },
+  "themeHint": {
+    "message": "Применяется к окну и настройкам."
+  },
+  "unsavedChanges": {
+    "message": "Несохранённые изменения"
+  },
+  "checkFields": {
+    "message": "Проверьте выделенные поля."
+  },
+  "testing": {
+    "message": "Проверка…"
+  },
+  "browserToR2": {
+    "message": "Браузер → ваш бакет R2"
   }
 }

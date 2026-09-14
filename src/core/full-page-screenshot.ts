@@ -39,7 +39,7 @@ export async function getPageMetrics(tabId: number): Promise<PageMetrics> {
         devicePixelRatio: window.devicePixelRatio,
       };
       // Scroll to top before capturing
-      window.scrollTo(0, 0);
+      window.scrollTo({ left: 0, top: 0, behavior: "instant" });
       return metrics;
     } /* v8 ignore stop */,
   });
@@ -59,7 +59,7 @@ export async function scrollTo(tabId: number, y: number): Promise<void> {
     target: { tabId },
     // v8 ignore next: content script runs in page context, not testable in Node
     func: /* v8 ignore start */ (scrollY: number) => {
-      window.scrollTo(0, scrollY);
+      window.scrollTo({ left: 0, top: scrollY, behavior: "instant" });
     } /* v8 ignore stop */,
     args: [y],
   });
@@ -77,7 +77,7 @@ export async function restoreScroll(
     target: { tabId },
     // v8 ignore next: content script runs in page context, not testable in Node
     func: /* v8 ignore start */ (sx: number, sy: number) => {
-      window.scrollTo(sx, sy);
+      window.scrollTo({ left: sx, top: sy, behavior: "instant" });
     } /* v8 ignore stop */,
     args: [x, y],
   });
@@ -85,12 +85,6 @@ export async function restoreScroll(
 
 /** Settle time after each scroll (ms). */
 const SCROLL_SETTLE_MS = 300;
-
-/**
- * Minimum interval between captureVisibleTab calls (ms).
- * Chrome enforces MAX_CAPTURE_VISIBLE_TAB_CALLS_PER_SECOND (≈2/s).
- */
-const MIN_CAPTURE_INTERVAL_MS = 550;
 
 /**
  * Capture a full-page screenshot by scrolling and stitching.
@@ -108,110 +102,85 @@ export async function captureFullPage(
   maxScreens: number,
 ): Promise<Blob> {
   const metrics = await getPageMetrics(tabId);
-  // Allow the scroll-to-top to settle
-  await delay(SCROLL_SETTLE_MS);
-
-  const { scrollHeight, viewportHeight, devicePixelRatio } = metrics;
-
-  // Clamp to maxScreens viewport heights to guard against infinite-scroll pages
-  const maxHeight = viewportHeight * maxScreens;
-  const effectiveHeight = Math.min(scrollHeight, maxHeight);
-
-  // Physical pixel dimensions for the final canvas
-  const canvasWidth = Math.round(metrics.viewportWidth * devicePixelRatio);
-  const canvasHeight = Math.round(effectiveHeight * devicePixelRatio);
-
-  // Calculate how many captures we need
-  const totalCaptures = Math.ceil(effectiveHeight / viewportHeight);
-
-  // Collect bitmaps
-  const bitmaps: { bitmap: ImageBitmap; yOffset: number }[] = [];
-  let lastCaptureTime = 0;
-
+  let canvas: OffscreenCanvas | undefined;
   try {
+    await delay(SCROLL_SETTLE_MS);
+    const { viewportHeight, devicePixelRatio } = metrics;
+    const effectiveHeight = Math.min(
+      metrics.scrollHeight,
+      viewportHeight * maxScreens,
+    );
+    const width = Math.round(metrics.viewportWidth * devicePixelRatio);
+    const height = Math.round(effectiveHeight * devicePixelRatio);
+    if (
+      width < 1 ||
+      height < 1 ||
+      width > 32767 ||
+      height > 32767 ||
+      width * height > 32_000_000
+    ) {
+      throw new Error(
+        "Page exceeds the safe image size. Lower the full-page limit in settings.",
+      );
+    }
+    canvas = new OffscreenCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Failed to create 2D context for stitching");
+    const totalCaptures = Math.ceil(effectiveHeight / viewportHeight);
     for (let i = 0; i < totalCaptures; i++) {
-      const scrollY = i * viewportHeight;
-      // The last capture may only cover a partial viewport
-      const isLast = i === totalCaptures - 1;
-      const remainingHeight = effectiveHeight - scrollY;
-
+      const y = i * viewportHeight;
       if (i > 0) {
-        await scrollTo(tabId, scrollY);
+        await scrollTo(tabId, y);
         await delay(SCROLL_SETTLE_MS);
       }
-
-      // Throttle to stay within Chrome's MAX_CAPTURE_VISIBLE_TAB_CALLS_PER_SECOND quota
-      const elapsed = Date.now() - lastCaptureTime;
-      if (lastCaptureTime > 0 && elapsed < MIN_CAPTURE_INTERVAL_MS) {
-        await delay(MIN_CAPTURE_INTERVAL_MS - elapsed);
-      }
-
-      const dataUrl = await captureVisibleTab(quality);
-      lastCaptureTime = Date.now();
-
-      // Decode to ImageBitmap immediately and release the data URL string
-      // Use dataUrlToBlob instead of fetch(dataUrl) to avoid CSP connect-src restrictions on data: URIs
-      const blobChunk = dataUrlToBlob(dataUrl);
-      const bitmap = await createImageBitmap(blobChunk);
-
-      if (isLast && remainingHeight < viewportHeight) {
-        // For the last partial capture, we only need the bottom portion
-        const cropHeight = Math.round(remainingHeight * devicePixelRatio);
-        const cropY = bitmap.height - cropHeight;
-        const croppedBitmap = await createImageBitmap(
-          bitmap,
-          0,
-          cropY,
-          bitmap.width,
-          cropHeight,
+      const tab = await chrome.tabs.get(tabId);
+      if (!tab.active)
+        throw new Error(
+          "The active tab changed. Return to the page and capture again.",
         );
+      const dataUrl = await captureVisibleTab(quality, tab.windowId);
+      if (!(await chrome.tabs.get(tabId)).active)
+        throw new Error(
+          "The active tab changed. Return to the page and capture again.",
+        );
+      const bitmap = await createImageBitmap(dataUrlToBlob(dataUrl));
+      try {
+        const remaining = effectiveHeight - y;
+        if (remaining < viewportHeight) {
+          const cropHeight = Math.round(remaining * devicePixelRatio);
+          const cropY = bitmap.height - cropHeight;
+          const cropped = await createImageBitmap(
+            bitmap,
+            0,
+            cropY,
+            bitmap.width,
+            cropHeight,
+          );
+          try {
+            ctx.drawImage(cropped, 0, Math.round(y * devicePixelRatio));
+          } finally {
+            cropped.close();
+          }
+        } else {
+          ctx.drawImage(bitmap, 0, Math.round(y * devicePixelRatio));
+        }
+      } finally {
         bitmap.close();
-        bitmaps.push({
-          bitmap: croppedBitmap,
-          yOffset: Math.round(scrollY * devicePixelRatio),
-        });
-      } else {
-        bitmaps.push({
-          bitmap,
-          yOffset: Math.round(scrollY * devicePixelRatio),
-        });
       }
     }
-
-    // Stitch all bitmaps onto an OffscreenCanvas
-    const canvas = new OffscreenCanvas(canvasWidth, canvasHeight);
-    const ctx = canvas.getContext("2d");
-    if (!ctx) {
-      throw new Error("Failed to create 2D context for stitching");
-    }
-
-    for (const { bitmap, yOffset } of bitmaps) {
-      ctx.drawImage(bitmap, 0, yOffset);
-      bitmap.close(); // Release memory immediately after drawing
-    }
-    bitmaps.length = 0; // Clear the array
-
-    // Export to blob – avoid intermediate base64
-    const finalBlob = await canvas.convertToBlob({
+    return await canvas.convertToBlob({
       type: "image/jpeg",
       quality: quality / 100,
     });
-
-    return finalBlob;
-  } catch (err) {
-    // Clean up bitmaps on error
-    for (const { bitmap } of bitmaps) {
-      bitmap.close();
-    }
-    throw err;
   } finally {
-    // Always restore original scroll position
+    if (canvas) {
+      canvas.width = 1;
+      canvas.height = 1;
+    }
     await restoreScroll(
       tabId,
       metrics.originalScrollX,
       metrics.originalScrollY,
-    ).catch(() => {
-      // Best-effort restore; don't mask the original error
-    });
+    ).catch(() => {});
   }
 }

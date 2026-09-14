@@ -96,5 +96,110 @@
   },
   "fullPageCaptureDescription": {
     "message": "スクロールしてスクリーンショットを繋ぎ合わせ、ページ全体をキャプチャします"
+  },
+  "workspace": {
+    "message": "ワークスペース"
+  },
+  "localSettings": {
+    "message": "設定はローカルに保存"
+  },
+  "currentPage": {
+    "message": "現在のページ"
+  },
+  "productTagline": {
+    "message": "撮影、アップロード、共有"
+  },
+  "captureArea": {
+    "message": "撮影範囲"
+  },
+  "visibleArea": {
+    "message": "表示領域"
+  },
+  "fullPage": {
+    "message": "ページ全体"
+  },
+  "destination": {
+    "message": "保存先"
+  },
+  "setupRequired": {
+    "message": "R2バケットを設定"
+  },
+  "setupHint": {
+    "message": "設定でバケットを接続してください。"
+  },
+  "captureUpload": {
+    "message": "撮影してアップロード"
+  },
+  "captureWorking": {
+    "message": "撮影してアップロード中…"
+  },
+  "captureFailed": {
+    "message": "撮影に失敗しました。再試行してください。"
+  },
+  "uploadComplete": {
+    "message": "バケットに保存しました。リンクをコピーできます。"
+  },
+  "publicLink": {
+    "message": "公開リンク"
+  },
+  "yourBucket": {
+    "message": "自分のバケット、自分のファイル"
+  },
+  "copyFailed": {
+    "message": "コピーできません。リンクを選択して手動でコピーしてください。"
+  },
+  "loadFailed": {
+    "message": "設定を読み込めません。ページを開き直してください。"
+  },
+  "saveFailed": {
+    "message": "設定を保存できません。"
+  },
+  "connectionError": {
+    "message": "接続テストに失敗しました。"
+  },
+  "captureSettings": {
+    "message": "撮影設定"
+  },
+  "endpointHint": {
+    "message": "S3 APIの完全なURLからバケット名を自動入力します。"
+  },
+  "domainHint": {
+    "message": "Cloudflareで公開ドメインをバケットに接続してください。"
+  },
+  "show": {
+    "message": "表示"
+  },
+  "hide": {
+    "message": "非表示"
+  },
+  "maxScreens": {
+    "message": "ページ撮影の上限"
+  },
+  "maxScreensHint": {
+    "message": "一度に撮影する画面の高さの数を制限します。"
+  },
+  "smallerFiles": {
+    "message": "小さいファイル"
+  },
+  "sharperImages": {
+    "message": "高画質"
+  },
+  "outputPath": {
+    "message": "出力パス"
+  },
+  "themeHint": {
+    "message": "ポップアップと設定画面に適用されます。"
+  },
+  "unsavedChanges": {
+    "message": "未保存の変更"
+  },
+  "checkFields": {
+    "message": "強調表示された項目を確認してください。"
+  },
+  "testing": {
+    "message": "テスト中…"
+  },
+  "browserToR2": {
+    "message": "ブラウザ → 自分のR2バケット"
   }
 }

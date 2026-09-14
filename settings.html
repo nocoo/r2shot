@@ -1,12 +1,21 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>R2Shot Settings</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/settings/main.tsx"></script>
-  </body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title data-i18n="settingsTitle">R2Shot Settings</title><link rel="icon" href="/icons/logo32.png"><link rel="stylesheet" href="/src/shared/index.css"></head>
+<body class="settings-page"><div class="settings-layout">
+  <aside class="settings-sidebar"><div class="brand"><img src="/icons/logo64.png" alt="" width="28" height="28"><div><h1>R2Shot</h1><small data-i18n="productTagline">Capture. Upload. Share.</small></div></div><nav aria-label="Settings"><a href="#connection" class="active"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18a5 5 0 0 1-1-10 7 7 0 0 1 13-1 5 5 0 0 1 0 11Z"/></svg><span data-i18n="r2Config">R2 Configuration</span></a><a href="#capture-preferences"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h4l2-3h4l2 3h4v13H4Z"/><circle cx="12" cy="13" r="4"/></svg><span data-i18n="captureSettings">Capture settings</span></a><a href="#appearance"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16"/></svg><span data-i18n="theme">Theme</span></a></nav><div class="sidebar-footer"><span class="version" data-version></span><p><i class="dot"></i><span data-i18n="localSettings">Settings stay local</span></p><a href="https://hexly.ai" target="_blank" rel="noopener noreferrer">a product of hexly.ai ↗</a></div></aside>
+  <main class="settings-main"><header class="workspace-header"><div><p class="eyebrow" data-i18n="workspace">Workspace</p><h2 data-i18n="settingsTitle">R2Shot Settings</h2></div><span class="badge" data-i18n="browserToR2">Browser → your R2 bucket</span></header>
+    <form id="settings-form" novalidate><fieldset id="settings-fields" class="settings-fields" disabled><div class="settings-grid">
+      <section id="connection" class="card"><div class="card-heading"><h3><span class="step">01</span><span data-i18n="r2Config">R2 Configuration</span></h3><span class="badge">S3 API</span></div><div class="connection-fields">
+        <label for="endpoint"><span data-i18n="endpointUrl">Endpoint URL</span><input type="url" id="endpoint" name="endpoint" required autocomplete="off" placeholder="https://account-id.r2.cloudflarestorage.com"><span class="field-error" id="endpoint-error"></span><span class="hint" data-i18n="endpointHint">Paste the full S3 API URL. The bucket is filled in for you.</span></label>
+        <label for="bucketName"><span data-i18n="bucketName">Bucket Name</span><input id="bucketName" name="bucketName" required placeholder="screenshots" autocomplete="off"><span class="field-error" id="bucketName-error"></span></label>
+        <label for="accessKeyId"><span data-i18n="accessKeyId">Access Key ID</span><input id="accessKeyId" name="accessKeyId" required autocomplete="off" spellcheck="false"><span class="field-error" id="accessKeyId-error"></span></label>
+        <div><label for="secretAccessKey" data-i18n="secretAccessKey">Secret Access Key</label><div class="password-field"><input type="password" id="secretAccessKey" name="secretAccessKey" required autocomplete="off" spellcheck="false"><button type="button" id="toggle-secret" class="btn-secondary" aria-pressed="false" data-i18n="show">Show</button></div><span class="field-error" id="secretAccessKey-error"></span></div>
+        <label for="customDomain"><span data-i18n="customDomain">Custom Domain</span><input id="customDomain" name="customDomain" required placeholder="images.example.com" autocomplete="off"><span class="field-error" id="customDomain-error"></span><span class="hint" data-i18n="domainHint">Connect this public domain to your bucket in Cloudflare.</span></label>
+      </div><div class="connection-actions"><button type="button" id="test-connection" class="btn-secondary" data-i18n="testConnection">Test Connection</button><p id="connection-status" class="status" role="status" aria-live="polite"></p></div></section>
+      <div class="preferences"><section id="capture-preferences" class="card"><div class="card-heading"><h3><span class="step">02</span><span data-i18n="captureSettings">Capture settings</span></h3></div>
+        <label for="jpgQuality" data-i18n="jpgQuality">JPG Quality</label><div class="quality-row"><input type="range" id="quality-range" min="1" max="100" value="90" aria-label="JPG quality" data-i18n-aria-label="jpgQuality"><input type="number" id="jpgQuality" name="jpgQuality" min="1" max="100" step="1" value="90" required aria-label="JPG quality" data-i18n-aria-label="jpgQuality"></div><span id="jpgQuality-error" class="field-error"></span><div class="range-scale"><span data-i18n="smallerFiles">Smaller files</span><span data-i18n="sharperImages">Sharper images</span></div>
+        <label for="maxScreens" data-i18n="maxScreens">Full-page limit</label><input type="number" id="maxScreens" name="maxScreens" min="1" max="100" step="1" value="5" required><span id="maxScreens-error" class="field-error"></span><p class="hint" data-i18n="maxScreensHint">Maximum viewport heights per capture. Keeps long pages manageable.</p>
+        <div class="output-preview"><p class="eyebrow" data-i18n="outputPath">Output path</p><code id="output-url">images.example.com/YYYY-MM-DD/uuid.jpg</code></div>
+      </section><section id="appearance" class="card"><div class="card-heading"><h3><span class="step">03</span><span data-i18n="theme">Theme</span></h3></div><label for="theme" class="hidden" data-i18n="theme">Theme</label><select id="theme"><option value="system" data-i18n="themeSystem">System</option><option value="light" data-i18n="themeLight">Light</option><option value="dark" data-i18n="themeDark">Dark</option></select><p class="hint" data-i18n="themeHint">Applies to your popup and settings.</p></section></div>
+    </div></fieldset><footer class="settings-actions"><span id="save-status" class="status" role="status" aria-live="polite"></span><span class="hint" data-i18n="localSettings">Settings stay local</span><button type="submit" id="save" class="btn-primary" data-i18n="save" disabled>Save</button></footer></form>
+  </main></div><script type="module" src="/src/settings/main.js"></script>
+</body></html>

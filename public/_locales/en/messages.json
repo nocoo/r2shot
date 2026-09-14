@@ -3,7 +3,7 @@
     "message": "R2Shot"
   },
   "extDescription": {
-    "message": "One-click screenshot capture, upload to Cloudflare R2, CDN URL to clipboard"
+    "message": "Capture a tab or full page, upload to your Cloudflare R2 bucket, and copy a public link. A product of hexly.ai."
   },
   "settingsTitle": {
     "message": "R2Shot Settings"
@@ -96,5 +96,110 @@
   },
   "fullPageCaptureDescription": {
     "message": "Capture the entire page by scrolling and stitching screenshots"
+  },
+  "workspace": {
+    "message": "Workspace"
+  },
+  "localSettings": {
+    "message": "Settings stay local"
+  },
+  "currentPage": {
+    "message": "Current page"
+  },
+  "productTagline": {
+    "message": "Capture. Upload. Share."
+  },
+  "captureArea": {
+    "message": "Capture area"
+  },
+  "visibleArea": {
+    "message": "Visible area"
+  },
+  "fullPage": {
+    "message": "Full page"
+  },
+  "destination": {
+    "message": "Destination"
+  },
+  "setupRequired": {
+    "message": "Set up your R2 bucket"
+  },
+  "setupHint": {
+    "message": "Open settings to connect your bucket."
+  },
+  "captureUpload": {
+    "message": "Capture & upload"
+  },
+  "captureWorking": {
+    "message": "Capturing and uploading…"
+  },
+  "captureFailed": {
+    "message": "Capture failed. Please try again."
+  },
+  "uploadComplete": {
+    "message": "Uploaded to your bucket. Your link is ready."
+  },
+  "publicLink": {
+    "message": "Public link"
+  },
+  "yourBucket": {
+    "message": "Your bucket. Your files."
+  },
+  "copyFailed": {
+    "message": "Copy was blocked. Select the link and copy it manually."
+  },
+  "loadFailed": {
+    "message": "Could not load settings. Reopen this page to retry."
+  },
+  "saveFailed": {
+    "message": "Could not save settings."
+  },
+  "connectionError": {
+    "message": "Connection test failed."
+  },
+  "captureSettings": {
+    "message": "Capture settings"
+  },
+  "endpointHint": {
+    "message": "Paste the full S3 API URL. The bucket is filled in for you."
+  },
+  "domainHint": {
+    "message": "Connect this public domain to your bucket in Cloudflare."
+  },
+  "show": {
+    "message": "Show"
+  },
+  "hide": {
+    "message": "Hide"
+  },
+  "maxScreens": {
+    "message": "Full-page limit"
+  },
+  "maxScreensHint": {
+    "message": "Maximum viewport heights per capture. Keeps long pages manageable."
+  },
+  "smallerFiles": {
+    "message": "Smaller files"
+  },
+  "sharperImages": {
+    "message": "Sharper images"
+  },
+  "outputPath": {
+    "message": "Output path"
+  },
+  "themeHint": {
+    "message": "Applies to your popup and settings."
+  },
+  "unsavedChanges": {
+    "message": "Unsaved changes"
+  },
+  "checkFields": {
+    "message": "Check the highlighted fields."
+  },
+  "testing": {
+    "message": "Testing…"
+  },
+  "browserToR2": {
+    "message": "Browser → your R2 bucket"
   }
 }

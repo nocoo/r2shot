@@ -2,28 +2,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { R2Config } from "./r2-config";
 import { buildPublicUrl, generateObjectKey, uploadToR2 } from "./uploader";
 
-const mockSend = vi.fn().mockResolvedValue({});
-
-// Mock s3-client factory to return a controllable client
 vi.mock("./s3-client", () => ({
-  getS3Client: vi.fn().mockImplementation(function () {
-    return { send: mockSend };
-  }),
+  requestR2: vi.fn().mockResolvedValue(undefined),
 }));
 
-// Mock only PutObjectCommand from AWS SDK
-vi.mock("@aws-sdk/client-s3", () => {
-  const MockPutObjectCommand = vi.fn().mockImplementation(function (
-    input: unknown,
-  ) {
-    return input;
-  });
-  return {
-    PutObjectCommand: MockPutObjectCommand,
-  };
-});
-
-import { getS3Client } from "./s3-client";
+import { requestR2 } from "./s3-client";
 
 describe("uploader", () => {
   beforeEach(() => {
@@ -88,35 +71,15 @@ describe("uploader", () => {
       maxScreens: 5,
     };
 
-    it("should create S3 client via getS3Client with config", async () => {
-      const blob = new Blob(["fake-image"], { type: "image/jpeg" });
-
-      await uploadToR2(config, blob);
-
-      expect(getS3Client).toHaveBeenCalledWith(config);
-    });
-
-    it("should send PutObjectCommand with correct params", async () => {
-      const { PutObjectCommand } = (await import(
-        "@aws-sdk/client-s3"
-      )) as unknown as {
-        PutObjectCommand: ReturnType<typeof vi.fn>;
-      };
-
+    it("uploads actual JPEG bytes with the configured bucket and a unique key", async () => {
       const blob = new Blob(["fake-image"], { type: "image/jpeg" });
       await uploadToR2(config, blob);
-
-      expect(PutObjectCommand).toHaveBeenCalledWith(
-        expect.objectContaining({
-          Bucket: "test-bucket",
-          ContentType: "image/jpeg",
-        }),
+      expect(requestR2).toHaveBeenCalledWith(
+        config,
+        "PUT",
+        expect.stringMatching(/^\d{4}-\d{2}-\d{2}\/[a-f0-9-]+\.jpg$/),
+        new TextEncoder().encode("fake-image"),
       );
-      // Key should match date folder pattern
-      const putArgs = PutObjectCommand.mock.calls[0][0];
-      expect(putArgs.Key).toMatch(/^\d{4}-\d{2}-\d{2}\/[a-f0-9-]+\.jpg$/);
-
-      expect(mockSend).toHaveBeenCalled();
     });
 
     it("should return the public URL of the uploaded file", async () => {
@@ -129,7 +92,7 @@ describe("uploader", () => {
     });
 
     it("should propagate S3 upload errors", async () => {
-      mockSend.mockRejectedValueOnce(new Error("Access denied"));
+      vi.mocked(requestR2).mockRejectedValueOnce(new Error("Access denied"));
 
       const blob = new Blob(["fake-image"], { type: "image/jpeg" });
       await expect(uploadToR2(config, blob)).rejects.toThrow("Access denied");

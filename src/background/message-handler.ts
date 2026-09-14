@@ -23,9 +23,14 @@ export async function handleMessage(
   }
 }
 
+let captureInFlight = false;
+
 async function handleCaptureAndUpload(
   fullPage: boolean,
 ): Promise<CaptureResponse> {
+  if (captureInFlight)
+    return { success: false, error: "A capture is already in progress." };
+  captureInFlight = true;
   try {
     const config = await loadConfig();
     const validation = validateR2Config(config);
@@ -77,6 +82,8 @@ async function handleCaptureAndUpload(
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return { success: false, error: message };
+  } finally {
+    captureInFlight = false;
   }
 }
 

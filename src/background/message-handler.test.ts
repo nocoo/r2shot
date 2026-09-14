@@ -407,3 +407,34 @@ describe("handleMessage", () => {
     });
   });
 });
+
+it("rejects concurrent captures and releases the lock when the upload finishes", async () => {
+  vi.clearAllMocks();
+  vi.mocked(loadConfig).mockResolvedValue(baseConfig);
+  vi.mocked(validateR2Config).mockReturnValue({ valid: true, errors: {} });
+  vi.mocked(captureVisibleTab).mockResolvedValue(
+    "data:image/jpeg;base64,/9j/2Q==",
+  );
+  vi.mocked(dataUrlToBlob).mockReturnValue(new Blob(["jpeg"]));
+  let finish: (value: string) => void = () => {};
+  vi.mocked(uploadToR2).mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const first = handleMessage({ type: "CAPTURE_AND_UPLOAD", fullPage: false });
+  await vi.waitFor(() => expect(uploadToR2).toHaveBeenCalled());
+  expect(
+    await handleMessage({ type: "CAPTURE_AND_UPLOAD", fullPage: false }),
+  ).toEqual({ success: false, error: "A capture is already in progress." });
+  finish("https://cdn.example.com/first.jpg");
+  expect((await first).success).toBe(true);
+  vi.mocked(uploadToR2).mockResolvedValueOnce(
+    "https://cdn.example.com/second.jpg",
+  );
+  expect(
+    (await handleMessage({ type: "CAPTURE_AND_UPLOAD", fullPage: false }))
+      .success,
+  ).toBe(true);
+});

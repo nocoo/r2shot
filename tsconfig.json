@@ -4,7 +4,6 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "jsx": "react-jsx",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -16,7 +15,8 @@
     "isolatedModules": true,
     "outDir": "dist",
     "rootDir": ".",
-    "types": ["node", "chrome", "vitest/globals"]
+    "types": ["node", "chrome", "vitest/globals"],
+    "allowJs": true
   },
   "include": [
     "src/**/*",

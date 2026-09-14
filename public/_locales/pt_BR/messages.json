@@ -96,5 +96,110 @@
   },
   "fullPageCaptureDescription": {
     "message": "Captura a página inteira rolando e unindo as capturas de tela"
+  },
+  "workspace": {
+    "message": "Espaço de trabalho"
+  },
+  "localSettings": {
+    "message": "Configurações locais"
+  },
+  "currentPage": {
+    "message": "Página atual"
+  },
+  "productTagline": {
+    "message": "Capture. Envie. Compartilhe."
+  },
+  "captureArea": {
+    "message": "Área de captura"
+  },
+  "visibleArea": {
+    "message": "Área visível"
+  },
+  "fullPage": {
+    "message": "Página inteira"
+  },
+  "destination": {
+    "message": "Destino"
+  },
+  "setupRequired": {
+    "message": "Configure seu bucket R2"
+  },
+  "setupHint": {
+    "message": "Abra as configurações para conectar seu bucket."
+  },
+  "captureUpload": {
+    "message": "Capturar e enviar"
+  },
+  "captureWorking": {
+    "message": "Capturando e enviando…"
+  },
+  "captureFailed": {
+    "message": "Falha na captura. Tente novamente."
+  },
+  "uploadComplete": {
+    "message": "Enviado ao seu bucket. Seu link está pronto."
+  },
+  "publicLink": {
+    "message": "Link público"
+  },
+  "yourBucket": {
+    "message": "Seu bucket. Seus arquivos."
+  },
+  "copyFailed": {
+    "message": "Cópia bloqueada. Selecione o link e copie manualmente."
+  },
+  "loadFailed": {
+    "message": "Não foi possível carregar as configurações. Reabra a página."
+  },
+  "saveFailed": {
+    "message": "Não foi possível salvar as configurações."
+  },
+  "connectionError": {
+    "message": "Falha no teste de conexão."
+  },
+  "captureSettings": {
+    "message": "Configurações de captura"
+  },
+  "endpointHint": {
+    "message": "Cole a URL S3 completa para preencher o bucket."
+  },
+  "domainHint": {
+    "message": "Conecte este domínio público ao bucket no Cloudflare."
+  },
+  "show": {
+    "message": "Mostrar"
+  },
+  "hide": {
+    "message": "Ocultar"
+  },
+  "maxScreens": {
+    "message": "Limite de página"
+  },
+  "maxScreensHint": {
+    "message": "Máximo de alturas de tela por captura."
+  },
+  "smallerFiles": {
+    "message": "Arquivos menores"
+  },
+  "sharperImages": {
+    "message": "Mais nitidez"
+  },
+  "outputPath": {
+    "message": "Caminho de saída"
+  },
+  "themeHint": {
+    "message": "Aplica-se ao popup e às configurações."
+  },
+  "unsavedChanges": {
+    "message": "Alterações não salvas"
+  },
+  "checkFields": {
+    "message": "Verifique os campos destacados."
+  },
+  "testing": {
+    "message": "Testando…"
+  },
+  "browserToR2": {
+    "message": "Navegador → seu bucket R2"
   }
 }

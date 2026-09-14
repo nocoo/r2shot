@@ -1,74 +1,28 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { verifyR2Connection } from "./connection";
-import type { R2Config } from "./r2-config";
+import { DEFAULT_R2_CONFIG } from "./r2-config";
+import { requestR2 } from "./s3-client";
 
-const mockSend = vi.fn();
-
-// Mock s3-client factory to return a controllable client
-vi.mock("./s3-client", () => ({
-  getS3Client: vi.fn().mockImplementation(function () {
-    return { send: mockSend };
-  }),
-}));
-
-// Mock only HeadBucketCommand from AWS SDK
-vi.mock("@aws-sdk/client-s3", () => {
-  const MockHeadBucketCommand = vi.fn().mockImplementation(function (
-    input: unknown,
-  ) {
-    return input;
+vi.mock("./s3-client", () => ({ requestR2: vi.fn() }));
+beforeEach(() => vi.clearAllMocks());
+describe("connection verification", () => {
+  it("tests the supplied bucket with HEAD", async () => {
+    vi.mocked(requestR2).mockResolvedValueOnce();
+    expect(await verifyR2Connection(DEFAULT_R2_CONFIG)).toEqual({ ok: true });
+    expect(requestR2).toHaveBeenCalledWith(DEFAULT_R2_CONFIG, "HEAD");
   });
-  return {
-    HeadBucketCommand: MockHeadBucketCommand,
-  };
-});
-
-import { getS3Client } from "./s3-client";
-
-describe("verifyR2Connection", () => {
-  const config: R2Config = {
-    endpoint: "https://test-account.r2.cloudflarestorage.com",
-    accessKeyId: "test-key",
-    secretAccessKey: "test-secret",
-    bucketName: "test-bucket",
-    customDomain: "cdn.test.com",
-    jpgQuality: 90,
-    maxScreens: 5,
-  };
-
-  beforeEach(() => {
-    vi.clearAllMocks();
+  it("shows a request failure", async () => {
+    vi.mocked(requestR2).mockRejectedValueOnce(new Error("Access Denied"));
+    expect(await verifyR2Connection(DEFAULT_R2_CONFIG)).toEqual({
+      ok: false,
+      error: "Access Denied",
+    });
   });
-
-  it("should return success when HeadBucket succeeds", async () => {
-    mockSend.mockResolvedValueOnce({});
-
-    const result = await verifyR2Connection(config);
-
-    expect(result).toEqual({ ok: true });
-  });
-
-  it("should return failure with error message on rejection", async () => {
-    mockSend.mockRejectedValueOnce(new Error("Access Denied"));
-
-    const result = await verifyR2Connection(config);
-
-    expect(result).toEqual({ ok: false, error: "Access Denied" });
-  });
-
-  it("should handle non-Error rejections", async () => {
-    mockSend.mockRejectedValueOnce("something weird");
-
-    const result = await verifyR2Connection(config);
-
-    expect(result).toEqual({ ok: false, error: "Connection failed" });
-  });
-
-  it("should use getS3Client with config", async () => {
-    mockSend.mockResolvedValueOnce({});
-
-    await verifyR2Connection(config);
-
-    expect(getS3Client).toHaveBeenCalledWith(config);
+  it("handles a non-Error rejection", async () => {
+    vi.mocked(requestR2).mockRejectedValueOnce(null);
+    expect(await verifyR2Connection(DEFAULT_R2_CONFIG)).toEqual({
+      ok: false,
+      error: "Connection failed",
+    });
   });
 });

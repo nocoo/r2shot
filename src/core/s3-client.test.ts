@@ -1,109 +1,137 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { R2Config } from "./r2-config";
-import { getS3Client, resetS3Client } from "./s3-client";
-
-vi.mock("@aws-sdk/client-s3", () => {
-  const MockS3Client = vi.fn().mockImplementation(function () {
-    return { send: vi.fn() };
-  });
-  return { S3Client: MockS3Client };
-});
-
+// @vitest-environment node
+import { createHash } from "node:crypto";
 import { S3Client } from "@aws-sdk/client-s3";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { DEFAULT_R2_CONFIG } from "./r2-config";
+import { requestR2, signR2Request } from "./s3-client";
 
-describe("s3-client", () => {
-  const config: R2Config = {
-    endpoint: "https://test.r2.cloudflarestorage.com",
-    accessKeyId: "key-1",
-    secretAccessKey: "secret-1",
-    bucketName: "bucket-1",
-    customDomain: "cdn.test.com",
-    jpgQuality: 90,
-    maxScreens: 5,
-  };
+const config = {
+  ...DEFAULT_R2_CONFIG,
+  endpoint: "https://example.r2.cloudflarestorage.com",
+  bucketName: "test-bucket",
+  accessKeyId: "TESTKEY",
+  secretAccessKey: "test-secret-not-a-real-credential",
+};
+const date = new Date("2026-09-14T12:34:56Z");
+const client = new S3Client({
+  region: "auto",
+  endpoint: config.endpoint,
+  credentials: {
+    accessKeyId: config.accessKeyId,
+    secretAccessKey: config.secretAccessKey,
+  },
+});
+afterEach(() => vi.unstubAllGlobals());
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-    resetS3Client();
+describe("native R2 Signature V4", () => {
+  it.each([
+    ["HEAD", "", ""],
+    ["PUT", "2026-09-14/abc.jpg", "JPEG bytes"],
+    ["PUT", "folder/a b+雪!'().jpg", "nonempty payload"],
+  ] as const)(
+    "matches the AWS SDK signing oracle for %s %s",
+    async (method, key, payload) => {
+      const body = new TextEncoder().encode(payload);
+      const signed = await signR2Request(config, method, key, body, date);
+      const url = new URL(signed.url);
+      const headers = { ...signed.headers, host: url.host };
+      delete (headers as Record<string, string>).authorization;
+      const signer = await client.config.signer();
+      const oracle = await signer.sign(
+        {
+          method,
+          protocol: url.protocol,
+          hostname: url.hostname,
+          path: url.pathname,
+          headers,
+          body,
+        },
+        { signingDate: date },
+      );
+      expect(signed.headers.authorization).toBe(oracle.headers.authorization);
+      expect(signed.headers["x-amz-content-sha256"]).toBe(
+        createHash("sha256").update(body).digest("hex"),
+      );
+      expect(signed.headers["x-amz-date"]).toBe("20260914T123456Z");
+      expect(signed.headers).not.toHaveProperty("host");
+    },
+  );
+
+  it("keeps the bucket and object path encoded and signs the auto region", async () => {
+    const signed = await signR2Request(
+      config,
+      "PUT",
+      "dir/a b+.jpg",
+      new Uint8Array(),
+      date,
+    );
+    expect(signed.url).toBe(`${config.endpoint}/test-bucket/dir/a%20b%2B.jpg`);
+    expect(signed.headers.authorization).toContain(
+      "/20260914/auto/s3/aws4_request",
+    );
+    expect(signed.headers["content-type"]).toBe("image/jpeg");
   });
 
-  it("should create a new S3Client on first call", () => {
-    const client = getS3Client(config);
+  it.each([
+    "http://example.com",
+    "https://user:secret@example.com",
+    "https://example.com?token=1",
+    "https://example.com#fragment",
+  ])("rejects unsafe endpoint %s", async (endpoint) => {
+    await expect(
+      signR2Request({ ...config, endpoint }, "HEAD"),
+    ).rejects.toThrow("Invalid R2 endpoint");
+  });
 
-    expect(S3Client).toHaveBeenCalledTimes(1);
-    expect(S3Client).toHaveBeenCalledWith(
+  it("sends a signed PUT with no cookies and refuses redirects", async () => {
+    const send = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
+    vi.stubGlobal("fetch", send);
+    const body = new Uint8Array([255, 216, 255, 217]);
+    await requestR2(config, "PUT", "date/shot.jpg", body);
+    expect(send).toHaveBeenCalledWith(
+      `${config.endpoint}/test-bucket/date/shot.jpg`,
       expect.objectContaining({
-        region: "auto",
-        endpoint: config.endpoint,
-        credentials: {
-          accessKeyId: config.accessKeyId,
-          secretAccessKey: config.secretAccessKey,
-        },
+        method: "PUT",
+        body,
+        credentials: "omit",
+        redirect: "error",
+        signal: expect.any(AbortSignal),
       }),
     );
-    expect(client).toBeDefined();
+    expect(send.mock.calls[0][1].headers.authorization).toMatch(
+      /^AWS4-HMAC-SHA256 /,
+    );
   });
 
-  it("should return the same client for the same config", () => {
-    const client1 = getS3Client(config);
-    const client2 = getS3Client(config);
-
-    expect(S3Client).toHaveBeenCalledTimes(1);
-    expect(client1).toBe(client2);
+  it("sends HEAD with no request body", async () => {
+    const send = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
+    vi.stubGlobal("fetch", send);
+    await requestR2(config, "HEAD");
+    expect(send.mock.calls[0][1]).not.toHaveProperty("body");
   });
 
-  it("should return the same client when only non-credential fields change", () => {
-    const client1 = getS3Client(config);
-    const client2 = getS3Client({
-      ...config,
-      bucketName: "different-bucket",
-      customDomain: "other.cdn.com",
-      jpgQuality: 50,
-    });
-
-    expect(S3Client).toHaveBeenCalledTimes(1);
-    expect(client1).toBe(client2);
+  it.each([
+    [403, "Forbidden"],
+    [500, ""],
+  ])("reports HTTP %s without exposing credentials", async (code, text) => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(null, {
+          status: code as number,
+          statusText: text as string,
+        }),
+      ),
+    );
+    await expect(requestR2(config, "HEAD")).rejects.toThrow(
+      `R2 request failed (${code}${text ? ` ${text}` : ""})`,
+    );
   });
-
-  it("should create a new client when endpoint changes", () => {
-    const client1 = getS3Client(config);
-    const client2 = getS3Client({
-      ...config,
-      endpoint: "https://other.r2.cloudflarestorage.com",
-    });
-
-    expect(S3Client).toHaveBeenCalledTimes(2);
-    expect(client1).not.toBe(client2);
-  });
-
-  it("should create a new client when accessKeyId changes", () => {
-    const client1 = getS3Client(config);
-    const client2 = getS3Client({
-      ...config,
-      accessKeyId: "key-2",
-    });
-
-    expect(S3Client).toHaveBeenCalledTimes(2);
-    expect(client1).not.toBe(client2);
-  });
-
-  it("should create a new client when secretAccessKey changes", () => {
-    const client1 = getS3Client(config);
-    const client2 = getS3Client({
-      ...config,
-      secretAccessKey: "secret-2",
-    });
-
-    expect(S3Client).toHaveBeenCalledTimes(2);
-    expect(client1).not.toBe(client2);
-  });
-
-  it("should create a new client after resetS3Client is called", () => {
-    const client1 = getS3Client(config);
-    resetS3Client();
-    const client2 = getS3Client(config);
-
-    expect(S3Client).toHaveBeenCalledTimes(2);
-    expect(client1).not.toBe(client2);
+  it("propagates network failures", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockRejectedValue(new TypeError("Network offline")),
+    );
+    await expect(requestR2(config, "HEAD")).rejects.toThrow("Network offline");
   });
 });

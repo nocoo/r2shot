@@ -96,5 +96,110 @@
   },
   "fullPageCaptureDescription": {
     "message": "Capture la page entière en défilant et en assemblant les captures d'écran"
+  },
+  "workspace": {
+    "message": "Espace de travail"
+  },
+  "localSettings": {
+    "message": "Réglages en local"
+  },
+  "currentPage": {
+    "message": "Page actuelle"
+  },
+  "productTagline": {
+    "message": "Capturez. Envoyez. Partagez."
+  },
+  "captureArea": {
+    "message": "Zone de capture"
+  },
+  "visibleArea": {
+    "message": "Zone visible"
+  },
+  "fullPage": {
+    "message": "Page entière"
+  },
+  "destination": {
+    "message": "Destination"
+  },
+  "setupRequired": {
+    "message": "Configurez votre bucket R2"
+  },
+  "setupHint": {
+    "message": "Ouvrez les réglages pour connecter votre bucket."
+  },
+  "captureUpload": {
+    "message": "Capturer et envoyer"
+  },
+  "captureWorking": {
+    "message": "Capture et envoi en cours…"
+  },
+  "captureFailed": {
+    "message": "Échec de la capture. Réessayez."
+  },
+  "uploadComplete": {
+    "message": "Envoyé dans votre bucket. Le lien est prêt."
+  },
+  "publicLink": {
+    "message": "Lien public"
+  },
+  "yourBucket": {
+    "message": "Votre bucket, vos fichiers."
+  },
+  "copyFailed": {
+    "message": "Copie bloquée. Sélectionnez le lien et copiez-le manuellement."
+  },
+  "loadFailed": {
+    "message": "Impossible de charger les réglages. Rouvrez la page."
+  },
+  "saveFailed": {
+    "message": "Impossible d’enregistrer les réglages."
+  },
+  "connectionError": {
+    "message": "Échec du test de connexion."
+  },
+  "captureSettings": {
+    "message": "Réglages de capture"
+  },
+  "endpointHint": {
+    "message": "Collez l’URL S3 complète pour remplir le nom du bucket."
+  },
+  "domainHint": {
+    "message": "Reliez ce domaine public à votre bucket dans Cloudflare."
+  },
+  "show": {
+    "message": "Afficher"
+  },
+  "hide": {
+    "message": "Masquer"
+  },
+  "maxScreens": {
+    "message": "Limite de page"
+  },
+  "maxScreensHint": {
+    "message": "Nombre maximal de hauteurs d’écran par capture."
+  },
+  "smallerFiles": {
+    "message": "Fichiers légers"
+  },
+  "sharperImages": {
+    "message": "Images nettes"
+  },
+  "outputPath": {
+    "message": "Chemin de sortie"
+  },
+  "themeHint": {
+    "message": "S’applique à la fenêtre et aux réglages."
+  },
+  "unsavedChanges": {
+    "message": "Modifications non enregistrées"
+  },
+  "checkFields": {
+    "message": "Vérifiez les champs indiqués."
+  },
+  "testing": {
+    "message": "Test en cours…"
+  },
+  "browserToR2": {
+    "message": "Navigateur → votre bucket R2"
   }
 }

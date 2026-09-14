@@ -5,6 +5,30 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.0] - 2026-09-14
+
+### Added
+
+- Compact sea-glass popup and settings workspace, with subtle hexly.ai family attribution.
+- Full interface translations in 10 languages, inline validation, secret reveal, and clear save/test feedback.
+- Bounded full-page capture memory, immediate bitmap cleanup, active-tab checks, and capture concurrency control.
+- Scoped host permission `https://*.r2.cloudflarestorage.com/*` for direct authenticated R2 requests.
+- Chrome 123 minimum version and Signature V4 comparison tests against the AWS SDK.
+
+### Changed
+
+- Replace React, Tailwind, and Lucide UI with native DOM and CSS using system fonts.
+- Replace the bundled AWS SDK with Fetch and Web Crypto signing; retain the SDK only as a development test oracle.
+- Keep existing configuration and theme storage keys, icons, visible/full-page capture, JPEG quality, and manual copy behavior.
+- Normalize public domains supplied with or without an HTTPS scheme.
+
+### Fixed
+
+- Ignore stale connection-test responses after configuration changes.
+- Report clipboard failures and select the URL for manual copying.
+- Restore scroll position after capture failures and throttle screenshots across successive captures.
+- Keep manifest and package versions synchronized at 2.0.0.
+
 ## [1.3.1] - 2026-07-31
 
 ### Changed

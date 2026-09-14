@@ -96,5 +96,110 @@
   },
   "fullPageCaptureDescription": {
     "message": "Erfasst die gesamte Seite durch Scrollen und Zusammenfügen von Screenshots"
+  },
+  "workspace": {
+    "message": "Arbeitsbereich"
+  },
+  "localSettings": {
+    "message": "Einstellungen bleiben lokal"
+  },
+  "currentPage": {
+    "message": "Aktuelle Seite"
+  },
+  "productTagline": {
+    "message": "Aufnehmen. Hochladen. Teilen."
+  },
+  "captureArea": {
+    "message": "Aufnahmebereich"
+  },
+  "visibleArea": {
+    "message": "Sichtbarer Bereich"
+  },
+  "fullPage": {
+    "message": "Ganze Seite"
+  },
+  "destination": {
+    "message": "Ziel"
+  },
+  "setupRequired": {
+    "message": "R2-Bucket einrichten"
+  },
+  "setupHint": {
+    "message": "Bucket in den Einstellungen verbinden."
+  },
+  "captureUpload": {
+    "message": "Aufnehmen & hochladen"
+  },
+  "captureWorking": {
+    "message": "Aufnahme und Upload…"
+  },
+  "captureFailed": {
+    "message": "Aufnahme fehlgeschlagen. Erneut versuchen."
+  },
+  "uploadComplete": {
+    "message": "Im Bucket gespeichert. Dein Link ist bereit."
+  },
+  "publicLink": {
+    "message": "Öffentlicher Link"
+  },
+  "yourBucket": {
+    "message": "Dein Bucket. Deine Dateien."
+  },
+  "copyFailed": {
+    "message": "Kopieren blockiert. Link auswählen und manuell kopieren."
+  },
+  "loadFailed": {
+    "message": "Einstellungen konnten nicht geladen werden. Seite erneut öffnen."
+  },
+  "saveFailed": {
+    "message": "Einstellungen konnten nicht gespeichert werden."
+  },
+  "connectionError": {
+    "message": "Verbindungstest fehlgeschlagen."
+  },
+  "captureSettings": {
+    "message": "Aufnahmeeinstellungen"
+  },
+  "endpointHint": {
+    "message": "Vollständige S3-API-URL einfügen, um den Bucket zu übernehmen."
+  },
+  "domainHint": {
+    "message": "Diese öffentliche Domain in Cloudflare mit dem Bucket verbinden."
+  },
+  "show": {
+    "message": "Anzeigen"
+  },
+  "hide": {
+    "message": "Verbergen"
+  },
+  "maxScreens": {
+    "message": "Seitenlimit"
+  },
+  "maxScreensHint": {
+    "message": "Maximale Anzahl an Bildschirmhöhen pro Aufnahme."
+  },
+  "smallerFiles": {
+    "message": "Kleinere Dateien"
+  },
+  "sharperImages": {
+    "message": "Schärfere Bilder"
+  },
+  "outputPath": {
+    "message": "Ausgabepfad"
+  },
+  "themeHint": {
+    "message": "Gilt für Popup und Einstellungen."
+  },
+  "unsavedChanges": {
+    "message": "Ungespeicherte Änderungen"
+  },
+  "checkFields": {
+    "message": "Markierte Felder prüfen."
+  },
+  "testing": {
+    "message": "Wird getestet…"
+  },
+  "browserToR2": {
+    "message": "Browser → dein R2-Bucket"
   }
 }

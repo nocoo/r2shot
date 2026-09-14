@@ -15,7 +15,7 @@
 
 R2Shot 是一个 Chrome 扩展，把网页截图和图片上传放在同一个弹窗里。配置自己的 Cloudflare R2 bucket 与公开域名后，截图会直接上传到该 bucket；上传成功后可点击 Copy URL 复制链接，用于笔记、文档或消息分享。
 
-扩展需要你提供 R2 存储和访问凭据，没有独立的上传服务或账户系统。当前弹窗和设置界面使用英文，扩展名称与描述包含多语言资源。
+扩展需要你提供 R2 存储和访问凭据。2.0.0 使用 hexly.ai 家族的新界面，以青绿色为主色，弹窗与设置完整支持 10 种语言，以及浅色、深色和系统主题。需要 Chrome 123 或更高版本。
 
 ## 功能
 
@@ -26,7 +26,7 @@ R2Shot 是一个 Chrome 扩展，把网页截图和图片上传放在同一个�
 - 粘贴完整 R2 S3 API 地址时自动提取 endpoint 和 bucket 名称；可以测试 bucket 连接。
 - 将配置保存在本机浏览器，支持浅色、深色和跟随系统主题。
 
-整页模式按当前视口宽度拼接已加载内容，并在完成后尝试恢复原来的滚动位置。浏览器内部页面不支持该模式；动态页面和无限滚动页面的结果受已加载内容及截图高度上限影响。
+为控制内存占用，整页输出最多 3200 万像素，单边不超过 32,767 像素。截图过程中需要保持原标签页处于活动状态。整页模式按当前视口宽度拼接已加载内容，并在完成后尝试恢复原来的滚动位置。浏览器内部页面不支持该模式；动态页面和无限滚动页面的结果受已加载内容及截图高度上限影响。
 
 ## 使用
 
@@ -43,7 +43,7 @@ R2Shot 是一个 Chrome 扩展，把网页截图和图片上传放在同一个�
 | Endpoint URL | R2 S3 API 地址，例如 `https://<account-id>.r2.cloudflarestorage.com` |
 | Access Key ID / Secret Access Key | 有权读写目标 bucket 的 R2 凭据 |
 | Bucket Name | 上传目标 bucket |
-| Custom Domain | 已配置公开访问的域名，例如 `cdn.example.com`，不带 `https://` |
+| Custom Domain | 已配置公开访问的域名，例如 `cdn.example.com`，可带或不带 `https://` |
 | JPG Quality | JPEG 质量，默认 90 |
 | Max Screens (Full Page) | 整页模式的最大视口高度数量，默认 5 |
 
@@ -98,15 +98,15 @@ e2e/               截图到上传的工作流测试
 | 单元测试监听模式 | `bun run test:watch` |
 | 完整本地质量验证 | `bun run verify` |
 
-测试使用 Vitest 和 happy-dom，模拟 Chrome API 与 S3 网络边界，不需要真实 R2 凭据。实际 Chrome 加载、滚动截图和公开链接访问需要加载 `dist/` 后手动验证。`bun run test:coverage` 可生成覆盖率报告。
+测试使用 Vitest 和 happy-dom，模拟 Chrome API 与 S3 网络边界，不需要真实 R2 凭据。AWS SDK 只作为开发依赖，用于独立对照 Signature V4 签名结果。实际 Chrome 加载、滚动截图和公开链接访问需要加载 `dist/` 后手动验证。`bun run test:coverage` 可生成覆盖率报告。
 
 `bun run verify` 先验证 `bun.lock` 可冻结安装，再依次执行静态检查、生产构建、覆盖率测试和工作流集成测试，适合在提交依赖或构建配置变更前运行。
 
 ## 技术栈
 
+安装包只运行原生 JavaScript、HTML、CSS、Fetch 和 Web Crypto。核心 TypeScript 在开发时编译，不包含框架或 AWS SDK 运行时代码。
+
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 ![Cloudflare R2](https://img.shields.io/badge/Cloudflare_R2-F38020?logo=cloudflare&logoColor=white)
 ![Manifest V3](https://img.shields.io/badge/Chrome-Manifest_V3-4285F4?logo=googlechrome&logoColor=white)
@@ -114,8 +114,8 @@ e2e/               截图到上传的工作流测试
 | 部分 | 实现 |
 | --- | --- |
 | 扩展 | Chrome Manifest V3、后台 Service Worker、Chrome Tabs / Scripting / Storage API |
-| 界面 | React、Tailwind CSS、Lucide |
-| 图片与上传 | OffscreenCanvas、AWS SDK for JavaScript 的 S3 客户端、Cloudflare R2 |
+| 界面 | 原生 DOM、CSS 变量、系统字体、内联 SVG |
+| 图片与上传 | OffscreenCanvas、Fetch、Web Crypto SHA-256 / HMAC、Cloudflare R2 |
 | 构建与测试 | Vite、TypeScript、Biome、Vitest、Testing Library、happy-dom |
 
 ## 文档
@@ -123,6 +123,8 @@ e2e/               截图到上传的工作流测试
 - [隐私政策与本地凭据存储](PRIVACY.md)
 - [变更记录](CHANGELOG.md)
 - [扩展清单](public/manifest.json)
+
+[hexly.ai](https://hexly.ai) 出品。
 
 ## 许可证
 

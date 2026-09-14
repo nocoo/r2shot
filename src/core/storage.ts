@@ -1,4 +1,8 @@
-import { DEFAULT_R2_CONFIG, type R2Config } from "./r2-config";
+import {
+  DEFAULT_R2_CONFIG,
+  normalizePublicDomain,
+  type R2Config,
+} from "./r2-config";
 
 const STORAGE_KEY = "r2config";
 
@@ -11,7 +15,7 @@ export async function loadConfig(): Promise<R2Config> {
 export async function saveConfig(config: R2Config): Promise<void> {
   const normalized: R2Config = {
     ...config,
-    customDomain: config.customDomain.replace(/\/+$/, ""),
+    customDomain: normalizePublicDomain(config.customDomain),
   };
   await chrome.storage.local.set({ [STORAGE_KEY]: normalized });
 }

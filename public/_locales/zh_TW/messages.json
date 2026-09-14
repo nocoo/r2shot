@@ -96,5 +96,110 @@
   },
   "fullPageCaptureDescription": {
     "message": "透過捲動並拼接截圖來擷取整個頁面"
+  },
+  "workspace": {
+    "message": "工作空間"
+  },
+  "localSettings": {
+    "message": "設定儲存在本機"
+  },
+  "currentPage": {
+    "message": "目前頁面"
+  },
+  "productTagline": {
+    "message": "截圖、上傳、分享"
+  },
+  "captureArea": {
+    "message": "截圖區域"
+  },
+  "visibleArea": {
+    "message": "可見區域"
+  },
+  "fullPage": {
+    "message": "整頁"
+  },
+  "destination": {
+    "message": "上傳位置"
+  },
+  "setupRequired": {
+    "message": "設定你的 R2 儲存貯體"
+  },
+  "setupHint": {
+    "message": "開啟設定，連接你的儲存貯體。"
+  },
+  "captureUpload": {
+    "message": "截圖並上傳"
+  },
+  "captureWorking": {
+    "message": "正在截圖並上傳…"
+  },
+  "captureFailed": {
+    "message": "截圖失敗，請再試一次。"
+  },
+  "uploadComplete": {
+    "message": "已上傳到你的儲存貯體，連結已就緒。"
+  },
+  "publicLink": {
+    "message": "公開連結"
+  },
+  "yourBucket": {
+    "message": "你的儲存貯體，你的檔案"
+  },
+  "copyFailed": {
+    "message": "複製遭阻擋，請選取連結手動複製。"
+  },
+  "loadFailed": {
+    "message": "無法讀取設定，請重新開啟頁面。"
+  },
+  "saveFailed": {
+    "message": "無法儲存設定。"
+  },
+  "connectionError": {
+    "message": "連線測試失敗。"
+  },
+  "captureSettings": {
+    "message": "截圖設定"
+  },
+  "endpointHint": {
+    "message": "貼上完整 S3 API 網址，自動擷取儲存貯體名稱。"
+  },
+  "domainHint": {
+    "message": "請在 Cloudflare 中將此公開網域連接到儲存貯體。"
+  },
+  "show": {
+    "message": "顯示"
+  },
+  "hide": {
+    "message": "隱藏"
+  },
+  "maxScreens": {
+    "message": "整頁截圖上限"
+  },
+  "maxScreensHint": {
+    "message": "單次截圖最多包含的螢幕高度數，限制長頁面的資源占用。"
+  },
+  "smallerFiles": {
+    "message": "更小檔案"
+  },
+  "sharperImages": {
+    "message": "更清晰"
+  },
+  "outputPath": {
+    "message": "輸出路徑"
+  },
+  "themeHint": {
+    "message": "同時套用到彈出視窗和設定頁。"
+  },
+  "unsavedChanges": {
+    "message": "有尚未儲存的變更"
+  },
+  "checkFields": {
+    "message": "請檢查標示的欄位。"
+  },
+  "testing": {
+    "message": "測試中…"
+  },
+  "browserToR2": {
+    "message": "瀏覽器 → 你的 R2 儲存貯體"
   }
 }

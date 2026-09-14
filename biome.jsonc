@@ -26,27 +26,17 @@
   },
   "linter": {
     "enabled": true,
-    "domains": {
-      "react": "recommended"
-    },
     "rules": {
       "preset": "recommended",
       "correctness": {
         "noUnusedVariables": "error",
-        "noUnusedImports": "error",
-        "useExhaustiveDependencies": "error",
-        "useHookAtTopLevel": "error",
-        "noNestedComponentDefinitions": "error",
-        "noReactPropAssignments": "error"
+        "noUnusedImports": "error"
       },
       "performance": {
         "noSyncScripts": "error"
       },
       "suspicious": {
-        "noExplicitAny": "error",
-        "noArrayIndexKey": "error",
-        "noDuplicatedSpreadProps": "error",
-        "noLeakedRender": "error"
+        "noExplicitAny": "error"
       }
     }
   },

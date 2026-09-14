@@ -12,7 +12,10 @@ const mockCaptureVisibleTab = vi.fn();
 
 vi.stubGlobal("chrome", {
   scripting: { executeScript: mockExecuteScript },
-  tabs: { captureVisibleTab: mockCaptureVisibleTab },
+  tabs: {
+    captureVisibleTab: mockCaptureVisibleTab,
+    get: vi.fn().mockResolvedValue({ active: true, windowId: 1 }),
+  },
 });
 
 // ── ImageBitmap / OffscreenCanvas mocks ────────────────────────────────
@@ -375,5 +378,72 @@ describe("full-page-screenshot", () => {
       // because restore failures are intentionally swallowed.
       await expect(resultPromise).resolves.toBe(finalBlob);
     });
+  });
+});
+
+describe("full-page memory and page safety", () => {
+  const metrics = {
+    scrollWidth: 800,
+    scrollHeight: 1920,
+    viewportWidth: 800,
+    viewportHeight: 768,
+    originalScrollX: 0,
+    originalScrollY: 120,
+    devicePixelRatio: 1,
+  };
+  beforeEach(() => {
+    vi.clearAllMocks();
+    closeFn.mockReset();
+    mockExecuteScript.mockResolvedValue([{ result: metrics }]);
+    mockCaptureVisibleTab.mockResolvedValue("data:image/jpeg;base64,/9j/2Q==");
+    mockCreateImageBitmap.mockResolvedValue(makeBitmap(800, 768));
+    mockConvertToBlob.mockResolvedValue(new Blob(["image"]));
+  });
+  it.each([
+    { viewportWidth: 0 },
+    { scrollHeight: 0 },
+    { viewportWidth: 40000 },
+    { scrollHeight: 40000 },
+    { viewportWidth: 20000, scrollHeight: 2000 },
+  ])(
+    "rejects an unsafe image size and restores the page: %j",
+    async (override) => {
+      mockExecuteScript.mockResolvedValue([
+        { result: { ...metrics, ...override } },
+      ]);
+      const result = captureFullPage(42, 90, 100);
+      result.catch(() => {});
+      await vi.advanceTimersByTimeAsync(1000);
+      await expect(result).rejects.toThrow("safe image size");
+      expect(mockCaptureVisibleTab).not.toHaveBeenCalled();
+      expect(mockExecuteScript).toHaveBeenLastCalledWith(
+        expect.objectContaining({ args: [0, 120] }),
+      );
+    },
+  );
+  it("stops before capturing a different active tab", async () => {
+    vi.mocked(
+      chrome.tabs.get as (id: number) => Promise<chrome.tabs.Tab>,
+    ).mockResolvedValueOnce({
+      active: false,
+      windowId: 1,
+    } as chrome.tabs.Tab);
+    const result = captureFullPage(42, 90, 5);
+    result.catch(() => {});
+    await vi.advanceTimersByTimeAsync(1000);
+    await expect(result).rejects.toThrow("active tab changed");
+    expect(mockCaptureVisibleTab).not.toHaveBeenCalled();
+  });
+  it("releases each viewport before capturing the next one", async () => {
+    mockCaptureVisibleTab.mockImplementation(async () => {
+      if (mockCaptureVisibleTab.mock.calls.length > 1)
+        expect(closeFn.mock.calls.length).toBeGreaterThan(0);
+      return "data:image/jpeg;base64,/9j/2Q==";
+    });
+    const result = captureFullPage(42, 90, 5);
+    await vi.advanceTimersByTimeAsync(3000);
+    await result;
+    expect(mockDrawImage).toHaveBeenCalledTimes(3);
+    expect(closeFn).toHaveBeenCalledTimes(4);
   });
 });

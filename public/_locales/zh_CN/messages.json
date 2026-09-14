@@ -96,5 +96,110 @@
   },
   "fullPageCaptureDescription": {
     "message": "通过滚动并拼接截图来捕获整个页面"
+  },
+  "workspace": {
+    "message": "工作空间"
+  },
+  "localSettings": {
+    "message": "设置保存在本机"
+  },
+  "currentPage": {
+    "message": "当前页面"
+  },
+  "productTagline": {
+    "message": "截图、上传、分享"
+  },
+  "captureArea": {
+    "message": "截图区域"
+  },
+  "visibleArea": {
+    "message": "可见区域"
+  },
+  "fullPage": {
+    "message": "整页"
+  },
+  "destination": {
+    "message": "上传位置"
+  },
+  "setupRequired": {
+    "message": "配置你的 R2 存储桶"
+  },
+  "setupHint": {
+    "message": "打开设置，连接你的存储桶。"
+  },
+  "captureUpload": {
+    "message": "截图并上传"
+  },
+  "captureWorking": {
+    "message": "正在截图并上传…"
+  },
+  "captureFailed": {
+    "message": "截图失败，请重试。"
+  },
+  "uploadComplete": {
+    "message": "已上传到你的存储桶，链接已就绪。"
+  },
+  "publicLink": {
+    "message": "公开链接"
+  },
+  "yourBucket": {
+    "message": "你的存储桶，你的文件"
+  },
+  "copyFailed": {
+    "message": "复制被阻止，请选中链接手动复制。"
+  },
+  "loadFailed": {
+    "message": "无法读取设置，请重新打开页面。"
+  },
+  "saveFailed": {
+    "message": "无法保存设置。"
+  },
+  "connectionError": {
+    "message": "连接测试失败。"
+  },
+  "captureSettings": {
+    "message": "截图设置"
+  },
+  "endpointHint": {
+    "message": "粘贴完整 S3 API 地址，自动提取存储桶名称。"
+  },
+  "domainHint": {
+    "message": "请在 Cloudflare 中将此公开域名连接到存储桶。"
+  },
+  "show": {
+    "message": "显示"
+  },
+  "hide": {
+    "message": "隐藏"
+  },
+  "maxScreens": {
+    "message": "整页截图上限"
+  },
+  "maxScreensHint": {
+    "message": "单次截图最多包含的屏幕高度数，限制长页面的资源占用。"
+  },
+  "smallerFiles": {
+    "message": "更小文件"
+  },
+  "sharperImages": {
+    "message": "更清晰"
+  },
+  "outputPath": {
+    "message": "输出路径"
+  },
+  "themeHint": {
+    "message": "同时应用到弹窗和设置页。"
+  },
+  "unsavedChanges": {
+    "message": "有未保存的更改"
+  },
+  "checkFields": {
+    "message": "请检查标出的字段。"
+  },
+  "testing": {
+    "message": "测试中…"
+  },
+  "browserToR2": {
+    "message": "浏览器 → 你的 R2 存储桶"
   }
 }

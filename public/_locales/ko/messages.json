@@ -96,5 +96,110 @@
   },
   "fullPageCaptureDescription": {
     "message": "스크롤하여 스크린샷을 이어붙여 전체 페이지를 캡처합니다"
+  },
+  "workspace": {
+    "message": "작업 공간"
+  },
+  "localSettings": {
+    "message": "설정은 로컬에 저장"
+  },
+  "currentPage": {
+    "message": "현재 페이지"
+  },
+  "productTagline": {
+    "message": "캡처, 업로드, 공유"
+  },
+  "captureArea": {
+    "message": "캡처 영역"
+  },
+  "visibleArea": {
+    "message": "보이는 영역"
+  },
+  "fullPage": {
+    "message": "전체 페이지"
+  },
+  "destination": {
+    "message": "업로드 위치"
+  },
+  "setupRequired": {
+    "message": "R2 버킷 설정"
+  },
+  "setupHint": {
+    "message": "설정에서 버킷을 연결하세요."
+  },
+  "captureUpload": {
+    "message": "캡처 및 업로드"
+  },
+  "captureWorking": {
+    "message": "캡처 및 업로드 중…"
+  },
+  "captureFailed": {
+    "message": "캡처하지 못했습니다. 다시 시도하세요."
+  },
+  "uploadComplete": {
+    "message": "버킷에 업로드했습니다. 링크가 준비되었습니다."
+  },
+  "publicLink": {
+    "message": "공개 링크"
+  },
+  "yourBucket": {
+    "message": "내 버킷, 내 파일"
+  },
+  "copyFailed": {
+    "message": "복사가 차단되었습니다. 링크를 선택해 직접 복사하세요."
+  },
+  "loadFailed": {
+    "message": "설정을 불러오지 못했습니다. 페이지를 다시 여세요."
+  },
+  "saveFailed": {
+    "message": "설정을 저장하지 못했습니다."
+  },
+  "connectionError": {
+    "message": "연결 테스트에 실패했습니다."
+  },
+  "captureSettings": {
+    "message": "캡처 설정"
+  },
+  "endpointHint": {
+    "message": "전체 S3 API URL을 붙여 넣으면 버킷 이름을 추출합니다."
+  },
+  "domainHint": {
+    "message": "Cloudflare에서 이 공개 도메인을 버킷에 연결하세요."
+  },
+  "show": {
+    "message": "표시"
+  },
+  "hide": {
+    "message": "숨기기"
+  },
+  "maxScreens": {
+    "message": "전체 페이지 한도"
+  },
+  "maxScreensHint": {
+    "message": "한 번에 캡처할 화면 높이 수를 제한합니다."
+  },
+  "smallerFiles": {
+    "message": "작은 파일"
+  },
+  "sharperImages": {
+    "message": "선명한 이미지"
+  },
+  "outputPath": {
+    "message": "저장 경로"
+  },
+  "themeHint": {
+    "message": "팝업과 설정 화면에 적용됩니다."
+  },
+  "unsavedChanges": {
+    "message": "저장하지 않은 변경 사항"
+  },
+  "checkFields": {
+    "message": "표시된 항목을 확인하세요."
+  },
+  "testing": {
+    "message": "테스트 중…"
+  },
+  "browserToR2": {
+    "message": "브라우저 → 내 R2 버킷"
   }
 }

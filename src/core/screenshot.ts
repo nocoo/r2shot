@@ -1,11 +1,18 @@
-export async function captureVisibleTab(quality: number): Promise<string> {
-  const dataUrl = await chrome.tabs.captureVisibleTab(
-    undefined as unknown as number,
-    {
-      format: "jpeg",
-      quality,
-    },
-  );
+let nextCaptureTime = 0;
+
+export async function captureVisibleTab(
+  quality: number,
+  windowId?: number,
+): Promise<string> {
+  const now = Date.now();
+  const scheduled = Math.max(now, nextCaptureTime);
+  nextCaptureTime = scheduled + 550;
+  if (scheduled > now)
+    await new Promise((resolve) => setTimeout(resolve, scheduled - now));
+  const dataUrl = await chrome.tabs.captureVisibleTab(windowId as number, {
+    format: "jpeg",
+    quality,
+  });
   return dataUrl;
 }
 

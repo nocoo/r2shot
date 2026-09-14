@@ -15,7 +15,7 @@
 
 R2Shot is a Chrome extension that combines webpage screenshots and image uploads in one popup. Configure your own Cloudflare R2 bucket and public domain, and captures upload directly to that bucket. After uploading, click Copy URL to share the image in notes, documents, or messages.
 
-You provide the storage and R2 credentials. There is no separate upload service or account system. The popup and settings currently use English; the extension name and description include localized resources.
+You provide the storage and R2 credentials. Version 2.0.0 introduces a compact sea-glass interface in the hexly.ai family. The popup and settings support 10 languages, with light, dark, and system themes. Chrome 123 or later is required.
 
 ## Features
 
@@ -26,7 +26,7 @@ You provide the storage and R2 credentials. There is no separate upload service 
 - Extract the endpoint and bucket name from a pasted R2 S3 API URL, and test bucket connectivity.
 - Keep configuration in the local browser, with light, dark, and system themes.
 
-Full-page mode stitches loaded content at the current viewport width and attempts to restore the original scroll position afterward. Browser internal pages do not support this mode. Dynamic and infinite-scroll pages are limited by loaded content and the configured capture height.
+Full-page output is limited to 32 million pixels and 32,767 pixels per side to bound memory use. Keep the original tab active during capture. Full-page mode stitches loaded content at the current viewport width and attempts to restore the original scroll position afterward. Browser internal pages do not support this mode. Dynamic and infinite-scroll pages are limited by loaded content and the configured capture height.
 
 ## Usage
 
@@ -43,7 +43,7 @@ Open Settings and fill in:
 | Endpoint URL | R2 S3 API endpoint, such as `https://<account-id>.r2.cloudflarestorage.com` |
 | Access Key ID / Secret Access Key | R2 credentials with read and write access to the target bucket |
 | Bucket Name | Upload destination bucket |
-| Custom Domain | A domain configured for public access, such as `cdn.example.com`, without `https://` |
+| Custom Domain | A domain configured for public access, such as `cdn.example.com`, with or without `https://` |
 | JPG Quality | JPEG quality, default 90 |
 | Max Screens (Full Page) | Maximum number of viewport heights, default 5 |
 
@@ -98,15 +98,15 @@ Run from the repository root:
 | Unit tests in watch mode | `bun run test:watch` |
 | Full local quality check | `bun run verify` |
 
-Tests use Vitest and happy-dom with mocked Chrome APIs and S3 network boundaries; they do not need real R2 credentials. Verify Chrome loading, scrolling screenshots, and public-link access manually after loading `dist/`. Use `bun run test:coverage` to generate a coverage report.
+Tests use Vitest and happy-dom with mocked Chrome APIs and S3 network boundaries. The AWS SDK is a development-only reference for Signature V4 compatibility tests; they do not need real R2 credentials. Verify Chrome loading, scrolling screenshots, and public-link access manually after loading `dist/`. Use `bun run test:coverage` to generate a coverage report.
 
 `bun run verify` first confirms that `bun.lock` installs frozen, then runs linting, the production build, coverage tests, and workflow integration tests. Use it before committing dependency or build-configuration changes.
 
 ## Stack
 
+The shipped extension uses native JavaScript, HTML, CSS, Fetch, and Web Crypto. The TypeScript core is compiled during development; no framework or AWS SDK is included in the runtime.
+
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
 ![Cloudflare R2](https://img.shields.io/badge/Cloudflare_R2-F38020?logo=cloudflare&logoColor=white)
 ![Manifest V3](https://img.shields.io/badge/Chrome-Manifest_V3-4285F4?logo=googlechrome&logoColor=white)
@@ -114,8 +114,8 @@ Tests use Vitest and happy-dom with mocked Chrome APIs and S3 network boundaries
 | Area | Implementation |
 | --- | --- |
 | Extension | Chrome Manifest V3, background service worker, Chrome Tabs / Scripting / Storage APIs |
-| Interface | React, Tailwind CSS, Lucide |
-| Images and uploads | OffscreenCanvas, AWS SDK for JavaScript S3 client, Cloudflare R2 |
+| Interface | Native DOM, CSS custom properties, system fonts, inline SVG |
+| Images and uploads | OffscreenCanvas, Fetch, Web Crypto SHA-256 / HMAC, Cloudflare R2 |
 | Build and testing | Vite, TypeScript, Biome, Vitest, Testing Library, happy-dom |
 
 ## Documentation
@@ -123,6 +123,8 @@ Tests use Vitest and happy-dom with mocked Chrome APIs and S3 network boundaries
 - [Privacy policy and local credential storage](../PRIVACY.md)
 - [Changelog](../CHANGELOG.md)
 - [Extension manifest](../public/manifest.json)
+
+A product of [hexly.ai](https://hexly.ai).
 
 ## License
 

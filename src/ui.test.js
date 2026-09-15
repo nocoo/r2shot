@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DEFAULT_R2_CONFIG } from "./core/r2-config";

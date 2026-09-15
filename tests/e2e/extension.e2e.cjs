@@ -1,0 +1,446 @@
+// Real Chrome extension tests. Only R2 responses and clipboard access are stubbed.
+const puppeteer = require("puppeteer");
+const http = require("node:http");
+const fs = require("node:fs/promises");
+const path = require("node:path");
+const crypto = require("node:crypto");
+const assert = require("node:assert/strict");
+const os = require("node:os");
+const root = path.resolve(__dirname, "../..");
+const { version } = require(path.join(root, "package.json"));
+const extensionPath = path.resolve(
+  process.env.EXTENSION_PATH || path.join(root, "dist"),
+);
+const output = path.resolve(
+  process.env.E2E_OUTPUT_DIR || path.join(root, "dist/verification"),
+);
+const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || undefined;
+const config = {
+  endpoint: "https://demo.r2.cloudflarestorage.com",
+  accessKeyId: "EXAMPLE_KEY_FOR_DEMO",
+  secretAccessKey: "EXAMPLE_SECRET_FOR_DEMO",
+  bucketName: "screenshots",
+  customDomain: "images.example.com",
+  jpgQuality: 90,
+  maxScreens: 5,
+};
+const fixture =
+  '<!doctype html><html><head><title>Designing a calmer workflow</title><style>body{margin:0;background:#f5f4ee;color:#293b34;font:17px/1.7 system-ui}main{max-width:850px;margin:0 auto;padding:50px}h1{font-size:64px;letter-spacing:-3px;line-height:1.1}header{font-size:12px;letter-spacing:2px}section{height:560px;border-top:1px solid #cad9cf;padding-top:30px}h2{font-size:35px}.block{height:220px;background:#dce8dc;border-radius:12px;padding:30px;margin-top:25px}</style></head><body><main><header>FIELD NOTES / 014</header><h1>Designing a calmer<br>workflow.</h1><p>Good tools give your attention back.</p><section><h2>01 / Keep the useful parts.</h2><p>Save a page, share an idea, keep moving.</p><div class="block">One browser. A few thoughtful tools.</div></section><section><h2>02 / Make room for focus.</h2><p>Less switching. More doing.</p><div class="block">A small action can take an idea further.</div></section><section><h2>03 / Connect the next step.</h2><p>Bring the work to the places you already use.</p></section></main></body></html>';
+const checks = [],
+  errors = [],
+  uploads = [];
+let browser,
+  control,
+  extensionId,
+  content,
+  testExtensionPath,
+  nextStatus = 200;
+const record = (name) => {
+  checks.push(name);
+  console.log(`PASS ${name}`);
+};
+const watch = (page) => {
+  page.setDefaultTimeout(15000);
+  page.on("pageerror", (error) => errors.push(error.message));
+  return page;
+};
+const fill = (page, selector, value) =>
+  page.$eval(
+    selector,
+    (element, value) => {
+      element.value = value;
+      element.dispatchEvent(new Event("input", { bubbles: true }));
+      element.dispatchEvent(new Event("change", { bubbles: true }));
+    },
+    String(value),
+  );
+async function popup() {
+  await content.bringToFront();
+  const { targetInfos } = await control.send("Target.getTargets", {
+    filter: [{ type: "tab" }],
+  });
+  const tab = targetInfos.find((target) => target.url === content.url());
+  assert(tab, "The fixture tab must exist before invoking the toolbar action");
+  await control.send("Extensions.triggerAction", {
+    id: extensionId,
+    targetId: tab.targetId,
+  });
+  const target = await browser.waitForTarget(
+    (target) => target.url() === `chrome-extension://${extensionId}/popup.html`,
+    { timeout: 15000 },
+  );
+  const page = watch(await target.asPage());
+  await page.waitForSelector("#capture:not([disabled])");
+  return page;
+}
+function jpegSize(bytes) {
+  assert.equal(bytes.readUInt16BE(0), 0xffd8);
+  for (let position = 2; position < bytes.length; ) {
+    if (bytes[position++] !== 0xff) continue;
+    const marker = bytes[position++];
+    if (marker === 0xd8 || marker === 0xd9) continue;
+    const length = bytes.readUInt16BE(position);
+    if ([0xc0, 0xc1, 0xc2].includes(marker))
+      return {
+        width: bytes.readUInt16BE(position + 5),
+        height: bytes.readUInt16BE(position + 3),
+      };
+    position += length;
+  }
+  throw new Error("Missing JPEG dimensions");
+}
+async function captureEvidence(page, name, selector = "body") {
+  await page.bringToFront();
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await (await page.$(selector)).screenshot({
+    path: path.join(output, `${name}.png`),
+  });
+}
+(async () => {
+  const server = http.createServer((_request, response) => {
+    response.writeHead(200, { "Content-Type": "text/html" });
+    response.end(fixture);
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const origin = `http://127.0.0.1:${server.address().port}`;
+  try {
+    await fs.mkdir(output, { recursive: true });
+    await fs.rm(path.join(output, "chrome-extension.json"), { force: true });
+    const manifest = JSON.parse(
+      await fs.readFile(path.join(extensionPath, "manifest.json"), "utf8"),
+    );
+    assert.equal(
+      manifest.version,
+      version,
+      "Build the current version before running Chrome tests",
+    );
+    assert.equal(
+      require(path.join(root, "public/manifest.json")).version,
+      version,
+      "Manifest/package versions must match",
+    );
+    assert.equal(manifest.background.service_worker, "background.js");
+    testExtensionPath = await fs.mkdtemp(path.join(os.tmpdir(), "r2shot-e2e-"));
+    // Install an isolated, unmodified copy of the production files. No worker driver is needed:
+    // Extensions.triggerAction exercises the shipped popup and its real MV3 message listener.
+    await fs.cp(extensionPath, testExtensionPath, {
+      recursive: true,
+      filter: (source) =>
+        !/^(verification|unpacked|icons\/dev)(\/|$)|\.zip$/.test(
+          path.relative(extensionPath, source),
+        ),
+    });
+    const runtimeHashes = {};
+    for (const name of (
+      await fs.readdir(testExtensionPath, { recursive: true })
+    ).sort()) {
+      const file = path.join(testExtensionPath, name);
+      if ((await fs.stat(file)).isFile())
+        runtimeHashes[name] = crypto
+          .createHash("sha256")
+          .update(await fs.readFile(file))
+          .digest("hex");
+    }
+    browser = await puppeteer.launch({
+      executablePath,
+      headless: true,
+      pipe: true,
+      enableExtensions: true,
+      args: [
+        "--lang=en-US",
+        "--no-first-run",
+        "--enable-unsafe-extension-debugging",
+        ...(process.env.CI ? ["--no-sandbox"] : []),
+      ],
+      defaultViewport: { width: 1280, height: 800 },
+    });
+    console.log(`Browser: ${await browser.version()}`);
+    control = await browser.target().createCDPSession();
+    extensionId = await browser.installExtension(testExtensionPath);
+    const settings = watch(await browser.newPage());
+    await settings.goto(`chrome-extension://${extensionId}/settings.html`);
+    await settings.waitForSelector("#save:not([disabled])");
+    assert.equal(
+      await settings.evaluate(() => chrome.runtime.getManifest().version),
+      version,
+    );
+    const worker = await browser.waitForTarget(
+      (target) =>
+        target.type() === "service_worker" &&
+        target.url().includes(extensionId),
+    );
+    const session = await worker.createCDPSession();
+    session.on("Runtime.exceptionThrown", (event) =>
+      errors.push(
+        event.exceptionDetails.exception?.description ||
+          event.exceptionDetails.text,
+      ),
+    );
+    await session.send("Runtime.enable");
+    await session.send("Fetch.enable", {
+      patterns: [
+        {
+          urlPattern: "https://*.r2.cloudflarestorage.com/*",
+          requestStage: "Request",
+        },
+      ],
+    });
+    session.on("Fetch.requestPaused", (event) => {
+      void (async () => {
+        assert.equal(new URL(event.request.url).origin, config.endpoint);
+        uploads.push({
+          ...event.request,
+          body: Buffer.concat(
+            (event.request.postDataEntries || []).map((part) =>
+              Buffer.from(part.bytes || "", "base64"),
+            ),
+          ),
+        });
+        const responseCode = nextStatus;
+        nextStatus = 200;
+        await session.send("Fetch.fulfillRequest", {
+          requestId: event.requestId,
+          responseCode,
+          body: "",
+        });
+      })().catch((error) => errors.push(error.message));
+    });
+    await fill(
+      settings,
+      "#endpoint",
+      `${config.endpoint}/${config.bucketName}`,
+    );
+    assert.equal(
+      await settings.$eval("#bucketName", (element) => element.value),
+      config.bucketName,
+    );
+    for (const key of ["accessKeyId", "secretAccessKey", "customDomain"])
+      await fill(settings, `#${key}`, config[key]);
+    await settings.click("#test-connection");
+    await settings.waitForFunction(() =>
+      document
+        .getElementById("connection-status")
+        .textContent.includes("successful"),
+    );
+    assert.equal(
+      await settings.evaluate(
+        async () => (await chrome.storage.local.get("r2config")).r2config,
+      ),
+      undefined,
+    );
+    assert.equal(uploads.at(-1).method, "HEAD");
+    assert.match(
+      uploads.at(-1).headers.authorization,
+      /^AWS4-HMAC-SHA256 Credential=EXAMPLE_KEY_FOR_DEMO\//,
+    );
+    await fill(settings, "#jpgQuality", 101);
+    await settings.click("#save");
+    assert.equal(
+      await settings.evaluate(
+        async () => (await chrome.storage.local.get("r2config")).r2config,
+      ),
+      undefined,
+    );
+    await fill(settings, "#jpgQuality", 90);
+    await settings.click("#save");
+    await settings.waitForFunction(() =>
+      document.getElementById("save-status").textContent.includes("saved"),
+    );
+    assert.deepEqual(
+      await settings.evaluate(
+        async () => (await chrome.storage.local.get("r2config")).r2config,
+      ),
+      config,
+    );
+    await settings.select("#theme", "light");
+    record(
+      "Packaged settings: version, endpoint parsing, unsaved connection test, validation and storage",
+    );
+    content = watch(await browser.newPage());
+    await content.goto(`${origin}/field-notes`);
+    let page = await popup();
+    await page.click("#capture");
+    await page.waitForFunction(
+      () =>
+        document.getElementById("capture-status").dataset.state === "success",
+      { timeout: 15000 },
+    );
+    let upload = uploads.at(-1);
+    assert.equal(upload.method, "PUT");
+    assert.equal(
+      upload.headers["x-amz-content-sha256"],
+      crypto.createHash("sha256").update(upload.body).digest("hex"),
+    );
+    assert.deepEqual(jpegSize(upload.body), { width: 1280, height: 800 });
+    assert.equal(
+      uploads.length,
+      2,
+      "One connection test and one visible upload",
+    );
+    assert.equal(
+      await page.$eval("#result-url", (element) => element.value),
+      "https://" +
+        config.customDomain +
+        new URL(upload.url).pathname.slice(config.bucketName.length + 1),
+    );
+    await fs.writeFile(path.join(output, "captured-visible.jpg"), upload.body);
+    record("Real visible-tab capture, JPEG dimensions and signed upload bytes");
+    await page.close();
+    await content.bringToFront();
+    await content.evaluate(() => window.scrollTo(0, 180));
+    const dimensions = await content.evaluate(() => ({
+      width: innerWidth,
+      height: document.documentElement.scrollHeight,
+      scrollY,
+    }));
+    page = await popup();
+    await page.$eval('[name="scope"][value="full"]', (element) =>
+      element.click(),
+    );
+    await page.click("#capture");
+    await page.waitForFunction(
+      () =>
+        ["success", "error"].includes(
+          document.getElementById("capture-status").dataset.state,
+        ),
+      { timeout: 20000 },
+    );
+    assert.equal(
+      await page.$eval("#capture-status", (element) => element.dataset.state),
+      "success",
+    );
+    upload = uploads.at(-1);
+    assert.deepEqual(jpegSize(upload.body), {
+      width: dimensions.width,
+      height: dimensions.height,
+    });
+    assert.equal(await content.evaluate(() => scrollY), dimensions.scrollY);
+    assert.equal(uploads.length, 3, "Full-page capture uploads exactly once");
+    assert.equal(
+      upload.headers["x-amz-content-sha256"],
+      crypto.createHash("sha256").update(upload.body).digest("hex"),
+    );
+    await fs.writeFile(
+      path.join(output, "captured-full-page.jpg"),
+      upload.body,
+    );
+    record(
+      "Full-page stitching, output dimensions and restored scroll position",
+    );
+    nextStatus = 403;
+    await page.click("#new");
+    await page.$eval('[value="visible"]', (element) => element.click());
+    await page.click("#capture");
+    await page.waitForFunction(
+      () => document.getElementById("capture-status").dataset.state === "error",
+    );
+    assert.equal(
+      await page.$eval("#result", (element) => element.hidden),
+      true,
+    );
+    await page.click("#capture");
+    await page.waitForFunction(
+      () =>
+        document.getElementById("capture-status").dataset.state === "success",
+    );
+    record("Failed upload, hidden result and successful retry");
+    await page.evaluate(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        configurable: true,
+        value: {
+          writeText: async (value) => {
+            window.copiedValue = value;
+          },
+        },
+      });
+    });
+    await page.click("#copy");
+    await page.waitForFunction(
+      () => document.getElementById("copy").textContent === "Copied!",
+    );
+    assert.equal(
+      await page.evaluate(() => window.copiedValue),
+      await page.$eval("#result-url", (element) => element.value),
+    );
+    await page.evaluate(() => {
+      navigator.clipboard.writeText = async () => {
+        throw new Error("denied");
+      };
+    });
+    await page.click("#copy");
+    await page.waitForFunction(
+      () => document.getElementById("capture-status").dataset.state === "error",
+    );
+    record("Clipboard success and denial with isolated stubs");
+    await page.close();
+    for (const width of [1280, 860, 390]) {
+      await settings.setViewport({ width, height: 900 });
+      assert(
+        await settings.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth + 1,
+        ),
+      );
+    }
+    record("Settings fit 390, 860 and 1280px widths");
+    await content.setRequestInterception(true);
+    content.on("request", (request) =>
+      request.respond({ status: 200, contentType: "text/html", body: fixture }),
+    );
+    await content.goto("https://notes.example.com/field-notes");
+    await settings.setViewport({ width: 1280, height: 800 });
+    await captureEvidence(
+      settings,
+      "r2shot-settings-light",
+      ".settings-layout",
+    );
+    page = await popup();
+    await captureEvidence(page, "r2shot-popup-light");
+    await page.close();
+    await settings.select("#theme", "dark");
+    page = await popup();
+    await page.$eval('[value="full"]', (element) => element.click());
+    await page.click("#capture");
+    await page.waitForFunction(
+      () =>
+        document.getElementById("capture-status").dataset.state === "success",
+      { timeout: 20000 },
+    );
+    await captureEvidence(page, "r2shot-result-dark");
+    assert.equal(
+      await page.evaluate(() => document.documentElement.dataset.theme),
+      "dark",
+    );
+    record("Light/dark UI and result screenshots from the installed extension");
+    assert.deepEqual(errors, []);
+    const report = {
+      version,
+      browser: await browser.version(),
+      runtime_sha256: runtimeHashes,
+      checks,
+      console_errors: errors,
+      network:
+        "Actual Chrome capture/stitching/signing; R2 HTTP responses intercepted with synthetic credentials. No live bucket/CDN. Clipboard stubbed.",
+    };
+    if (process.env.E2E_PACKAGE_PATH)
+      report.package_sha256 = crypto
+        .createHash("sha256")
+        .update(await fs.readFile(process.env.E2E_PACKAGE_PATH))
+        .digest("hex");
+    await fs.writeFile(
+      path.join(output, "chrome-extension.json"),
+      `${JSON.stringify(report, null, 2)}\n`,
+    );
+    console.log(`PASS ${checks.length} Chrome extension scenarios`);
+  } finally {
+    try {
+      if (browser) await browser.close();
+    } finally {
+      await new Promise((resolve) => server.close(resolve));
+      if (testExtensionPath)
+        await fs.rm(testExtensionPath, { recursive: true, force: true });
+    }
+  }
+})().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

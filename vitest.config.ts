@@ -2,9 +2,8 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    globals: true,
-    environment: "happy-dom",
-    include: ["src/**/*.test.ts", "src/**/*.test.js"],
+    environment: "node",
+    include: ["src/**/*.test.{ts,js}"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
@@ -15,7 +14,7 @@ export default defineConfig({
         "src/**/*.test.js",
         // Type-only declaration files.
         "src/**/*.d.ts",
-        // Chrome listener registration is exercised by extension browser tests.
+        // Listener wiring is checked by Chrome E2E, outside this V8 coverage report.
         "src/background/index.ts",
         "src/types/**",
       ],

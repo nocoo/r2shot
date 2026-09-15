@@ -53,7 +53,7 @@ R2Shot 是一个 Chrome 扩展，把网页截图和图片上传放在同一个�
 
 ## 开发
 
-需要 Bun、Node.js 22.12+ 和 Chrome。从仓库根目录执行：
+需要 Bun、Node.js 22.22.2+（22.x）、24.15+（24.x）或 26+，以及 Chrome。从仓库根目录执行：
 
 ```bash
 git clone https://github.com/nocoo/r2shot.git
@@ -84,7 +84,7 @@ src/settings/      R2 配置与主题
 src/background/    扩展消息处理
 src/core/          截图、滚动拼接、S3 上传和本地配置
 public/            Manifest V3、图标与本地化资源
-e2e/               截图到上传的工作流测试
+tests/             工作流集成测试与真实 Chrome 扩展测试
 ```
 
 ## 测试
@@ -93,14 +93,17 @@ e2e/               截图到上传的工作流测试
 
 | 测试层 | 命令 |
 | --- | --- |
-| 单元与组件测试 | `bun run test` |
-| 工作流集成测试 | `bun run test:e2e` |
+| 单元与 DOM 测试 | `bun run test` |
+| 工作流集成测试 | `bun run test:integration` |
+| 真实 Chrome 扩展测试（先构建） | `bun run test:e2e` |
 | 单元测试监听模式 | `bun run test:watch` |
 | 完整本地质量验证 | `bun run verify` |
 
-测试使用 Vitest 和 happy-dom，模拟 Chrome API 与 S3 网络边界，不需要真实 R2 凭据。AWS SDK 只作为开发依赖，用于独立对照 Signature V4 签名结果。实际 Chrome 加载、滚动截图和公开链接访问需要加载 `dist/` 后手动验证。`bun run test:coverage` 可生成覆盖率报告。
+测试框架与 Hooky 对齐：Vitest 默认使用 Node 环境，DOM 用例按需使用 jsdom；`bun run test:coverage` 生成报告，四项覆盖率门槛均为 95%。AWS SDK 只作为开发依赖，用于独立对照 Signature V4 签名结果。
 
-`bun run verify` 先验证 `bun.lock` 可冻结安装，再依次执行静态检查、生产构建、覆盖率测试和工作流集成测试，适合在提交依赖或构建配置变更前运行。
+Puppeteer 在独立 Chrome 中安装 `dist/` 的临时副本，测试真实弹窗、消息、存储、截图与滚动拼接。R2 HTTP 响应和剪贴板是隔离的模拟边界，不需要真实凭据。首次运行前用 `bunx puppeteer browsers install chrome` 安装匹配的浏览器，也可设置 `PUPPETEER_EXECUTABLE_PATH` 使用已有 Chrome。
+
+`bun run verify` 验证冻结安装，再执行静态检查、生产构建、覆盖率测试、工作流集成测试和真实 Chrome 扩展测试。CI 分别运行工作流集成与 Chrome 浏览器检查；提交钩子执行覆盖率门槛。浏览器证据保存在 `dist/verification/`。测试命令、可选路径与人工验收步骤见 [TESTING.md](TESTING.md)。
 
 ## 技术栈
 
@@ -116,7 +119,7 @@ e2e/               截图到上传的工作流测试
 | 扩展 | Chrome Manifest V3、后台 Service Worker、Chrome Tabs / Scripting / Storage API |
 | 界面 | 原生 DOM、CSS 变量、系统字体、内联 SVG |
 | 图片与上传 | OffscreenCanvas、Fetch、Web Crypto SHA-256 / HMAC、Cloudflare R2 |
-| 构建与测试 | Vite、TypeScript、Biome、Vitest、Testing Library、happy-dom |
+| 构建与测试 | Vite、TypeScript、Biome、Vitest、jsdom、Puppeteer |
 
 ## 文档
 

@@ -19,4 +19,8 @@ jobs:
       typecheck: false
       disabled-check-reasons: '{"typecheck": "tsc --noEmit already executed as part of bun run build"}'
       l2: true
-      l2-command: "bun run test:e2e"
+      l2-command: "bun run test:integration"
+      l3: true
+      # The shared job's browser installer is for Playwright; use Puppeteer's pinned Chrome.
+      l3-browser: ""
+      l3-command: "bunx puppeteer browsers install chrome && bun run test:e2e"

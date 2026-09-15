@@ -53,7 +53,7 @@ Return to a regular webpage, open the popup, choose whether to enable Full Page,
 
 ## Development
 
-Requires Bun, Node.js 22.12+, and Chrome. Run from the repository root:
+Requires Bun, Node.js 22.22.2+ (22.x), 24.15+ (24.x), or 26+, and Chrome. Run from the repository root:
 
 ```bash
 git clone https://github.com/nocoo/r2shot.git
@@ -84,7 +84,7 @@ src/settings/      R2 configuration and theme
 src/background/    Extension message handling
 src/core/          Capture, stitching, S3 upload, and local configuration
 public/            Manifest V3, icons, and localization resources
-e2e/               Capture-to-upload workflow tests
+tests/             Workflow integration and real Chrome extension tests
 ```
 
 ## Tests
@@ -93,14 +93,17 @@ Run from the repository root:
 
 | Test layer | Command |
 | --- | --- |
-| Unit and component tests | `bun run test` |
-| Workflow integration tests | `bun run test:e2e` |
+| Unit and DOM tests | `bun run test` |
+| Workflow integration tests | `bun run test:integration` |
+| Real Chrome extension tests (build first) | `bun run test:e2e` |
 | Unit tests in watch mode | `bun run test:watch` |
 | Full local quality check | `bun run verify` |
 
-Tests use Vitest and happy-dom with mocked Chrome APIs and S3 network boundaries. The AWS SDK is a development-only reference for Signature V4 compatibility tests; they do not need real R2 credentials. Verify Chrome loading, scrolling screenshots, and public-link access manually after loading `dist/`. Use `bun run test:coverage` to generate a coverage report.
+The framework follows Hooky: Vitest uses Node by default, with jsdom selected per DOM test file. `bun run test:coverage` produces a report with 95% gates for all four metrics. The AWS SDK is a development-only reference for Signature V4 compatibility tests.
 
-`bun run verify` first confirms that `bun.lock` installs frozen, then runs linting, the production build, coverage tests, and workflow integration tests. Use it before committing dependency or build-configuration changes.
+Puppeteer installs a temporary copy of `dist/` in an isolated Chrome browser and tests the real popup, messaging, storage, screenshots, and scroll stitching. R2 HTTP responses and clipboard access are stubbed; no real credentials are needed. Run `bunx puppeteer browsers install chrome` once to install the matching browser, or set `PUPPETEER_EXECUTABLE_PATH` to use an existing Chrome.
+
+`bun run verify` checks the frozen install, linting, production build, coverage gates, workflow integration, and real Chrome extension tests. CI runs separate workflow integration and browser checks; the commit hook enforces coverage. Browser evidence goes to `dist/verification/`. See [TESTING.md](../TESTING.md) for commands, optional paths, and manual acceptance.
 
 ## Stack
 
@@ -116,7 +119,7 @@ The shipped extension uses native JavaScript, HTML, CSS, Fetch, and Web Crypto. 
 | Extension | Chrome Manifest V3, background service worker, Chrome Tabs / Scripting / Storage APIs |
 | Interface | Native DOM, CSS custom properties, system fonts, inline SVG |
 | Images and uploads | OffscreenCanvas, Fetch, Web Crypto SHA-256 / HMAC, Cloudflare R2 |
-| Build and testing | Vite, TypeScript, Biome, Vitest, Testing Library, happy-dom |
+| Build and testing | Vite, TypeScript, Biome, Vitest, jsdom, Puppeteer |
 
 ## Documentation
 

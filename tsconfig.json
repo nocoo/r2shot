@@ -15,14 +15,15 @@
     "isolatedModules": true,
     "outDir": "dist",
     "rootDir": ".",
-    "types": ["node", "chrome", "vitest/globals"],
+    "types": ["node", "chrome"],
     "allowJs": true
   },
   "include": [
     "src/**/*",
+    "tests/**/*",
     "vite.config.ts",
     "vitest.config.ts",
-    "vitest.e2e.config.ts"
+    "vitest.integration.config.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }

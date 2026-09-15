@@ -47,7 +47,7 @@ def members(path):
 coverage_log = run(['bun', 'run', 'test:coverage'], 'unit-tests.log')
 run(['bun', 'run', 'lint'], 'lint.log')
 if slug == 'r2shot':
-    run(['bun', 'run', 'test:e2e'], 'workflow-tests.log')
+    run(['bun', 'run', 'test:integration'], 'workflow-tests.log')
 run(['bun', 'run', 'build' if slug == 'hooky' else 'build:zip'], 'build.log')
 built = ROOT / 'dist' / f'{slug}-{version}.zip'
 archive = OUT / built.name

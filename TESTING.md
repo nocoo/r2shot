@@ -32,7 +32,7 @@ CI retains the L2 integration job and adds L3 Chrome tests using Puppeteer's mat
 
 The suite checks settings validation and persistence, an unsaved signed connection test, visible JPEG capture and its uploaded bytes, full-page dimensions and scroll restoration, failed upload and retry, clipboard feedback, responsive settings, and light/dark themes. R2 HTTP responses are intercepted with synthetic credentials; clipboard success and rejection use stubs. This verifies local capture, signing, and UI behavior. A live bucket, CDN, and native clipboard still require manual acceptance.
 
-Screenshots, captured JPEGs, and `chrome-extension.json` are written to `dist/verification/`. The report includes Chrome/version information and SHA-256 hashes of the installed runtime files. A build clears `dist/`, so run browser tests after building. A failed run exits nonzero and removes the preceding success report.
+Screenshots, captured JPEGs, and `chrome-extension.json` are written to `dist/verification/`. The report includes Chrome/version information and SHA-256 hashes of the installed runtime files. A build clears `dist/`, so run browser tests after building. Each run clears its preceding report and five images; a new success report is written only after cleanup completes. A failed run exits nonzero.
 
 Optional environment variables:
 

@@ -97,15 +97,24 @@ async function captureEvidence(page, name, selector = "body") {
   });
 }
 (async () => {
+  await fs.mkdir(output, { recursive: true });
+  for (const name of [
+    "chrome-extension.json",
+    "captured-visible.jpg",
+    "captured-full-page.jpg",
+    "r2shot-settings-light.png",
+    "r2shot-popup-light.png",
+    "r2shot-result-dark.png",
+  ])
+    await fs.rm(path.join(output, name), { force: true });
   const server = http.createServer((_request, response) => {
     response.writeHead(200, { "Content-Type": "text/html" });
     response.end(fixture);
   });
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   const origin = `http://127.0.0.1:${server.address().port}`;
+  let report;
   try {
-    await fs.mkdir(output, { recursive: true });
-    await fs.rm(path.join(output, "chrome-extension.json"), { force: true });
     const manifest = JSON.parse(
       await fs.readFile(path.join(extensionPath, "manifest.json"), "utf8"),
     );
@@ -412,7 +421,7 @@ async function captureEvidence(page, name, selector = "body") {
     );
     record("Light/dark UI and result screenshots from the installed extension");
     assert.deepEqual(errors, []);
-    const report = {
+    report = {
       version,
       browser: await browser.version(),
       runtime_sha256: runtimeHashes,
@@ -426,11 +435,6 @@ async function captureEvidence(page, name, selector = "body") {
         .createHash("sha256")
         .update(await fs.readFile(process.env.E2E_PACKAGE_PATH))
         .digest("hex");
-    await fs.writeFile(
-      path.join(output, "chrome-extension.json"),
-      `${JSON.stringify(report, null, 2)}\n`,
-    );
-    console.log(`PASS ${checks.length} Chrome extension scenarios`);
   } finally {
     try {
       if (browser) await browser.close();
@@ -440,6 +444,11 @@ async function captureEvidence(page, name, selector = "body") {
         await fs.rm(testExtensionPath, { recursive: true, force: true });
     }
   }
+  await fs.writeFile(
+    path.join(output, "chrome-extension.json"),
+    `${JSON.stringify(report, null, 2)}\n`,
+  );
+  console.log(`PASS ${checks.length} Chrome extension scenarios`);
 })().catch((error) => {
   console.error(error);
   process.exitCode = 1;

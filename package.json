@@ -27,16 +27,16 @@
     "materials:check": "node scripts/materials/check.cjs"
   },
   "devDependencies": {
-    "@aws-sdk/client-s3": "3.1131.0",
+    "@aws-sdk/client-s3": "3.1133.0",
     "@biomejs/biome": "2.5.13",
-    "@types/chrome": "0.2.9",
-    "@types/node": "26.5.0",
-    "@vitest/coverage-v8": "5.0.0",
+    "@types/chrome": "0.3.0",
+    "@types/node": "26.6.1",
+    "@vitest/coverage-v8": "5.0.1",
     "jsdom": "30.0.1",
-    "puppeteer": "25.10.0",
-    "typescript": "^7.0.2",
+    "puppeteer": "25.11.0",
+    "typescript": "7.0.2",
     "vite": "8.3.0",
-    "vitest": "5.0.0"
+    "vitest": "5.0.1"
   },
   "dependencies": {},
   "lint-staged": {
@@ -45,10 +45,8 @@
     ]
   },
   "overrides": {
-    "nanoid": "3.3.18",
+    "nanoid": "3.3.19",
     "ws": "^8.21.3",
-    "esbuild": "^0.28.1",
-    "vite": "^8.3.0",
-    "brace-expansion": "^5.0.9"
+    "vite": "^8.3.0"
   }
 }

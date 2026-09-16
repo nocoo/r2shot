@@ -125,6 +125,7 @@ Puppeteer 在独立 Chrome 中安装 `dist/` 的临时副本，测试真实弹�
 
 - [隐私政策与本地凭据存储](PRIVACY.md)
 - [变更记录](CHANGELOG.md)
+- [R2Shot 与 Hooky 依赖检查（2026-09-16）](docs/dependency-review-2026-09-16.md)
 - [扩展清单](public/manifest.json)
 
 [hexly.ai](https://hexly.ai) 出品。

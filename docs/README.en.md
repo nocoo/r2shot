@@ -125,6 +125,7 @@ The shipped extension uses native JavaScript, HTML, CSS, Fetch, and Web Crypto. 
 
 - [Privacy policy and local credential storage](../PRIVACY.md)
 - [Changelog](../CHANGELOG.md)
+- [R2Shot and Hooky dependency review (2026-09-16)](dependency-review-2026-09-16.md)
 - [Extension manifest](../public/manifest.json)
 
 A product of [hexly.ai](https://hexly.ai).

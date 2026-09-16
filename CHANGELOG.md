@@ -5,6 +5,20 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.1] - 2026-09-16
+
+### Changed
+
+- Align extension testing with Hooky: Vitest uses Node by default and jsdom for DOM tests, with mocked workflows kept in a separate integration suite.
+- Promote the real Puppeteer Chrome suite to `test:e2e`, reuse it for material verification, and run integration and browser checks in CI and local verification.
+- Update the AWS SDK signing reference, Chrome/Node types, Vitest coverage tools, Puppeteer, and compatible transitive dependencies; remove unused test packages and obsolete overrides.
+- Document the supported Node versions, local candidate testing, and the read-only Hooky dependency review.
+
+### Fixed
+
+- Stop Git hooks on the first failed quality check and enforce the existing 95% coverage gates before committing.
+- Clear stale browser reports and screenshots before each run, reject mismatched build versions, and write success evidence only after browser cleanup.
+
 ## [2.0.0] - 2026-09-14
 
 ### Added
@@ -188,6 +202,7 @@ Initial public release.
 - 115 tests (108 unit + 7 E2E), 97%+ coverage
 - Git hooks — pre-commit (UT), pre-push (UT + lint)
 
+[2.0.1]: https://github.com/nocoo/r2shot/releases/tag/v2.0.1
 [1.3.1]: https://github.com/nocoo/r2shot/releases/tag/v1.3.1
 [1.2.1]: https://github.com/nocoo/r2shot/releases/tag/v1.2.1
 [1.2.0]: https://github.com/nocoo/r2shot/releases/tag/v1.2.0

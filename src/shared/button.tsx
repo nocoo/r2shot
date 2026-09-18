@@ -2,8 +2,8 @@ import { type ButtonHTMLAttributes, forwardRef } from "react";
 import { cn } from "./cn";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "outline" | "ghost" | "destructive";
-  size?: "default" | "sm" | "lg" | "icon";
+  variant?: "default" | "outline" | "ghost";
+  size?: "default" | "sm" | "icon";
 }
 
 const variantStyles: Record<string, string> = {
@@ -11,14 +11,11 @@ const variantStyles: Record<string, string> = {
     "bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm",
   outline: "border border-border bg-transparent hover:bg-muted text-foreground",
   ghost: "hover:bg-muted text-foreground",
-  destructive:
-    "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
 };
 
 const sizeStyles: Record<string, string> = {
   default: "h-9 px-4 py-2 text-sm",
   sm: "h-8 px-3 text-xs",
-  lg: "h-10 px-6 text-base",
   icon: "h-9 w-9",
 };
 

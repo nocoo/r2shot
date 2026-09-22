@@ -5,6 +5,19 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.4] - 2026-09-22
+
+### Changed
+
+- Install Husky 9 and run pre-commit typecheck, lint, and coverage on the staged Git index.
+- Reject skipped, focused, and empty Vitest runs while keeping the 95% coverage floors.
+- Take the merged dependency updates: AWS SDK 3.1136.0, Biome 2.5.14, and @types/node 26.6.2.
+
+### Fixed
+
+- Reject a staged bug when the working tree already contains an unstaged fix.
+- Remove the unused lint-staged autofix configuration.
+
 ## [2.0.3] - 2026-09-17
 
 ### Fixed
@@ -219,6 +232,7 @@ Initial public release.
 - 115 tests (108 unit + 7 E2E), 97%+ coverage
 - Git hooks — pre-commit (UT), pre-push (UT + lint)
 
+[2.0.4]: https://github.com/nocoo/r2shot/releases/tag/v2.0.4
 [2.0.3]: https://github.com/nocoo/r2shot/releases/tag/v2.0.3
 [2.0.2]: https://github.com/nocoo/r2shot/releases/tag/v2.0.2
 [2.0.1]: https://github.com/nocoo/r2shot/releases/tag/v2.0.1

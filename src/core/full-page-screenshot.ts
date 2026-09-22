@@ -1,5 +1,12 @@
 import { captureVisibleTab, dataUrlToBlob } from "./screenshot";
 
+declare global {
+  interface Window {
+    // Kept in the extension's isolated world, only for the current capture.
+    __r2shotScrollTarget?: Element;
+  }
+}
+
 /**
  * Page metrics returned by the injected content script.
  */
@@ -11,6 +18,7 @@ export interface PageMetrics {
   originalScrollX: number;
   originalScrollY: number;
   devicePixelRatio: number;
+  scrollArea?: { top: number; height: number };
 }
 
 /**
@@ -29,17 +37,59 @@ export async function getPageMetrics(tabId: number): Promise<PageMetrics> {
     target: { tabId },
     // v8 ignore next: content script runs in page context, not testable in Node
     func: /* v8 ignore start */ () => {
+      delete window.__r2shotScrollTarget;
+      const root = document.scrollingElement ?? document.documentElement;
+      let target: Element | undefined;
+      if (root.scrollHeight <= window.innerHeight + 1) {
+        let largestArea = 0;
+        // ponytail: use the largest visible scroller; independent panes would need target selection.
+        for (const element of document.querySelectorAll("body, body *")) {
+          if (
+            element.scrollHeight <= element.clientHeight + 1 ||
+            element.clientHeight < window.innerHeight / 2 ||
+            element.clientWidth < 1
+          )
+            continue;
+          const rect = element.getBoundingClientRect();
+          const top = rect.top + element.clientTop;
+          const visibleWidth =
+            Math.min(window.innerWidth, rect.right) - Math.max(0, rect.left);
+          const style = getComputedStyle(element);
+          if (
+            top < 0 ||
+            top + element.clientHeight > window.innerHeight + 1 ||
+            visibleWidth <= 0 ||
+            style.visibility !== "visible" ||
+            !/^(auto|scroll|overlay)$/.test(style.overflowY)
+          )
+            continue;
+          const area = visibleWidth * element.clientHeight;
+          if (area > largestArea) {
+            target = element;
+            largestArea = area;
+          }
+        }
+      }
       const metrics = {
-        scrollWidth: document.documentElement.scrollWidth,
-        scrollHeight: document.documentElement.scrollHeight,
+        scrollWidth: root.scrollWidth,
+        scrollHeight: target
+          ? target.scrollHeight + window.innerHeight - target.clientHeight
+          : root.scrollHeight,
         viewportWidth: window.innerWidth,
         viewportHeight: window.innerHeight,
-        originalScrollX: window.scrollX,
-        originalScrollY: window.scrollY,
+        originalScrollX: target?.scrollLeft ?? window.scrollX,
+        originalScrollY: target?.scrollTop ?? window.scrollY,
         devicePixelRatio: window.devicePixelRatio,
+        scrollArea: target
+          ? {
+              top: target.getBoundingClientRect().top + target.clientTop,
+              height: target.clientHeight,
+            }
+          : undefined,
       };
+      window.__r2shotScrollTarget = target;
       // Scroll to top before capturing
-      window.scrollTo({ left: 0, top: 0, behavior: "instant" });
+      (target ?? window).scrollTo({ left: 0, top: 0, behavior: "instant" });
       return metrics;
     } /* v8 ignore stop */,
   });
@@ -59,7 +109,11 @@ export async function scrollTo(tabId: number, y: number): Promise<void> {
     target: { tabId },
     // v8 ignore next: content script runs in page context, not testable in Node
     func: /* v8 ignore start */ (scrollY: number) => {
-      window.scrollTo({ left: 0, top: scrollY, behavior: "instant" });
+      (window.__r2shotScrollTarget ?? window).scrollTo({
+        left: 0,
+        top: scrollY,
+        behavior: "instant",
+      });
     } /* v8 ignore stop */,
     args: [y],
   });
@@ -77,7 +131,9 @@ export async function restoreScroll(
     target: { tabId },
     // v8 ignore next: content script runs in page context, not testable in Node
     func: /* v8 ignore start */ (sx: number, sy: number) => {
-      window.scrollTo({ left: sx, top: sy, behavior: "instant" });
+      const target = window.__r2shotScrollTarget ?? window;
+      delete window.__r2shotScrollTarget;
+      target.scrollTo({ left: sx, top: sy, behavior: "instant" });
     } /* v8 ignore stop */,
     args: [x, y],
   });
@@ -105,30 +161,39 @@ export async function captureFullPage(
   let canvas: OffscreenCanvas | undefined;
   try {
     await delay(SCROLL_SETTLE_MS);
-    const { viewportHeight, devicePixelRatio } = metrics;
+    const { viewportWidth, viewportHeight, devicePixelRatio } = metrics;
     const effectiveHeight = Math.min(
       metrics.scrollHeight,
       viewportHeight * maxScreens,
     );
-    const width = Math.round(metrics.viewportWidth * devicePixelRatio);
-    const height = Math.round(effectiveHeight * devicePixelRatio);
     if (
-      width < 1 ||
-      height < 1 ||
-      width > 32767 ||
-      height > 32767 ||
-      width * height > 32_000_000
+      ![viewportWidth, viewportHeight, effectiveHeight, devicePixelRatio].every(
+        (value) => Number.isFinite(value) && value > 0,
+      )
     ) {
-      throw new Error(
-        "Page exceeds the safe image size. Lower the full-page limit in settings.",
-      );
+      throw new Error("Invalid page dimensions for full-page capture.");
     }
+    // Keep the requested page coverage within the canvas memory and size limits.
+    const scale = Math.min(
+      devicePixelRatio,
+      32767 / viewportWidth,
+      32767 / effectiveHeight,
+      Math.sqrt(32_000_000 / viewportWidth / effectiveHeight),
+    );
+    const width = Math.max(1, Math.floor(viewportWidth * scale));
+    const height = Math.max(1, Math.floor(effectiveHeight * scale));
+    const outputScale = height / effectiveHeight;
     canvas = new OffscreenCanvas(width, height);
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Failed to create 2D context for stitching");
-    const totalCaptures = Math.ceil(effectiveHeight / viewportHeight);
+    ctx.imageSmoothingQuality = "high";
+    const top = metrics.scrollArea?.top ?? 0;
+    const step = metrics.scrollArea?.height ?? viewportHeight;
+    const bottom = viewportHeight - top - step;
+    const contentHeight = effectiveHeight - top - bottom;
+    const totalCaptures = Math.ceil(contentHeight / step);
     for (let i = 0; i < totalCaptures; i++) {
-      const y = i * viewportHeight;
+      const y = i * step;
       if (i > 0) {
         await scrollTo(tabId, y);
         await delay(SCROLL_SETTLE_MS);
@@ -145,24 +210,58 @@ export async function captureFullPage(
         );
       const bitmap = await createImageBitmap(dataUrlToBlob(dataUrl));
       try {
-        const remaining = effectiveHeight - y;
-        if (remaining < viewportHeight) {
-          const cropHeight = Math.round(remaining * devicePixelRatio);
-          const cropY = bitmap.height - cropHeight;
-          const cropped = await createImageBitmap(
+        // The browser clamps the final scroll to the end of the scroll area.
+        const scrollY = Math.min(
+          y,
+          Math.max(0, metrics.scrollHeight - viewportHeight),
+        );
+        const sourceScale = bitmap.height / viewportHeight;
+        const end = Math.min(y + step, contentHeight);
+        const sourceY = Math.round((top + y - scrollY) * sourceScale);
+        const destinationY = Math.round((top + y) * outputScale);
+        const sliceHeight =
+          Math.round((top + end) * outputScale) - destinationY;
+        ctx.drawImage(
+          bitmap,
+          0,
+          sourceY,
+          bitmap.width,
+          Math.round((top + end - scrollY) * sourceScale) - sourceY,
+          0,
+          destinationY,
+          width,
+          sliceHeight,
+        );
+        // Keep the content above/below an inner scroller only once.
+        if (i === 0 && top > 0) {
+          const headerHeight = Math.round(top * outputScale);
+          ctx.drawImage(
             bitmap,
             0,
-            cropY,
+            0,
             bitmap.width,
-            cropHeight,
+            Math.round(top * sourceScale),
+            0,
+            0,
+            width,
+            headerHeight,
           );
-          try {
-            ctx.drawImage(cropped, 0, Math.round(y * devicePixelRatio));
-          } finally {
-            cropped.close();
-          }
-        } else {
-          ctx.drawImage(bitmap, 0, Math.round(y * devicePixelRatio));
+        }
+        if (i === totalCaptures - 1 && bottom > 0) {
+          const footerY = Math.round((effectiveHeight - bottom) * outputScale);
+          const footerHeight = height - footerY;
+          const sourceHeight = Math.round(bottom * sourceScale);
+          ctx.drawImage(
+            bitmap,
+            0,
+            bitmap.height - sourceHeight,
+            bitmap.width,
+            sourceHeight,
+            0,
+            footerY,
+            width,
+            footerHeight,
+          );
         }
       } finally {
         bitmap.close();

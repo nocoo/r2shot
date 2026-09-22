@@ -217,15 +217,54 @@ describe("full-page-screenshot", () => {
       await vi.advanceTimersByTimeAsync(3000);
       await resultPromise;
 
-      // The last capture: remaining = 1920 - 2*768 = 384 CSS px → 768 physical px
-      // Crop: createImageBitmap(bitmap, 0, 1536-768, 1600, 768)
-      expect(mockCreateImageBitmap).toHaveBeenLastCalledWith(
+      // Draw only the new bottom half of the last viewport, after Chrome clamps scrolling.
+      expect(mockDrawImage).toHaveBeenLastCalledWith(
         expect.objectContaining({ width: 1600, height: 1536 }),
         0,
         768,
         1600,
         768,
+        0,
+        3072,
+        1600,
+        768,
       );
+    });
+
+    it("stitches an inner scroller with one header and footer and no gaps", async () => {
+      const { metrics } = setupMultiCapture();
+      mockExecuteScript.mockResolvedValue([
+        {
+          result: {
+            ...metrics,
+            scrollHeight: 2060,
+            viewportHeight: 800,
+            devicePixelRatio: 1,
+            scrollArea: { top: 80, height: 640 },
+          },
+        },
+      ]);
+      mockCreateImageBitmap.mockResolvedValue(makeBitmap(800, 800));
+
+      const result = captureFullPage(42, 90, 5);
+      await vi.advanceTimersByTimeAsync(3000);
+      await result;
+
+      expect(MockOffscreenCanvas).toHaveBeenCalledWith(800, 2060);
+      expect(mockCaptureVisibleTab).toHaveBeenCalledTimes(3);
+      const slices = mockDrawImage.mock.calls.map((call) => {
+        const [bitmap, , sourceY, , sourceHeight, , y, , height] = call;
+        expect(sourceY).toBeGreaterThanOrEqual(0);
+        expect(sourceY + sourceHeight).toBeLessThanOrEqual(bitmap.height);
+        return { y, height };
+      });
+      slices.sort((a, b) => a.y - b.y);
+      let end = 0;
+      for (const slice of slices) {
+        expect(slice.y).toBe(end);
+        end += slice.height;
+      }
+      expect(end).toBe(2060);
     });
 
     it("should close all bitmaps after drawing", async () => {
@@ -400,13 +439,86 @@ describe("full-page memory and page safety", () => {
     mockConvertToBlob.mockResolvedValue(new Blob(["image"]));
   });
   it.each([
-    { viewportWidth: 0 },
-    { scrollHeight: 0 },
-    { viewportWidth: 40000 },
-    { scrollHeight: 40000 },
-    { viewportWidth: 20000, scrollHeight: 2000 },
+    {
+      viewportWidth: 1920,
+      viewportHeight: 1080,
+      scrollHeight: 5005,
+      devicePixelRatio: 2,
+    },
+    {
+      viewportWidth: 800,
+      viewportHeight: 4000,
+      scrollHeight: 40005,
+      devicePixelRatio: 1,
+    },
+    {
+      viewportWidth: 40000,
+      viewportHeight: 800,
+      scrollHeight: 1600,
+      devicePixelRatio: 1,
+    },
+    {
+      viewportWidth: 1920,
+      viewportHeight: 1080,
+      scrollHeight: 5005,
+      devicePixelRatio: 2,
+      scrollArea: { top: 60, height: 980 },
+    },
   ])(
-    "rejects an unsafe image size and restores the page: %j",
+    "scales oversized captures without losing page coverage: %j",
+    async (dimensions) => {
+      const page = { ...metrics, ...dimensions };
+      mockExecuteScript.mockResolvedValue([{ result: page }]);
+      mockCreateImageBitmap.mockResolvedValue(
+        makeBitmap(page.viewportWidth, page.viewportHeight),
+      );
+
+      const result = captureFullPage(42, 90, 100);
+      result.catch(() => {});
+      await vi.advanceTimersByTimeAsync(10000);
+      await expect(result).resolves.toBeInstanceOf(Blob);
+
+      const [width, height] = MockOffscreenCanvas.mock.calls[0];
+      expect(width).toBeGreaterThan(0);
+      expect(height).toBeGreaterThan(0);
+      expect(width).toBeLessThanOrEqual(32767);
+      expect(height).toBeLessThanOrEqual(32767);
+      expect(width * height).toBeLessThanOrEqual(32_000_000);
+      expect(
+        Math.abs(width / page.viewportWidth - height / page.scrollHeight),
+      ).toBeLessThanOrEqual(1 / page.viewportWidth + 1 / page.scrollHeight);
+      expect(mockCaptureVisibleTab).toHaveBeenCalledTimes(
+        Math.ceil(
+          (page.scrollHeight -
+            page.viewportHeight +
+            (page.scrollArea?.height ?? page.viewportHeight)) /
+            (page.scrollArea?.height ?? page.viewportHeight),
+        ),
+      );
+      let end = 0;
+      for (const [, , sourceY, , sourceHeight, , y, , sliceHeight] of [
+        ...mockDrawImage.mock.calls,
+      ].sort((a, b) => a[6] - b[6])) {
+        expect(sourceY).toBeGreaterThanOrEqual(0);
+        expect(sourceY + sourceHeight).toBeLessThanOrEqual(page.viewportHeight);
+        expect(y).toBe(end);
+        end += sliceHeight;
+      }
+      expect(end).toBe(height);
+      expect(mockExecuteScript).toHaveBeenLastCalledWith(
+        expect.objectContaining({ args: [0, 120] }),
+      );
+    },
+  );
+  it.each([
+    { viewportWidth: 0 },
+    { viewportHeight: 0 },
+    { scrollHeight: 0 },
+    { viewportWidth: Number.NaN },
+    { devicePixelRatio: 0 },
+    { devicePixelRatio: Number.POSITIVE_INFINITY },
+  ])(
+    "rejects invalid page dimensions and restores the page: %j",
     async (override) => {
       mockExecuteScript.mockResolvedValue([
         { result: { ...metrics, ...override } },
@@ -414,7 +526,7 @@ describe("full-page memory and page safety", () => {
       const result = captureFullPage(42, 90, 100);
       result.catch(() => {});
       await vi.advanceTimersByTimeAsync(1000);
-      await expect(result).rejects.toThrow("safe image size");
+      await expect(result).rejects.toThrow("Invalid page dimensions");
       expect(mockCaptureVisibleTab).not.toHaveBeenCalled();
       expect(mockExecuteScript).toHaveBeenLastCalledWith(
         expect.objectContaining({ args: [0, 120] }),
@@ -444,6 +556,6 @@ describe("full-page memory and page safety", () => {
     await vi.advanceTimersByTimeAsync(3000);
     await result;
     expect(mockDrawImage).toHaveBeenCalledTimes(3);
-    expect(closeFn).toHaveBeenCalledTimes(4);
+    expect(closeFn).toHaveBeenCalledTimes(3);
   });
 });

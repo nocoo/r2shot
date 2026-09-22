@@ -5,6 +5,23 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.3] - 2026-09-17
+
+### Fixed
+
+- Automatically scale oversized full-page images to fit the canvas memory and dimension limits, preserving all content within the configured capture limit instead of rejecting high-DPI and long pages.
+- Keep stitched slices, headers, and footers aligned when output dimensions require fractional scaling.
+- Verify actual Chrome uploads for a 1920 × 1080 viewport at 2× pixel density and a page over 40,000 CSS pixels tall, including content near the bottom and scroll restoration.
+
+## [2.0.2] - 2026-09-16
+
+### Fixed
+
+- Capture the primary scrollable content area when the document itself stays one viewport tall, instead of uploading only the first screen.
+- Stitch inner scrolling areas with their surrounding header and footer once, preserve the capture height limit, and restore the original scroll position.
+- Use actual viewport bitmap dimensions for source cropping so browser pixel scaling does not skip or misalign content.
+- Add real Chrome regression checks for scrolling containers, hidden panels, image contents, and a capped capture at 2× pixel density.
+
 ## [2.0.1] - 2026-09-16
 
 ### Changed
@@ -202,6 +219,8 @@ Initial public release.
 - 115 tests (108 unit + 7 E2E), 97%+ coverage
 - Git hooks — pre-commit (UT), pre-push (UT + lint)
 
+[2.0.3]: https://github.com/nocoo/r2shot/releases/tag/v2.0.3
+[2.0.2]: https://github.com/nocoo/r2shot/releases/tag/v2.0.2
 [2.0.1]: https://github.com/nocoo/r2shot/releases/tag/v2.0.1
 [1.3.1]: https://github.com/nocoo/r2shot/releases/tag/v1.3.1
 [1.2.1]: https://github.com/nocoo/r2shot/releases/tag/v1.2.1

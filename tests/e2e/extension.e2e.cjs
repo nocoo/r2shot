@@ -96,12 +96,35 @@ async function captureEvidence(page, name, selector = "body") {
     path: path.join(output, `${name}.png`),
   });
 }
+async function imagePixels(page, bytes, points) {
+  return page.evaluate(
+    async ({ base64, points }) => {
+      const image = new Image();
+      image.src = `data:image/jpeg;base64,${base64}`;
+      await image.decode();
+      const canvas = new OffscreenCanvas(
+        image.naturalWidth,
+        image.naturalHeight,
+      );
+      const context = canvas.getContext("2d");
+      context.drawImage(image, 0, 0);
+      return points.map(({ x, y }) =>
+        Array.from(context.getImageData(x, y, 1, 1).data).slice(0, 3),
+      );
+    },
+    { base64: bytes.toString("base64"), points },
+  );
+}
 (async () => {
   await fs.mkdir(output, { recursive: true });
   for (const name of [
     "chrome-extension.json",
     "captured-visible.jpg",
     "captured-full-page.jpg",
+    "captured-scroll-container.jpg",
+    "captured-scroll-container-limit.jpg",
+    "captured-large-page.jpg",
+    "captured-tall-page.jpg",
     "r2shot-settings-light.png",
     "r2shot-popup-light.png",
     "r2shot-result-dark.png",
@@ -303,9 +326,7 @@ async function captureEvidence(page, name, selector = "body") {
       scrollY,
     }));
     page = await popup();
-    await page.$eval('[name="scope"][value="full"]', (element) =>
-      element.click(),
-    );
+    await page.click('.scope label:has([value="full"])');
     await page.click("#capture");
     await page.waitForFunction(
       () =>
@@ -382,6 +403,201 @@ async function captureEvidence(page, name, selector = "body") {
     );
     record("Clipboard success and denial with isolated stubs");
     await page.close();
+    const colors = [
+      [35, 160, 90],
+      [240, 170, 55],
+      [80, 130, 200],
+      [180, 80, 165],
+      [50, 170, 185],
+    ];
+    await content.evaluate((colors) => {
+      const block = (height, color, text) => {
+        const element = document.createElement("div");
+        element.style.cssText = `height:${height}px;background:rgb(${color});`;
+        element.textContent = text;
+        return element;
+      };
+      const scroller = document.createElement("div");
+      scroller.id = "page-scroll";
+      scroller.style.cssText = "height:calc(100vh - 100px);overflow-y:auto";
+      colors.forEach((color, index) => {
+        scroller.append(block(431, color, `Section ${index + 1}`));
+      });
+      document.body.replaceChildren(
+        block(60, [181, 38, 60], "Header appears once"),
+        scroller,
+        block(40, [45, 75, 181], "Footer appears once"),
+      );
+      // Inactive app panels must not be mistaken for the visible content scroller.
+      for (const hiddenStyle of ["left:200vw", "left:0;visibility:hidden"]) {
+        const panel = document.createElement("div");
+        panel.style.cssText = `position:fixed;top:0;width:100vw;height:100vh;overflow:auto;${hiddenStyle}`;
+        panel.append(block(4000, [0, 0, 0], "Hidden panel"));
+        document.body.append(panel);
+      }
+      document.documentElement.style.overflow = "hidden";
+      scroller.scrollTop = 180;
+    }, colors);
+    for (const [scale, maxScreens, name] of [
+      [1, 5, "captured-scroll-container"],
+      [2, 2, "captured-scroll-container-limit"],
+    ]) {
+      await content.setViewport({
+        width: 1280,
+        height: 800,
+        deviceScaleFactor: scale,
+      });
+      await settings.evaluate(
+        (config) => chrome.storage.local.set({ r2config: config }),
+        { ...config, maxScreens },
+      );
+      const uploadCount = uploads.length;
+      page = await popup();
+      await page.click('.scope label:has([value="full"])');
+      await page.click("#capture");
+      await page.waitForFunction(
+        () =>
+          ["success", "error"].includes(
+            document.getElementById("capture-status").dataset.state,
+          ),
+        { timeout: 20000 },
+      );
+      assert.equal(
+        await page.$eval("#capture-status", (element) => element.dataset.state),
+        "success",
+        await page.$eval("#capture-status", (element) => element.textContent),
+      );
+      assert.equal(uploads.length, uploadCount + 1);
+      upload = uploads.at(-1);
+      await fs.writeFile(path.join(output, `${name}.jpg`), upload.body);
+      const height = Math.min(431 * colors.length + 100, 800 * maxScreens);
+      assert.deepEqual(jpegSize(upload.body), {
+        width: 1280 * scale,
+        height: height * scale,
+      });
+      const samples = [{ y: 30, color: [181, 38, 60] }];
+      for (let y = 15; y < height - 100; y += 37) {
+        // Stay clear of JPEG color blending at the boundaries between bands.
+        if (y % 431 < 8 || y % 431 > 423) continue;
+        samples.push({ y: y + 60, color: colors[Math.floor(y / 431)] });
+      }
+      samples.push({ y: height - 20, color: [45, 75, 181] });
+      const pixels = await imagePixels(
+        content,
+        upload.body,
+        samples.map(({ y }) => ({ x: 960 * scale, y: y * scale })),
+      );
+      samples.forEach(({ y, color }, index) => {
+        assert(
+          pixels[index].every(
+            (value, channel) => Math.abs(value - color[channel]) <= 8,
+          ),
+          `Incorrect content at row ${y}: ${pixels[index]} instead of ${color}`,
+        );
+      });
+      assert.equal(
+        await content.$eval("#page-scroll", (element) => element.scrollTop),
+        180,
+      );
+      record(
+        `Inner scrolling content, header/footer pixels, scroll restoration: DPR ${scale}, limit ${maxScreens}`,
+      );
+      await page.close();
+    }
+    for (const { viewport, bandHeight, maxScreens, name } of [
+      {
+        viewport: { width: 1920, height: 1080, deviceScaleFactor: 2 },
+        bandHeight: 1001,
+        maxScreens: 5,
+        name: "captured-large-page",
+      },
+      {
+        viewport: { width: 800, height: 4000, deviceScaleFactor: 1 },
+        bandHeight: 8001,
+        maxScreens: 100,
+        name: "captured-tall-page",
+      },
+    ]) {
+      await content.setViewport(viewport);
+      await content.evaluate(
+        ({ colors, bandHeight }) => {
+          document.documentElement.style.removeProperty("overflow");
+          document.body.replaceChildren();
+          colors.forEach((color, index) => {
+            const band = document.createElement("div");
+            band.style.cssText = `height:${bandHeight}px;background:rgb(${color});`;
+            band.textContent = `Section ${index + 1}`;
+            document.body.append(band);
+          });
+          window.scrollTo(0, 180);
+        },
+        { colors, bandHeight },
+      );
+      await settings.evaluate(
+        (config) => chrome.storage.local.set({ r2config: config }),
+        { ...config, maxScreens },
+      );
+      const uploadCount = uploads.length;
+      page = await popup();
+      await page.click('.scope label:has([value="full"])');
+      await page.click("#capture");
+      await page.waitForFunction(
+        () =>
+          ["success", "error"].includes(
+            document.getElementById("capture-status").dataset.state,
+          ),
+        { timeout: 30000 },
+      );
+      assert.equal(
+        await page.$eval("#capture-status", (element) => element.dataset.state),
+        "success",
+        await page.$eval("#capture-status", (element) => element.textContent),
+      );
+      assert.equal(uploads.length, uploadCount + 1);
+      upload = uploads.at(-1);
+      const size = jpegSize(upload.body);
+      assert(size.width > 0 && size.width <= 32767);
+      assert(size.height > 0 && size.height <= 32767);
+      assert(size.width * size.height <= 32_000_000);
+      const fullHeight = colors.length * bandHeight;
+      assert(
+        Math.abs(size.width / viewport.width - size.height / fullHeight) <=
+          1 / viewport.width + 1 / fullHeight,
+      );
+      const samples = colors.flatMap((color, index) =>
+        [0.1, 0.5, 0.99].map((fraction) => ({
+          x: Math.floor(size.width * 0.75),
+          y: Math.floor(
+            ((index + fraction) * bandHeight * size.height) / fullHeight,
+          ),
+          color,
+        })),
+      );
+      const pixels = await imagePixels(content, upload.body, samples);
+      samples.forEach(({ color, y }, index) => {
+        assert(
+          pixels[index].every(
+            (value, channel) => Math.abs(value - color[channel]) <= 8,
+          ),
+          `Missing or incorrect content in ${name} at row ${y}`,
+        );
+      });
+      assert.equal(await content.evaluate(() => scrollY), 180);
+      await fs.writeFile(path.join(output, `${name}.jpg`), upload.body);
+      record(
+        `Oversized page preserved from top to bottom: ${name}, ${size.width} × ${size.height}`,
+      );
+      await page.close();
+    }
+    await content.setViewport({
+      width: 1280,
+      height: 800,
+      deviceScaleFactor: 1,
+    });
+    await settings.evaluate(
+      (config) => chrome.storage.local.set({ r2config: config }),
+      config,
+    );
     for (const width of [1280, 860, 390]) {
       await settings.setViewport({ width, height: 900 });
       assert(

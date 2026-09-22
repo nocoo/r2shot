@@ -20,13 +20,13 @@ To use an existing Chrome instead of downloading one, set `PUPPETEER_EXECUTABLE_
 | --- | --- |
 | `bun run test` | Unit tests and shipped popup/settings DOM |
 | `bun run test:coverage` | The same tests with 95% gates for statements, branches, functions, and lines |
-| `bun run test:integration` | Only the 8 mocked workflows in `tests/workflow.test.ts` |
+| `bun run test:integration` | Mocked workflows in `tests/workflow.test.ts` and the Vitest selection guard |
 | `bun run build && bun run test:e2e` | Production extension in real headless Chrome |
 | `bun run verify` | Frozen install, lint, typechecked production build, coverage, integration, then Chrome E2E |
 
 Vitest defaults to Node. `src/ui.test.js` opts into jsdom, creates the shipped HTML before importing DOM modules, and resets modules and Chrome stubs between tests. The AWS SDK is only a signing reference in tests. The V8 report excludes the background listener registration; Chrome E2E exercises that listener separately and does not contribute to the V8 percentages.
 
-CI retains the L2 integration job and adds L3 Chrome tests using Puppeteer's matching browser. Pre-commit runs typechecking, lint, coverage gates, and the existing secret scan. Hook scripts stop on the first failed check.
+CI retains the L2 integration job and adds L3 Chrome tests using Puppeteer's matching browser. Pre-commit is Husky 9 and checks the staged index with typecheck, lint, coverage gates, and the secret scan. Vitest rejects skipped, focused, and empty runs. The hook stops on the first failed check.
 
 ## Chrome extension suite
 

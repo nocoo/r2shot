@@ -60,16 +60,16 @@ G1 requires check-only strict analysis/formatting with zero errors/warnings. G2 
 
 | Dimension | Status | Required proof and current evidence/gap |
 |---|---|---|
-| L1 TypeScript | enforced | CI/pre-push run Vitest coverage with all four thresholds at 95%; background listener registration is excluded and needs browser coverage. |
-| L2 capture/upload | planned | CI runs `bun run test:integration` (`tests/workflow.test.ts`). It exercises real application modules with mocked fetch/Chrome APIs; this is not real HTTP against storage. |
+| L1 TypeScript | enforced | Pre-commit runs the staged index through Vitest coverage with all four thresholds at 95%. Focused, skipped, and empty runs fail. Background listener registration stays excluded from V8 and is checked by Chrome E2E. |
+| L2 capture/upload | planned | CI runs `bun run test:integration` (`tests/workflow.test.ts` and the Vitest selection guard). It exercises real application modules with mocked fetch/Chrome APIs; this is not real HTTP against storage. |
 | L3 Chrome UI | manual | CI runs `bun run test:e2e` in an isolated Chrome profile with intercepted R2 responses. Live bucket, CDN, and user acceptance remain manual. |
 | G1 TypeScript | enforced | CI builds with `tsc --noEmit` and runs Biome with errors on warnings. |
 | G2 | enforced | Shared CI scans secrets/dependencies; hooks call gitleaks and OSV. |
 | D1 | planned | Unit/in-process tests reset fake stores; complete per-run browser/local-storage isolation and destructive-fixture guards are not an automated gate. |
 
-Local hooks use `.husky` directly: pre-commit runs typecheck, lint, coverage, and staged gitleaks; pre-push runs build, coverage, lint, and OSV. `set -e` stops on the first failed command. Checks still read the working tree, not an index snapshot or the pushed refs.
+Husky 9 is installed with `prepare` set to `husky`. Git runs `.husky/_`, and that shim runs the tracked hooks. Pre-commit checks the staged index: typecheck, Biome with warnings as errors, and Vitest coverage at the existing 95% floors. `gitleaks --staged` reads the original index before Git's hook environment is removed. `set -e` stops on the first failed command. Pre-push still runs build, coverage, lint, and OSV on the worktree.
 
-Target hooks: pre-commit checks G1 + L1 against the index snapshot (`git checkout-index`) in <30s; pre-push checks L2 and G2 in parallel against every stdin push ref/commit in <3min, plus build where applicable. L3 runs in CI or an explicit manual lane.
+Target hooks remain: pre-commit checks G1 + L1 against the index snapshot (`git checkout-index`) in <30s; pre-push checks L2 and G2 in parallel against every stdin push ref/commit in <3min, plus build where applicable. The index snapshot is installed; the <30s measurement and the pre-push stdin-ref checks are still open. L3 runs in CI or an explicit manual lane.
 Never bypass commit/push hooks, force-push, or use autofix in checks. Documentation changes do not authorize deploying or implementing new gates.
 
 ## Resources / Isolation

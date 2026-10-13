@@ -5,6 +5,16 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.5] - 2026-10-13
+
+### Changed
+
+- Bump dev dependencies: `@aws-sdk/client-s3` 3.1150.0, `@types/chrome` 0.3.5, `@types/node` 26.6.5, `vitest` / `@vitest/coverage-v8` 5.0.4, `vite` 8.3.4, `puppeteer` 25.13.0, and `jsdom` 30.1.2.
+
+### Fixed
+
+- Override transitive `source-map-js` to 1.2.2 (GHSA-68fv-2mgg-jv7q).
+
 ## [2.0.4] - 2026-09-22
 
 ### Changed
@@ -232,6 +242,7 @@ Initial public release.
 - 115 tests (108 unit + 7 E2E), 97%+ coverage
 - Git hooks — pre-commit (UT), pre-push (UT + lint)
 
+[2.0.5]: https://github.com/nocoo/r2shot/releases/tag/v2.0.5
 [2.0.4]: https://github.com/nocoo/r2shot/releases/tag/v2.0.4
 [2.0.3]: https://github.com/nocoo/r2shot/releases/tag/v2.0.3
 [2.0.2]: https://github.com/nocoo/r2shot/releases/tag/v2.0.2

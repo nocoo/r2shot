@@ -5,6 +5,12 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.6] - 2026-10-22
+
+### Changed
+
+- Bump dev dependencies: `@aws-sdk/client-s3` 3.1155.0, `@biomejs/biome` 2.6.2, `@types/chrome` 0.3.6, `vitest` / `@vitest/coverage-v8` 5.0.5, `jsdom` 30.1.3, `puppeteer` 25.15.0, and `vite` 8.3.5.
+
 ## [2.0.5] - 2026-10-13
 
 ### Changed

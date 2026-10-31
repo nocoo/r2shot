@@ -5,6 +5,12 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.7] - 2026-10-31
+
+### Changed
+
+- Bump dev dependencies: `@types/chrome` 0.3.7 and `puppeteer` 25.16.0.
+
 ## [2.0.6] - 2026-10-22
 
 ### Changed

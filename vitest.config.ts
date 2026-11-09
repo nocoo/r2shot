@@ -9,7 +9,7 @@ export default defineConfig({
     include: ["src/**/*.test.{ts,js}"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "html"],
+      reporter: ["text", "html", "json-summary"],
       include: ["src/**/*.ts", "src/**/*.js"],
       exclude: [
         // Test files themselves.

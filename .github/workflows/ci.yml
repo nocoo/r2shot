@@ -8,7 +8,35 @@ on:
   workflow_dispatch:
 
 jobs:
+  l1-precommit-gate:
+    name: "L1: Pre-commit gate self-test"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup JS and dependencies
+        uses: nocoo/base-ci/.github/actions/setup-js@2231caf82cf16f103f48cab467b3464b106d6604
+        with:
+          package-manager: bun
+          runtime-version: "1.4.2"
+          install-policy: blocked
+
+      - name: Install gitleaks
+        run: |
+          set -euo pipefail
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.28.0/gitleaks_8.28.0_linux_x64.tar.gz | tar -xz
+          sudo mv gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+
+      - name: Run L1 pre-commit gate self-test
+        run: bun run test:l1-gate
+
   quality:
+    needs: l1-precommit-gate
     uses: nocoo/base-ci/.github/workflows/quality.yml@ac635753a869cb85fad1f52aae4ccbd6119f3cae # main 2026-10-22
     with:
       runtime-version: "1.4.2"

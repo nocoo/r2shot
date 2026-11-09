@@ -60,3 +60,4 @@ cd "$snapshot"
 bun run typecheck
 bun run lint
 bun run test:coverage
+node ./scripts/l1-coverage-guard.cjs

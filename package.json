@@ -22,9 +22,10 @@
     "prepare": "husky",
     "release": "bun run scripts/release.ts",
     "typecheck": "tsc --noEmit",
-    "verify": "bun install --frozen-lockfile && bun run lint && bun run build && bun run test:coverage && bun run test:integration && bun run test:e2e",
+    "verify": "bun install --frozen-lockfile && bun run lint && bun run build && bun run test:coverage && bun run test:l1-gate && bun run test:integration && bun run test:e2e",
     "materials": "python3 scripts/materials/build.py",
-    "materials:check": "node scripts/materials/check.cjs"
+    "materials:check": "node scripts/materials/check.cjs",
+    "test:l1-gate": "bash scripts/l1-gate-selftest.sh"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "3.1155.0",

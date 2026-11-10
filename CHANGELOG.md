@@ -5,6 +5,12 @@ All notable changes to R2Shot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.0.8] - 2026-11-10
+
+### Changed
+
+- Bump dev dependencies: `@biomejs/biome` 2.6.6, `@types/node` 26.6.6, `jsdom` 31.0.0, and `vitest` / `@vitest/coverage-v8` 5.1.0.
+
 ## [2.0.7] - 2026-10-31
 
 ### Changed

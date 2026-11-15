@@ -1,5 +1,4 @@
-# CI slot standard v1 (nocoo/base-ci docs/slots.md): impl S1, S2, S3, G1, G2, B1, L1, L2, L3, Z1 via quality.yml;
-# na L1.5, P1 in slot-status. nocoo/base-ci v2026.12: top-level slot jobs; L3 使用 Puppeteer（非 Playwright）。
+# System1 quality slots, native mode (system1-quality v1.3.0, base-ci v2026.15).
 name: CI
 
 on:
@@ -13,66 +12,5 @@ permissions:
   contents: read
 
 jobs:
-  l1-precommit-gate:
-    name: "L1: Pre-commit gate self-test"
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Setup JS and dependencies
-        uses: nocoo/base-ci/.github/actions/setup-js@1ea10ecab22b72512399485391603fe03a161016 # v2026.12
-        with:
-          package-manager: bun
-          runtime-version: "1.4.2"
-          install-policy: blocked
-
-      - name: Install gitleaks
-        run: |
-          set -euo pipefail
-          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.28.0/gitleaks_8.28.0_linux_x64.tar.gz | tar -xz
-          sudo mv gitleaks /usr/local/bin/gitleaks
-          gitleaks version
-
-      - name: Run L1 pre-commit gate self-test
-        run: bun run test:l1-gate
-
   quality:
-    needs: l1-precommit-gate
-    uses: nocoo/base-ci/.github/workflows/quality.yml@1ea10ecab22b72512399485391603fe03a161016 # v2026.12
-    with:
-      runtime-version: "1.4.2"
-      node-version: "26.12.1"
-      install-policy: blocked
-      coverage-path: coverage
-      prepare-command: bun run build
-      test-command: bun run test:coverage
-      osv-config: osv-scanner.toml
-      gitleaks-config: .gitleaks.toml
-      build: true
-      build-command: bun run build
-      workflow-lint: true
-      workflow-lint-yamllint: true
-      l2: true
-      l2-command: bun run test:integration
-      l3: true
-      # Shared L3 browser installer targets Playwright; this repo uses Puppeteer's pinned Chrome.
-      l3-browser: ""
-      l3-prepare-command: bun run build
-      l3-command: bunx puppeteer browsers install chrome && bun run test:e2e
-      slot-status: >-
-        {"S1": {"status": "impl"},
-        "S2": {"status": "impl"},
-        "S3": {"status": "impl"},
-        "G1": {"status": "impl"},
-        "G2": {"status": "impl"},
-        "B1": {"status": "impl"},
-        "L1": {"status": "impl"},
-        "L1.5": {"status": "na", "reason": "Chrome 扩展项目，无 Cloudflare Worker / workerd 运行时测试套件"},
-        "L2": {"status": "impl"},
-        "L3": {"status": "impl"},
-        "P1": {"status": "na", "reason": "package.json 为 private，不发布 npm 包"},
-        "Z1": {"status": "impl"}}
+    uses: ./.github/workflows/quality-slots.yml

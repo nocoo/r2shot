@@ -54,20 +54,24 @@ bun run build:zip
 
 ## Verification
 
-6DQ = L1/L2/L3 + G2 + D1 (test isolation); the former G1 dimension was merged into L1 on 2026-09-21. Status: `enforced`, `planned`, `manual`, or `N/A`; partial enforcement below does not certify the full required bar.
-L1 requires statements, branches, functions and lines each ≥95%, with no skipped/focused tests; preserve any stricter package threshold. Native tools must identify unmeasured metrics as gaps. L1 also includes check-only strict types and analysis/formatting with zero errors/warnings (the former G1 contract). G2 requires dependency and secret scans, with missing required scanners failing.
+Quality follows `system1-quality` (v1.3.0) with 12 canonical slots (`impl`, `todo`, `na`) and `nocoo/base-ci` v2026.15 (`777bbe4f9bacab8a91d8c01974480a6ee23d28e0`) in native mode (`quality-slots.yml`).
 
-| Dimension | Status | Required proof and current evidence/gap |
+| Slot | Status | Required proof and current evidence/gap |
 |---|---|---|
-| L1 TypeScript | enforced | Pre-commit chain: Husky → `gitleaks protect --staged` → git index snapshot → `bun run typecheck` → `bun run lint` (`biome check . --error-on-warnings`) → `bun run test:coverage` → `node ./scripts/l1-coverage-guard.cjs` (requires `coverage/coverage-summary.json` and enforces 95% on statements/branches/functions/lines even if Vitest thresholds are removed from the staged config). Healthy isolated path: **~3.8s** wall time; latest four metrics **99.76% / 99.13% / 100% / 99.75%**. Repeatable gate self-test: `bun run test:l1-gate` (`scripts/l1-gate-selftest.sh`), wired in CI as job `l1-precommit-gate` before the shared L1 job. Negative probes: UT failure; all-metrics and branches-only coverage shortfall; lint error; Biome warning-only (`useBlockStatements` warn, not caught by `tsc`); type error; Vitest `.only`/`.skip`; staged-bad/worktree-good index mismatch; slow-test timeout/interrupt; missing `bun` or `gitleaks`; missing coverage report when `test:coverage` omits `--coverage`. CI build still runs `tsc --noEmit` via `bun run build`. |
-| L2 capture/upload | planned | CI runs `bun run test:integration` (`tests/workflow.test.ts` and the Vitest selection guard). It exercises real application modules with mocked fetch/Chrome APIs; this is not real HTTP against storage. |
-| L3 Chrome UI | manual | CI runs `bun run test:e2e` in an isolated Chrome profile with intercepted R2 responses. Live bucket, CDN, and user acceptance remain manual. |
-| G2 | enforced | Shared CI scans secrets/dependencies; hooks call gitleaks and OSV. |
-| D1 | planned | Unit/in-process tests reset fake stores; complete per-run browser/local-storage isolation and destructive-fixture guards are not an automated gate. |
+| S1: Types | enforced (`impl`) | `bun run typecheck` (`tsc --noEmit`) in pre-commit index snapshot & CI `s1-types`. |
+| S2: Lint | enforced (`impl`) | `bun run lint` (`biome check . --error-on-warnings`) in pre-commit index snapshot & CI `s2-lint`. |
+| S3: Workflow | enforced (`impl`) | `actionlint` + 40-char SHA pinning in CI `s3-workflow`. |
+| G1: Secrets | enforced (`impl`) | `gitleaks protect --staged` in pre-commit; `gitleaks dir . --config .gitleaks.toml` in CI `g1-secrets`. |
+| G2: Dependencies | enforced (`impl`) | `osv-scanner` (`osv-scanner.toml`, `bun.lock`) in pre-push & CI `g2-dependencies`. |
+| B1: Build | enforced (`impl`) | `bun run build` (`tsc --noEmit && vite build`) in pre-push & CI `b1-build`. |
+| L1: Unit | enforced (`impl`) | Vitest coverage (`>=95%` statements/branches/functions/lines) + `node ./scripts/l1-coverage-guard.cjs`; repeatable gate self-test `bun run test:l1-gate` runs as blocking CI job `precommit-gate` (`Pre-commit gate self-test`). |
+| L2: Runtime | N/A (`na`) | Chrome extension without Cloudflare Worker / workerd runtime tests. |
+| L3: Integration | enforced (`impl`) | CI runs `bun run test:integration` (`tests/workflow.test.ts`, mocked fetch/Chrome APIs). |
+| L4: E2E | enforced (`impl`) | CI runs `bun run test:e2e` (Puppeteer isolated Chrome profile with intercepted R2 responses); live bucket/CDN acceptance remains manual. |
+| P1: Package | N/A (`na`) | Private `package.json`; extension ZIP built via `bun run build:zip`. |
+| Z1: Gate | enforced (`impl`) | Aggregates all `impl` slots + `precommit-gate` & SHA consistency (`quality / Z1: Gate`). |
 
-Husky 9 is installed with `prepare` set to `husky`. Git runs `.husky/_`, and that shim runs the tracked hooks. Pre-commit checks the staged index: typecheck, Biome with warnings as errors, and Vitest coverage at the existing 95% floors. `gitleaks --staged` reads the original index before Git's hook environment is removed. `set -e` stops on the first failed command. Pre-push still runs build, coverage, lint, and OSV on the worktree.
-
-Pre-commit checks unified L1 (types, check-only lint, coverage + summary guard) against the index snapshot (`git checkout-index`) in <30s; measured healthy self-test path is ~3.8s. Pre-push still runs build, coverage, lint, and OSV on the worktree; stdin-ref validation for every push ref remains open. L3 runs in CI or an explicit manual lane.
+Husky 9 is installed with `prepare` set to `husky`. Git runs `.husky/_`, and that shim runs the tracked hooks. Pre-commit checks the staged index: typecheck, Biome with warnings as errors, and Vitest coverage at the existing 95% floors. `gitleaks --staged` reads the original index before Git's hook environment is removed. `set -e` stops on the first failed command. Pre-push runs build, coverage, lint, and OSV on the worktree. CI runs `.github/workflows/ci.yml` -> `./.github/workflows/quality-slots.yml`, gated on `quality / Z1: Gate`.
 Never bypass commit/push hooks, force-push, or use autofix in checks. Documentation changes do not authorize deploying or implementing new gates.
 
 ## Resources / Isolation

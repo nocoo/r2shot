@@ -37,7 +37,7 @@ bun run build:zip        # build versioned dist/r2shot-<version>.zip
 
 ## Quality & Local Gates
 
-Follows `system1-quality`; CI runs [.github/workflows/ci.yml](.github/workflows/ci.yml) -> [.github/workflows/quality-slots.yml](.github/workflows/quality-slots.yml) (`quality / Z1: Gate` required on `main`). Status vocabulary: `enforced`, `planned`, `manual`, `N/A`.
+Follows `system1-quality`; CI runs [.github/workflows/pipeline.yml](.github/workflows/pipeline.yml) -> [.github/workflows/quality-slots.yml](.github/workflows/quality-slots.yml) (`quality / Z1: Gate` required on `main`, pinned `base-ci` `v2026.24`), with no automated CD workflow (manual ZIP / Chrome Web Store release only). Status vocabulary: `enforced`, `planned`, `manual`, `N/A`.
 
 - **Exceptions / gaps**: `L2 Runtime` is `N/A` (Chrome extension, no Worker/workerd runtime); `P1 Package` is `N/A` (private package; ZIP via `bun run build:zip`); live R2/CDN acceptance is `manual`.
 - **L1 coverage**: `>=80%` statements/branches/functions/lines ([vitest.config.ts](vitest.config.ts) + `scripts/l1-coverage-guard.cjs`), excluding `src/background/index.ts` (E2E-covered), View/UI layers, and `src/types/**`.
